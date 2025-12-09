@@ -1,0 +1,256 @@
+---
+// src/layouts/TutorialLayout.astro
+// Tutorial-specific layout with metadata display
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  publishDate: Date;
+  lastModified?: Date;
+  author: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estimatedTime: number; // minutes
+  estimatedCost: number; // dollars
+  tags: string[];
+  series?: string;
+  seriesOrder?: number;
+  image?: string;
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  publishDate,
+  lastModified,
+  author,
+  difficulty,
+  estimatedTime,
+  estimatedCost,
+  tags,
+  series,
+  seriesOrder,
+  image
+} = Astro.props;
+
+// Format dates
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(date);
+};
+
+// Difficulty color mapping
+const difficultyColors = {
+  'Beginner': 'text-machineGreen border-machineGreen/60',
+  'Intermediate': 'text-amber border-amber/60',
+  'Advanced': 'text-neonPink border-neonPink/60'
+};
+---
+
+<Layout title={`${title} | AgenticControl.dev`} description={description} image={image} type="article">
+  <!-- Tutorial Header -->
+  <article class="bg-background">
+    <!-- Hero Section -->
+    <section class="relative scanlines bg-gradient-to-b from-neonPurple/30 via-surface/30 to-background border-b-2 border-neonCyan/30">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(4,217,255,0.15),_transparent_70%)] pointer-events-none"></div>
+
+      <div class="max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24 relative z-10">
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-sm font-mono text-slate-300 mb-8">
+          <a href="/" class="hover:text-neonCyan transition-colors">/home</a>
+          <span class="text-slate-600">&gt;</span>
+          <a href="/tutorials" class="hover:text-neonCyan transition-colors">/tutorials</a>
+          <span class="text-slate-600">&gt;</span>
+          <span class="text-neonCyan font-semibold">{title}</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight tracking-wide">
+          {title}
+        </h1>
+
+        <!-- Subtitle -->
+        {subtitle && (
+          <p class="text-xl md:text-2xl text-neonCyan font-medium mb-10 max-w-3xl leading-relaxed">
+            {subtitle}
+          </p>
+        )}
+
+        <!-- Meta Information -->
+        <div class="flex flex-wrap gap-4 text-sm md:text-base mb-8">
+          <!-- Difficulty Badge -->
+          <div class={`px-4 py-2.5 rounded-lg border-2 ${difficultyColors[difficulty]} bg-black/40 backdrop-blur-sm font-mono font-bold text-sm shadow-lg`}>
+            {difficulty.toUpperCase()}
+          </div>
+
+          <!-- Time Badge -->
+          <div class="px-4 py-2.5 rounded-lg border-2 border-neonCyan text-neonCyan bg-black/40 backdrop-blur-sm font-mono font-semibold flex items-center gap-2 shadow-lg shadow-neonCyan/20">
+            <span class="text-base">⏱</span>
+            <span>{estimatedTime} min</span>
+          </div>
+
+          <!-- Cost Badge -->
+          <div class="px-4 py-2.5 rounded-lg border-2 border-neonPink text-neonPink bg-black/40 backdrop-blur-sm font-mono font-semibold flex items-center gap-2 shadow-lg shadow-neonPink/20">
+            <span class="text-base">💰</span>
+            <span>${estimatedCost.toFixed(2)}</span>
+          </div>
+
+          <!-- Series Badge -->
+          {series && seriesOrder && (
+            <div class="px-4 py-2.5 rounded-lg border-2 border-neonPurple text-neonPurple bg-black/40 backdrop-blur-sm font-mono font-semibold shadow-lg">
+              {series} #{seriesOrder}
+            </div>
+          )}
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-3">
+          {tags.map(tag => (
+            <span class="px-3 py-1.5 rounded-md text-sm font-mono bg-surface/80 border border-slate-500/60 text-slate-200 hover:border-neonCyan/60 hover:text-neonCyan transition-colors">
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+        <!-- Author & Date -->
+        <div class="mt-10 pt-8 border-t-2 border-surface/80 text-base text-slate-300 font-mono">
+          <div class="flex flex-wrap gap-6 items-center">
+            <span class="text-slate-400">By <span class="text-white font-semibold">{author}</span></span>
+            <span class="text-slate-600">•</span>
+            <span>Published <span class="text-white">{formatDate(publishDate)}</span></span>
+            {lastModified && (
+              <>
+                <span class="text-slate-600">•</span>
+                <span>Updated <span class="text-white">{formatDate(lastModified)}</span></span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tutorial Content - MODERN & SPACIOUS -->
+    <section class="py-24 bg-background">
+      <div class="max-w-4xl mx-auto px-6 md:px-12">
+        <!-- Content Wrapper - Clean, Airy, Scannable -->
+        <div class="prose prose-invert prose-slate max-w-none
+
+          /* HEADINGS - Clear hierarchy, massive spacing */
+          prose-headings:font-display prose-headings:tracking-wide prose-headings:font-bold
+
+          /* H2 - Major sections with huge breathing room */
+          prose-h2:text-4xl prose-h2:mt-24 prose-h2:mb-12 prose-h2:pb-8
+          prose-h2:border-b prose-h2:border-neonCyan/30
+          prose-h2:text-white prose-h2:leading-tight
+
+          /* H3 - Subsections with space */
+          prose-h3:text-2xl prose-h3:mt-16 prose-h3:mb-8
+          prose-h3:text-slate-100 prose-h3:leading-snug
+
+          /* H4 - Minor headings */
+          prose-h4:text-xl prose-h4:mt-12 prose-h4:mb-6
+          prose-h4:text-slate-200 prose-h4:font-semibold
+
+          /* PARAGRAPHS - Spacious, readable */
+          prose-p:text-base prose-p:text-slate-300
+          prose-p:leading-[1.9] prose-p:my-8
+          prose-p:max-w-3xl
+
+          /* LINKS - Obvious, accessible */
+          prose-a:text-neonCyan prose-a:font-medium
+          prose-a:underline prose-a:decoration-neonCyan/40
+          prose-a:underline-offset-4
+          hover:prose-a:text-neonPink hover:prose-a:decoration-neonPink
+          prose-a:transition-colors
+
+          /* STRONG - Highlighted, clear */
+          prose-strong:text-white prose-strong:font-bold
+          prose-strong:bg-neonCyan/10 prose-strong:px-2 prose-strong:py-0.5
+          prose-strong:rounded prose-strong:border prose-strong:border-neonCyan/20
+
+          /* CODE - Inline code with contrast */
+          prose-code:text-neonPink prose-code:bg-black/60
+          prose-code:px-2.5 prose-code:py-1 prose-code:rounded
+          prose-code:text-sm prose-code:font-mono prose-code:font-semibold
+          prose-code:border prose-code:border-neonPink/30
+          prose-code:before:content-[''] prose-code:after:content-['']
+
+          /* CODE BLOCKS - Generous spacing */
+          prose-pre:bg-black/80 prose-pre:border prose-pre:border-neonCyan/40
+          prose-pre:rounded-2xl prose-pre:shadow-xl prose-pre:shadow-black/50
+          prose-pre:my-12 prose-pre:overflow-x-auto
+
+          /* LISTS - Spacious, scannable */
+          prose-ul:my-10 prose-ul:space-y-4 prose-ul:text-slate-300
+          prose-ol:my-10 prose-ol:space-y-4 prose-ol:text-slate-300
+          prose-li:text-base prose-li:leading-[1.8] prose-li:my-3
+          prose-li:marker:text-neonCyan
+
+          /* BLOCKQUOTES - Pull quotes that pop */
+          prose-blockquote:not-italic prose-blockquote:font-normal
+          prose-blockquote:border-l-4 prose-blockquote:border-neonPink
+          prose-blockquote:bg-neonPink/5 prose-blockquote:backdrop-blur
+          prose-blockquote:pl-8 prose-blockquote:pr-8 prose-blockquote:py-8
+          prose-blockquote:my-12 prose-blockquote:rounded-r-xl
+          prose-blockquote:text-slate-100 prose-blockquote:text-lg
+          prose-blockquote:shadow-lg prose-blockquote:shadow-neonPink/10
+
+          /* TABLES - Readable, well-spaced */
+          prose-table:w-full prose-table:my-12
+          prose-table:border-collapse prose-table:overflow-hidden prose-table:rounded-xl
+          prose-thead:bg-slate-900/80 prose-thead:border-b-2 prose-thead:border-neonCyan/30
+          prose-th:px-6 prose-th:py-4 prose-th:text-left
+          prose-th:text-sm prose-th:font-bold prose-th:text-neonCyan prose-th:uppercase prose-th:tracking-wider
+          prose-td:px-6 prose-td:py-4 prose-td:text-base
+          prose-td:text-slate-300 prose-td:border-b prose-td:border-slate-700/50
+          prose-tr:hover:bg-slate-900/40 prose-tr:transition-colors
+
+          /* HR - Visual breaks */
+          prose-hr:border-slate-700 prose-hr:my-20
+
+          /* IMAGES */
+          prose-img:rounded-2xl prose-img:border prose-img:border-neonCyan/40
+          prose-img:shadow-2xl prose-img:my-12
+        ">
+          <slot />
+        </div>
+      </div>
+    </section>
+
+    <!-- Tutorial Footer / Next Steps -->
+    <section class="bg-gradient-to-b from-surface/60 to-background border-t-2 border-neonCyan/40 py-20">
+      <div class="max-w-5xl mx-auto px-6 md:px-8">
+        <div class="bg-surface/90 border-2 border-neonCyan/60 rounded-2xl p-10 md:p-12 scanlines shadow-2xl shadow-neonCyan/20">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-4xl">✅</span>
+            <h3 class="font-display text-4xl text-neonCyan tracking-wider">
+              TUTORIAL COMPLETE
+            </h3>
+          </div>
+          <p class="text-xl text-slate-200 mb-10 leading-relaxed">
+            You've learned the fundamentals. Ready for the next challenge?
+          </p>
+          <div class="flex flex-wrap gap-5">
+            <a
+              href="/tutorials"
+              class="px-8 py-4 border-2 border-neonCyan rounded-lg text-base font-bold tracking-wide bg-black/40 text-neonCyan hover:bg-neonCyan/20 hover:border-neonCyan hover:shadow-neon-cyan/50 transition-all shadow-lg"
+            >
+              VIEW ALL TUTORIALS
+            </a>
+            <a
+              href="/#workflows"
+              class="px-8 py-4 border-2 border-neonPink rounded-lg text-base font-bold tracking-wide bg-black/40 text-neonPink hover:bg-neonPink/20 hover:border-neonPink hover:shadow-neon-pink/50 transition-all shadow-lg"
+            >
+              EXPLORE AGENT PATTERNS
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+</Layout>

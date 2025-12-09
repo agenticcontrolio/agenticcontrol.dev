@@ -1,0 +1,138 @@
+---
+// src/layouts/Layout.astro
+// Base layout used by all pages
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = "Build and automate agentic AI workflows for industrial systems: PLCs, robots, SCADA, and digital twins.",
+  image = "/og-image.jpg",
+  type = "website"
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content={type} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content={canonicalURL} />
+  <meta property="twitter:title" content={title} />
+  <meta property="twitter:description" content={description} />
+  <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=VT323&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <style>
+    /* Scanline effect */
+    .scanlines {
+      position: relative;
+      overflow: hidden;
+    }
+    .scanlines::before {
+      content: "";
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px
+      );
+      background-size: 100% 2px;
+      mix-blend-mode: soft-light;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body class="bg-background text-slate-100 font-body">
+  <div class="min-h-screen flex flex-col">
+
+    <!-- NAVBAR -->
+    <header class="border-b border-surface/70 bg-vhs/60 backdrop-blur-sm sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 hover:opacity-80 transition">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neonPink to-neonCyan shadow-neon-pink"></div>
+          <div class="font-display text-xl tracking-widest text-neonCyan">
+            AGENTIC<span class="text-neonPink">CONTROL</span><span class="text-slate-400">.dev</span>
+          </div>
+        </a>
+        <nav class="hidden md:flex gap-6 text-sm text-slate-300">
+          <a href="/tutorials" class="hover:text-neonCyan transition">Tutorials</a>
+          <a href="/#workflows" class="hover:text-neonCyan transition">Agent Workflows</a>
+          <a href="/#news" class="hover:text-neonCyan transition">News</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-vhs border-t border-surface/80 text-xs text-slate-400">
+      <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="border-b border-surface/80 mb-4"></div>
+        <div class="flex flex-col md:flex-row justify-between gap-4">
+          <div>
+            <div class="font-display text-neonCyan text-lg">
+              AGENTICCONTROL.dev
+            </div>
+            <p class="text-slate-500 mt-1">
+              Agent engineering patterns & workflows for industrial automation.
+            </p>
+          </div>
+          <div class="flex gap-8">
+            <div class="space-y-1">
+              <div class="font-mono text-slate-300">Navigate</div>
+              <a href="/tutorials" class="block hover:text-neonCyan transition">Tutorials</a>
+              <a href="/#workflows" class="block hover:text-neonCyan transition">Agent Workflows</a>
+              <a href="/#news" class="block hover:text-neonCyan transition">News</a>
+            </div>
+            <div class="space-y-1">
+              <div class="font-mono text-slate-300">Resources</div>
+              <a href="/rss.xml" class="block hover:text-neonCyan transition">RSS Feed</a>
+              <a href="mailto:hello@agenticcontrol.dev" class="block hover:text-neonCyan transition">Contact</a>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 font-mono text-[0.7rem] text-slate-500">
+          © {new Date().getFullYear()} AgenticControl.dev • system: online <span class="animate-cursor-blink">█</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

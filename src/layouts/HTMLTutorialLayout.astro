@@ -1,0 +1,169 @@
+---
+// src/layouts/HTMLTutorialLayout.astro
+// Layout for HTML-based tutorials with full manual control over spacing
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  publishDate: Date;
+  lastModified?: Date;
+  author: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estimatedTime: number;
+  estimatedCost: number;
+  tags: string[];
+  series?: string;
+  seriesOrder?: number;
+  image?: string;
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  publishDate,
+  lastModified,
+  author,
+  difficulty,
+  estimatedTime,
+  estimatedCost,
+  tags,
+  series,
+  seriesOrder,
+  image
+} = Astro.props;
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(date);
+};
+
+const difficultyColors = {
+  'Beginner': 'text-machineGreen border-machineGreen/60',
+  'Intermediate': 'text-amber border-amber/60',
+  'Advanced': 'text-neonPink border-neonPink/60'
+};
+---
+
+<Layout title={`${title} | AgenticControl.dev`} description={description} image={image} type="article">
+  <article class="bg-background">
+    <!-- Hero Section - Same as TutorialLayout -->
+    <section class="relative scanlines bg-gradient-to-b from-neonPurple/30 via-surface/30 to-background border-b-2 border-neonCyan/30">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(4,217,255,0.15),_transparent_70%)] pointer-events-none"></div>
+
+      <div class="max-w-5xl mx-auto px-6 md:px-8 py-16 md:py-24 relative z-10">
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-sm font-mono text-slate-300 mb-8">
+          <a href="/" class="hover:text-neonCyan transition-colors">/home</a>
+          <span class="text-slate-600">&gt;</span>
+          <a href="/tutorials" class="hover:text-neonCyan transition-colors">/tutorials</a>
+          <span class="text-slate-600">&gt;</span>
+          <span class="text-neonCyan font-semibold">{title}</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight tracking-wide">
+          {title}
+        </h1>
+
+        <!-- Subtitle -->
+        {subtitle && (
+          <p class="text-xl md:text-2xl text-neonCyan font-medium mb-10 max-w-3xl leading-relaxed">
+            {subtitle}
+          </p>
+        )}
+
+        <!-- Meta Information -->
+        <div class="flex flex-wrap gap-4 text-sm md:text-base mb-8">
+          <div class={`px-4 py-2.5 rounded-lg border-2 ${difficultyColors[difficulty]} bg-black/40 backdrop-blur-sm font-mono font-bold text-sm shadow-lg`}>
+            {difficulty.toUpperCase()}
+          </div>
+          <div class="px-4 py-2.5 rounded-lg border-2 border-neonCyan text-neonCyan bg-black/40 backdrop-blur-sm font-mono font-semibold flex items-center gap-2 shadow-lg shadow-neonCyan/20">
+            <span class="text-base">⏱</span>
+            <span>{estimatedTime} min</span>
+          </div>
+          <div class="px-4 py-2.5 rounded-lg border-2 border-neonPink text-neonPink bg-black/40 backdrop-blur-sm font-mono font-semibold flex items-center gap-2 shadow-lg shadow-neonPink/20">
+            <span class="text-base">💰</span>
+            <span>${estimatedCost.toFixed(2)}</span>
+          </div>
+          {series && seriesOrder && (
+            <div class="px-4 py-2.5 rounded-lg border-2 border-neonPurple text-neonPurple bg-black/40 backdrop-blur-sm font-mono font-semibold shadow-lg">
+              {series} #{seriesOrder}
+            </div>
+          )}
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-3">
+          {tags.map(tag => (
+            <span class="px-3 py-1.5 rounded-md text-sm font-mono bg-surface/80 border border-slate-500/60 text-slate-200 hover:border-neonCyan/60 hover:text-neonCyan transition-colors">
+              #{tag}
+            </span>
+          ))}
+        </div>
+
+        <!-- Author & Date -->
+        <div class="mt-10 pt-8 border-t-2 border-surface/80 text-base text-slate-300 font-mono">
+          <div class="flex flex-wrap gap-6 items-center">
+            <span class="text-slate-400">By <span class="text-white font-semibold">{author}</span></span>
+            <span class="text-slate-600">•</span>
+            <span>Published <span class="text-white">{formatDate(publishDate)}</span></span>
+            {lastModified && (
+              <>
+                <span class="text-slate-600">•</span>
+                <span>Updated <span class="text-white">{formatDate(lastModified)}</span></span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tutorial Content - PURE HTML with Manual Control -->
+    <section class="py-24 bg-gradient-to-b from-background via-slate-900/20 to-background">
+      <div class="max-w-4xl mx-auto px-6 md:px-12">
+        <!-- Content Card - Blueish container -->
+        <div class="bg-slate-800/40 backdrop-blur-sm border-2 border-slate-600/40 rounded-3xl p-8 md:p-12 lg:p-16 shadow-2xl shadow-black/40">
+          <!-- HTML content goes here -->
+          <slot />
+        </div>
+      </div>
+    </section>
+
+    <!-- Tutorial Footer -->
+    <section class="bg-gradient-to-b from-surface/60 to-background border-t-2 border-neonCyan/40 py-20">
+      <div class="max-w-5xl mx-auto px-6 md:px-8">
+        <div class="bg-surface/90 border-2 border-neonCyan/60 rounded-2xl p-10 md:p-12 scanlines shadow-2xl shadow-neonCyan/20">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-4xl">✅</span>
+            <h3 class="font-display text-4xl text-neonCyan tracking-wider">
+              TUTORIAL COMPLETE
+            </h3>
+          </div>
+          <p class="text-xl text-slate-200 mb-10 leading-relaxed">
+            You've learned the fundamentals. Ready for the next challenge?
+          </p>
+          <div class="flex flex-wrap gap-5">
+            <a
+              href="/tutorials"
+              class="px-8 py-4 border-2 border-neonCyan rounded-lg text-base font-bold tracking-wide bg-black/40 text-neonCyan hover:bg-neonCyan/20 hover:border-neonCyan hover:shadow-neon-cyan/50 transition-all shadow-lg"
+            >
+              VIEW ALL TUTORIALS
+            </a>
+            <a
+              href="/#workflows"
+              class="px-8 py-4 border-2 border-neonPink rounded-lg text-base font-bold tracking-wide bg-black/40 text-neonPink hover:bg-neonPink/20 hover:border-neonPink hover:shadow-neon-pink/50 transition-all shadow-lg"
+            >
+              EXPLORE AGENT PATTERNS
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+</Layout>
