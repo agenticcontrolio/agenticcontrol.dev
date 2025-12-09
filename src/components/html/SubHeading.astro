@@ -1,0 +1,21 @@
+---
+// src/components/html/SubHeading.astro
+// H3 subsection heading with good spacing
+interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<h3
+  id={id}
+  class="
+    font-display text-2xl font-semibold text-slate-100
+    mt-20 mb-10
+    leading-snug tracking-wide
+    scroll-mt-24
+  "
+>
+  <slot />
+</h3>

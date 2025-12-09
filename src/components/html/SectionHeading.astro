@@ -1,0 +1,22 @@
+---
+// src/components/html/SectionHeading.astro
+// H2 section heading with massive spacing
+interface Props {
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<h2
+  id={id}
+  class="
+    font-display text-4xl font-bold text-white
+    mt-32 mb-16 pb-8
+    border-b-2 border-neonCyan/30
+    leading-tight tracking-wide
+    scroll-mt-24
+  "
+>
+  <slot />
+</h2>

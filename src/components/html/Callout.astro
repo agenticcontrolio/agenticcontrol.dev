@@ -1,0 +1,42 @@
+---
+// src/components/html/Callout.astro
+// Highlighted callout box for key points
+interface Props {
+  type?: 'info' | 'warning' | 'success';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+const styles = {
+  info: 'border-neonCyan bg-neonCyan/5 text-neonCyan',
+  warning: 'border-amber bg-amber/5 text-amber',
+  success: 'border-machineGreen bg-machineGreen/5 text-machineGreen'
+};
+
+const icons = {
+  info: 'ℹ️',
+  warning: '⚠️',
+  success: '✅'
+};
+---
+
+<div class={`
+  my-16 p-8
+  border-l-4 rounded-r-xl
+  ${styles[type]}
+  backdrop-blur-sm
+  shadow-lg
+`}>
+  {title && (
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-2xl">{icons[type]}</span>
+      <h4 class="text-lg font-bold font-display tracking-wide uppercase">
+        {title}
+      </h4>
+    </div>
+  )}
+  <div class="text-base leading-[1.9] text-slate-200">
+    <slot />
+  </div>
+</div>

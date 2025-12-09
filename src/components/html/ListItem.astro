@@ -1,0 +1,16 @@
+---
+// src/components/html/ListItem.astro
+// List item with icon and spacing
+interface Props {
+  icon?: string;
+}
+
+const { icon = "✓" } = Astro.props;
+---
+
+<li class="flex gap-4 items-start">
+  <span class="text-neonCyan text-xl mt-0.5 flex-shrink-0">{icon}</span>
+  <span class="flex-1 leading-[1.9]">
+    <slot />
+  </span>
+</li>

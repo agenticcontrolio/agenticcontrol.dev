@@ -1,0 +1,144 @@
+---
+// src/components/html/CodeBlock.astro
+// Code block with copy button for HTML tutorials
+interface Props {
+  language?: string;
+  filename?: string;
+  showLineNumbers?: boolean;
+}
+
+const {
+  language = 'plaintext',
+  filename,
+  showLineNumbers = false
+} = Astro.props;
+
+// Generate unique ID for this code block
+const codeId = `code-${Math.random().toString(36).substring(7)}`;
+---
+
+<div class="code-block-container my-16 bg-surface/80 border-2 border-neonCyan/40 rounded-2xl overflow-hidden shadow-xl shadow-neonCyan/20">
+  <!-- Code Header -->
+  <div class="code-header bg-black/80 border-b-2 border-neonCyan/40 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <!-- Filename or Language Label -->
+      {filename ? (
+        <span class="font-mono text-sm text-neonCyan font-semibold">{filename}</span>
+      ) : (
+        <span class="font-mono text-sm text-slate-400 uppercase tracking-wide">{language}</span>
+      )}
+
+      <!-- Decorative Dots -->
+      <div class="flex gap-2">
+        <div class="w-3 h-3 rounded-full bg-neonPink/60"></div>
+        <div class="w-3 h-3 rounded-full bg-amber/60"></div>
+        <div class="w-3 h-3 rounded-full bg-machineGreen/60"></div>
+      </div>
+    </div>
+
+    <!-- Copy Button -->
+    <button
+      type="button"
+      class="copy-btn px-4 py-2 rounded-lg border-2 border-neonCyan/40 bg-background/60 text-neonCyan text-sm font-mono font-semibold hover:bg-neonCyan/20 hover:border-neonCyan transition-all flex items-center gap-2.5"
+      data-code-id={codeId}
+      aria-label="Copy code to clipboard"
+    >
+      <svg class="copy-icon w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span class="copy-text">COPY</span>
+      <svg class="check-icon hidden w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Code Content -->
+  <div class="code-content bg-black/90 overflow-x-auto">
+    <pre class={`text-sm leading-loose px-8 py-8 ${showLineNumbers ? 'line-numbers' : ''}`}><code id={codeId} class={`language-${language}`}><slot /></code></pre>
+  </div>
+</div>
+
+<script>
+  // Copy to clipboard functionality
+  document.querySelectorAll('.copy-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const codeId = button.getAttribute('data-code-id');
+      const codeElement = document.getElementById(codeId);
+
+      if (!codeElement) return;
+
+      const code = codeElement.textContent || '';
+
+      try {
+        await navigator.clipboard.writeText(code);
+
+        // Visual feedback
+        const copyIcon = button.querySelector('.copy-icon');
+        const checkIcon = button.querySelector('.check-icon');
+        const copyText = button.querySelector('.copy-text');
+
+        copyIcon?.classList.add('hidden');
+        checkIcon?.classList.remove('hidden');
+        if (copyText) copyText.textContent = 'COPIED!';
+        button.classList.add('border-machineGreen', 'text-machineGreen');
+        button.classList.remove('border-neonCyan', 'text-neonCyan');
+
+        // Reset after 2 seconds
+        setTimeout(() => {
+          copyIcon?.classList.remove('hidden');
+          checkIcon?.classList.add('hidden');
+          if (copyText) copyText.textContent = 'COPY';
+          button.classList.remove('border-machineGreen', 'text-machineGreen');
+          button.classList.add('border-neonCyan', 'text-neonCyan');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy code:', err);
+      }
+    });
+  });
+</script>
+
+<style>
+  .code-block-container {
+    font-family: var(--font-mono);
+  }
+
+  /* Line numbers styling */
+  .line-numbers {
+    counter-reset: line;
+  }
+
+  .line-numbers code {
+    counter-increment: line;
+  }
+
+  .line-numbers code::before {
+    content: counter(line);
+    display: inline-block;
+    width: 3em;
+    padding-right: 1em;
+    margin-right: 1em;
+    text-align: right;
+    color: rgb(148 163 184 / 0.4);
+    border-right: 1px solid rgb(148 163 184 / 0.2);
+  }
+
+  /* Scrollbar styling */
+  .code-content::-webkit-scrollbar {
+    height: 10px;
+  }
+
+  .code-content::-webkit-scrollbar-track {
+    background: rgb(13 13 15 / 0.6);
+  }
+
+  .code-content::-webkit-scrollbar-thumb {
+    background: rgb(4 217 255 / 0.3);
+    border-radius: 4px;
+  }
+
+  .code-content::-webkit-scrollbar-thumb:hover {
+    background: rgb(4 217 255 / 0.5);
+  }
+</style>

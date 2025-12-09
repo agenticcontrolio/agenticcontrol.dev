@@ -1,0 +1,170 @@
+---
+// src/components/TutorialCard.astro
+// Tutorial preview card for listing pages
+interface Props {
+  slug: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  estimatedTime: number;
+  estimatedCost: number;
+  tags: string[];
+  category: string;
+  featured?: boolean;
+  image?: string;
+}
+
+const {
+  slug,
+  title,
+  subtitle,
+  description,
+  difficulty,
+  estimatedTime,
+  estimatedCost,
+  tags,
+  category,
+  featured = false,
+  image
+} = Astro.props;
+
+// Difficulty color mapping
+const difficultyColors = {
+  'Beginner': 'text-machineGreen border-machineGreen/60',
+  'Intermediate': 'text-amber border-amber/60',
+  'Advanced': 'text-neonPink border-neonPink/60'
+};
+
+// Category color mapping
+const categoryColors = {
+  'Foundation': 'border-neonCyan/60 text-neonCyan',
+  'Multi-Agent': 'border-neonPurple/60 text-neonPurple',
+  'RAG': 'border-plcBlue/60 text-plcBlue',
+  'Production': 'border-amber/60 text-amber',
+  'Advanced': 'border-neonPink/60 text-neonPink'
+};
+
+const categoryColor = categoryColors[category as keyof typeof categoryColors] || 'border-neonCyan/60 text-neonCyan';
+---
+
+<article
+  class={`tutorial-card group bg-surface/80 border rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] ${
+    featured
+      ? 'border-neonPink/60 shadow-neon-pink/20 hover:shadow-neon-pink/60'
+      : 'border-neonCyan/40 shadow-neon-cyan/10 hover:shadow-neon-cyan/50'
+  }`}
+>
+  <a href={`/tutorials/${slug}`} class="block">
+    <!-- Featured Badge (if applicable) -->
+    {featured && (
+      <div class="bg-gradient-to-r from-neonPink/20 to-neonPurple/20 border-b border-neonPink/40 px-4 py-2">
+        <div class="flex items-center gap-2 text-xs font-mono text-neonPink">
+          <span>⭐</span>
+          <span>FEATURED TUTORIAL</span>
+        </div>
+      </div>
+    )}
+
+    <!-- Card Content -->
+    <div class="p-6">
+      <!-- Tags & Category -->
+      <div class="flex flex-wrap gap-2 mb-4">
+        <span class={`px-2 py-1 rounded text-xs font-mono border ${categoryColor} bg-vhs/60`}>
+          {category.toUpperCase()}
+        </span>
+        {tags.slice(0, 3).map(tag => (
+          <span class="px-2 py-1 rounded text-xs font-mono bg-vhs/60 border border-slate-600/40 text-slate-400">
+            #{tag}
+          </span>
+        ))}
+      </div>
+
+      <!-- Title -->
+      <h3 class="font-display text-xl md:text-2xl text-slate-100 mb-2 group-hover:text-neonCyan transition-colors">
+        {title}
+      </h3>
+
+      <!-- Subtitle -->
+      {subtitle && (
+        <p class="text-sm text-neonCyan mb-3 font-medium">
+          {subtitle}
+        </p>
+      )}
+
+      <!-- Description -->
+      <p class="text-sm text-slate-300 mb-4 line-clamp-3">
+        {description}
+      </p>
+
+      <!-- Meta Information -->
+      <div class="flex flex-wrap gap-3 text-xs font-mono pt-4 border-t border-surface/60">
+        <!-- Difficulty Badge -->
+        <div class={`px-2 py-1 rounded border ${difficultyColors[difficulty]} bg-background/60`}>
+          {difficulty.toUpperCase()}
+        </div>
+
+        <!-- Time Badge -->
+        <div class="px-2 py-1 rounded border border-neonCyan/40 text-neonCyan bg-background/60 flex items-center gap-1">
+          <span>⏱</span>
+          <span>{estimatedTime}m</span>
+        </div>
+
+        <!-- Cost Badge -->
+        <div class="px-2 py-1 rounded border border-neonPink/40 text-neonPink bg-background/60 flex items-center gap-1">
+          <span>💰</span>
+          <span>${estimatedCost.toFixed(2)}</span>
+        </div>
+      </div>
+
+      <!-- Read More Link -->
+      <div class="mt-4 flex items-center gap-2 text-sm font-mono text-neonCyan group-hover:text-neonPink transition-colors">
+        <span>&gt; READ TUTORIAL</span>
+        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .tutorial-card {
+    position: relative;
+  }
+
+  /* Line clamp for description */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Subtle scan effect on hover */
+  .tutorial-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgb(4 217 255 / 0.6), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .tutorial-card:hover::before {
+    opacity: 1;
+    animation: scan-line 2s ease-in-out infinite;
+  }
+
+  @keyframes scan-line {
+    0%, 100% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+  }
+</style>

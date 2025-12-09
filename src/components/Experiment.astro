@@ -1,0 +1,113 @@
+---
+// src/components/Experiment.astro
+// Lab-style experiment container for hands-on sections
+interface Props {
+  title: string;
+  time?: number; // minutes
+  cost?: number; // dollars
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+}
+
+const {
+  title,
+  time,
+  cost,
+  difficulty
+} = Astro.props;
+
+// Difficulty color mapping
+const difficultyColors = {
+  'Beginner': 'text-machineGreen border-machineGreen/60',
+  'Intermediate': 'text-amber border-amber/60',
+  'Advanced': 'text-neonPink border-neonPink/60'
+};
+---
+
+<div class="experiment-container my-8 bg-surface/80 border border-neonCyan/40 rounded-xl overflow-hidden shadow-neon-cyan/20">
+  <!-- Experiment Header -->
+  <div class="experiment-header bg-vhs/80 border-b border-neonCyan/40 px-6 py-4">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <!-- Title -->
+      <h3 class="font-display text-xl text-neonCyan tracking-wider flex items-center gap-2">
+        <span class="text-2xl">🧪</span>
+        <span>{title}</span>
+      </h3>
+
+      <!-- Badges -->
+      <div class="flex flex-wrap gap-2 text-xs font-mono">
+        {time && (
+          <div class="px-3 py-1 rounded border border-neonCyan/60 text-neonCyan bg-background/60 flex items-center gap-1.5">
+            <span>⏱</span>
+            <span>{time} min</span>
+          </div>
+        )}
+
+        {cost !== undefined && (
+          <div class="px-3 py-1 rounded border border-neonPink/60 text-neonPink bg-background/60 flex items-center gap-1.5">
+            <span>💰</span>
+            <span>${cost.toFixed(2)}</span>
+          </div>
+        )}
+
+        {difficulty && (
+          <div class={`px-3 py-1 rounded border ${difficultyColors[difficulty]} bg-background/60 font-semibold`}>
+            {difficulty.toUpperCase()}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiment Content -->
+  <div class="experiment-content px-6 py-6">
+    <div class="prose prose-invert prose-slate max-w-none
+      prose-headings:font-display prose-headings:text-slate-100
+      prose-h4:text-lg prose-h4:mt-4 prose-h4:mb-2 prose-h4:text-neonCyan
+      prose-p:text-slate-300 prose-p:leading-relaxed
+      prose-a:text-neonPink prose-a:no-underline hover:prose-a:text-neonCyan
+      prose-strong:text-neonCyan
+      prose-code:text-neonPink prose-code:bg-vhs/60 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+      prose-pre:bg-background/80 prose-pre:border prose-pre:border-neonCyan/40 prose-pre:rounded-lg
+      prose-ul:text-slate-300
+      prose-ol:text-slate-300
+      prose-li:my-1
+    ">
+      <slot />
+    </div>
+  </div>
+
+  <!-- Experiment Footer -->
+  <div class="experiment-footer bg-vhs/60 border-t border-surface/60 px-6 py-3">
+    <div class="flex items-center gap-2 text-xs font-mono text-slate-500">
+      <span class="text-machineGreen">●</span>
+      <span>experiment ready</span>
+      <span class="animate-cursor-blink">█</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .experiment-container {
+    position: relative;
+  }
+
+  .experiment-container::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgb(4 217 255 / 0.6), transparent);
+    animation: scan 3s ease-in-out infinite;
+  }
+
+  @keyframes scan {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+</style>
