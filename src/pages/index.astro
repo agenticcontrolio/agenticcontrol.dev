@@ -1,466 +1,451 @@
 ---
-// src/pages/index.astro
-import '../styles/global.css';
+// src/pages/index.astro - V2 with 4-Track Learning Paths
+import Layout from '../layouts/Layout.astro';
 
-const title = "AgenticControl.dev - AI Agents for Industrial Automation";
+const title = "AgenticControl.dev - From Technician to Architect in Industrial AI";
+const description = "Master AI Agent architectures for industrial automation. A complete professional ladder from using AI agents to designing industrial-scale intelligent platforms.";
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>{title}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Build and automate agentic AI workflows for industrial systems: PLCs, robots, SCADA, and digital twins." />
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=VT323&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    /* Scanline effect */
-    .scanlines {
-      position: relative;
-      overflow: hidden;
-    }
-    .scanlines::before {
-      content: "";
-      pointer-events: none;
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(
-        rgba(255, 255, 255, 0.03) 1px,
-        transparent 1px
-      );
-      background-size: 100% 2px;
-      mix-blend-mode: soft-light;
-      opacity: 0.5;
-    }
-  </style>
-</head>
-
-<body class="bg-background text-slate-100 font-body">
-  <div class="min-h-screen flex flex-col">
-
-    <!-- NAVBAR -->
-    <header class="border-b border-surface/70 bg-vhs/60 backdrop-blur-sm">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-neonPink to-neonCyan shadow-neon-pink"></div>
-          <div class="font-display text-xl tracking-widest text-neonCyan">
-            AGENTIC<span class="text-neonPink">CONTROL</span><span class="text-slate-400">.dev</span>
-          </div>
-        </div>
-        <nav class="hidden md:flex gap-6 text-sm text-slate-300">
-          <a href="#tutorials" class="hover:text-neonCyan transition">Tutorials</a>
-          <a href="#workflows" class="hover:text-neonCyan transition">Agent Workflows</a>
-          <a href="#news" class="hover:text-neonCyan transition">News</a>
-          <a href="#cta" class="hover:text-neonCyan transition">Get Started</a>
-        </nav>
-      </div>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1">
-
+<Layout title={title} description={description}>
       <!-- HERO -->
       <section class="relative scanlines bg-gradient-to-b from-neonPurple/20 via-background to-background">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,79,216,0.12),_transparent_60%)] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,79,216,0.12),_transparent_60%)] pointer-events-none animate-hero-glow"></div>
 
-        <div class="max-w-6xl mx-auto px-4 py-20 md:py-28 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+        <div class="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
+          <div class="text-center max-w-4xl mx-auto">
+            <div class="font-display text-4xl sm:text-5xl md:text-6xl text-neonCyan tracking-[0.2em] mb-6">
+              FROM TECHNICIAN<br/>
+              <span class="text-neonPink">TO ARCHITECT</span>
+            </div>
+
+            <p class="text-xl md:text-2xl text-slate-200 mb-4">
+              Master <span class="text-neonCyan font-semibold">AI Agent Architectures</span> for Industrial Automation
+            </p>
+
+            <p class="text-base text-slate-400 max-w-2xl mx-auto mb-8">
+              A complete professional identity progression: from safely using agentic AI in PLC workflows
+              to designing distributed intelligent platforms for industrial-scale systems.
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+              <a
+                href="#tracks"
+                class="px-8 py-4 border-2 border-neonPink/80 rounded-lg text-base font-bold tracking-wide bg-vhs/80 shadow-neon-pink hover:bg-neonPink/20 hover:border-neonPink transition"
+              >
+                EXPLORE LEARNING TRACKS
+              </a>
+            </div>
+
+            <!-- Progression Ladder Visual -->
+            <div class="font-mono text-xs md:text-sm text-slate-400 space-y-1">
+              <div class="flex items-center justify-center gap-3 flex-wrap">
+                <span class="text-machineGreen">🟢 TECHNICIAN</span>
+                <span class="text-slate-500">→</span>
+                <span class="text-amber">🟡 DEVELOPER</span>
+                <span class="text-slate-500">→</span>
+                <span class="text-plcBlue">🔵 SYSTEM & DEPLOYMENT</span>
+                <span class="text-slate-500">→</span>
+                <span class="text-neonPink">🔴 ARCHITECT</span>
+              </div>
+              <div class="text-[0.7rem] text-slate-500">40 tutorials • 4 professional levels • complete industrial AI curriculum</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LEARNING TRACKS - MAIN CONTENT -->
+      <section id="tracks" class="bg-background py-20 border-t-2 border-neonCyan/30">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="text-center mb-16">
+            <div class="font-mono text-sm text-neonCyan mb-2">
+              /curriculum &gt; learning_tracks <span class="animate-cursor-blink">█</span>
+            </div>
+            <h2 class="font-display text-4xl md:text-5xl text-slate-100 mb-4 tracking-wider">
+              YOUR LEARNING PATH
+            </h2>
+            <p class="text-lg text-slate-300 max-w-3xl mx-auto">
+              Not just tutorials — a complete professional ladder from <span class="text-machineGreen font-semibold">using AI safely</span> to
+              <span class="text-neonPink font-semibold">designing industrial platforms</span>.
+            </p>
+          </div>
+
+          <!-- TRACK 1: TECHNICIAN -->
+          <div class="mb-12">
+            <article class="bg-gradient-to-br from-machineGreen/10 to-background border-2 border-machineGreen/60 rounded-2xl p-8 md:p-10 shadow-2xl hover:shadow-[0_0_40px_rgba(0,255,127,0.3)] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:scale-[1.02]">
+              <div class="flex items-start justify-between mb-6">
+                <div>
+                  <div class="inline-block px-4 py-2 bg-machineGreen/20 border border-machineGreen rounded-lg font-mono text-sm text-machineGreen mb-4">
+                    🟢 TRACK 1
+                  </div>
+                  <h3 class="font-display text-3xl md:text-4xl text-machineGreen mb-3 tracking-wider">
+                    TECHNICIAN
+                  </h3>
+                  <p class="text-2xl text-slate-200 font-semibold mb-2 italic">
+                    "I can USE this. It's powerful and under my control."
+                  </p>
+                </div>
+                <div class="hidden md:block text-6xl opacity-40">🤖</div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <div class="text-sm font-mono text-machineGreen mb-2">TARGET AUDIENCE</div>
+                  <p class="text-slate-300">PLC engineers, automation engineers, OT/IT hybrids</p>
+                </div>
+                <div>
+                  <div class="text-sm font-mono text-machineGreen mb-2">TUTORIALS</div>
+                  <p class="text-slate-300">10 tutorials • Beginner • $0-$5 total cost</p>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div class="text-sm font-mono text-machineGreen mb-3">CORE OUTCOMES</div>
+                <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+                  <div class="flex items-start gap-2">
+                    <span class="text-machineGreen mt-1">→</span>
+                    <span>Step-by-step PLC reasoning with ReAct pattern</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-machineGreen mt-1">→</span>
+                    <span>Prompt-controlled industrial code generation</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-machineGreen mt-1">→</span>
+                    <span>Tool-using agents (read-only, safe)</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-machineGreen mt-1">→</span>
+                    <span>Structured outputs for PLC data extraction</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-machineGreen mt-1">→</span>
+                    <span>Log-based fault diagnosis agents</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <a href="#cta" class="px-6 py-3 bg-machineGreen/20 border border-machineGreen rounded-lg font-semibold text-machineGreen hover:bg-machineGreen/30 transition">
+                  START TECHNICIAN TRACK →
+                </a>
+                <span class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-mono text-sm text-slate-400">
+                  Tutorials 1-10 • 5 published
+                </span>
+              </div>
+            </article>
+          </div>
+
+          <!-- TRACK 2: DEVELOPER -->
+          <div class="mb-12">
+            <article class="bg-gradient-to-br from-amber/10 to-background border-2 border-amber/60 rounded-2xl p-8 md:p-10 shadow-2xl hover:shadow-[0_0_40px_rgba(254,194,11,0.3)] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:scale-[1.02]">
+              <div class="flex items-start justify-between mb-6">
+                <div>
+                  <div class="inline-block px-4 py-2 bg-amber/20 border border-amber rounded-lg font-mono text-sm text-amber mb-4">
+                    🟡 TRACK 2
+                  </div>
+                  <h3 class="font-display text-3xl md:text-4xl text-amber mb-3 tracking-wider">
+                    DEVELOPER
+                  </h3>
+                  <p class="text-2xl text-slate-200 font-semibold mb-2 italic">
+                    "Now I can BUILD systems and trust them."
+                  </p>
+                </div>
+                <div class="hidden md:block text-6xl opacity-40">⚙️</div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <div class="text-sm font-mono text-amber mb-2">TARGET AUDIENCE</div>
+                  <p class="text-slate-300">Automation engineers, AI developers, technical leads, OT/IT solution builders</p>
+                </div>
+                <div>
+                  <div class="text-sm font-mono text-amber mb-2">TUTORIALS</div>
+                  <p class="text-slate-300">12 tutorials • Intermediate • Coming Q1 2025</p>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div class="text-sm font-mono text-amber mb-3">CORE OUTCOMES</div>
+                <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+                  <div class="flex items-start gap-2">
+                    <span class="text-amber mt-1">→</span>
+                    <span>Multi-agent coordination patterns</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-amber mt-1">→</span>
+                    <span>Parallel validation swarms</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-amber mt-1">→</span>
+                    <span>Event-driven agent architectures</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-amber mt-1">→</span>
+                    <span>State management & message queues</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-amber mt-1">→</span>
+                    <span>Live & historical fault intelligence</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <button disabled class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-semibold text-slate-500 cursor-not-allowed">
+                  COMING Q1 2025
+                </button>
+                <span class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-mono text-sm text-slate-400">
+                  Tutorials 11-22 • 0 published
+                </span>
+              </div>
+            </article>
+          </div>
+
+          <!-- TRACK 3: SYSTEM & DEPLOYMENT -->
+          <div class="mb-12">
+            <article class="bg-gradient-to-br from-plcBlue/10 to-background border-2 border-plcBlue/60 rounded-2xl p-8 md:p-10 shadow-2xl hover:shadow-[0_0_40px_rgba(31,117,255,0.3)] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:scale-[1.02]">
+              <div class="flex items-start justify-between mb-6">
+                <div>
+                  <div class="inline-block px-4 py-2 bg-plcBlue/20 border border-plcBlue rounded-lg font-mono text-sm text-plcBlue mb-4">
+                    🔵 TRACK 3
+                  </div>
+                  <h3 class="font-display text-3xl md:text-4xl text-plcBlue mb-3 tracking-wider">
+                    SYSTEM & DEPLOYMENT
+                  </h3>
+                  <p class="text-2xl text-slate-200 font-semibold mb-2 italic">
+                    "Now I can SHIP this without fear."
+                  </p>
+                </div>
+                <div class="hidden md:block text-6xl opacity-40">🚀</div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <div class="text-sm font-mono text-plcBlue mb-2">TARGET AUDIENCE</div>
+                  <p class="text-slate-300">OT/IT managers, platform owners, founders, technical release engineers</p>
+                </div>
+                <div>
+                  <div class="text-sm font-mono text-plcBlue mb-2">STRUCTURE</div>
+                  <p class="text-slate-300">3 tiers • Advanced • Coming Q2 2025</p>
+                </div>
+              </div>
+
+              <div class="mb-6">
+                <div class="text-sm font-mono text-plcBlue mb-3">CORE OUTCOMES (3 TIERS)</div>
+                <div class="space-y-4 text-sm text-slate-300">
+                  <div>
+                    <div class="text-machineGreen mb-2 font-semibold">🟢 Tier 1: Visibility & Baselines</div>
+                    <div class="grid md:grid-cols-2 gap-2">
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Monitoring & observability (Langfuse)</span>
+                      </div>
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Performance benchmarking & load testing</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-amber mb-2 font-semibold">🟡 Tier 2: Controlled Release & Cost</div>
+                    <div class="grid md:grid-cols-2 gap-2">
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Gradual rollout & A/B testing</span>
+                      </div>
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Cost optimization for production</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-neonPink mb-2 font-semibold">🔴 Tier 3: Legal, Security & Infrastructure</div>
+                    <div class="grid md:grid-cols-2 gap-2">
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Security constraints & compliance</span>
+                      </div>
+                      <div class="flex items-start gap-2">
+                        <span class="text-plcBlue mt-1">→</span>
+                        <span>Disaster recovery & edge vs cloud</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <button disabled class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-semibold text-slate-500 cursor-not-allowed">
+                  COMING Q2 2025
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- TRACK 4: ARCHITECT -->
           <div>
-            <div class="font-display text-3xl sm:text-4xl md:text-5xl text-neonCyan tracking-[0.25em] mb-4">
-              <span id="hero-type"></span><span class="inline-block w-5 h-8 bg-neonCyan ml-1 align-middle animate-cursor-blink"></span>
-            </div>
-
-            <p class="text-lg text-slate-200 max-w-xl mb-6">
-              Build and automate
-              <span class="text-neonPink font-semibold">agentic AI workflows</span>
-              for real industrial systems: PLCs, robots, SCADA, and digital twins.
-            </p>
-
-            <p class="text-sm text-slate-400 max-w-xl mb-8">
-              Learn by example: agent patterns, industrial-grade pipelines, and
-              n8n-powered automation for production environments.
-            </p>
-
-            <div class="flex flex-wrap gap-4">
-              <a
-                href="#tutorials"
-                class="px-6 py-3 border border-neonPink/80 rounded-md text-sm font-semibold tracking-wide bg-vhs/80 shadow-neon-pink hover:bg-neonPink/20 hover:border-neonPink transition"
-              >
-                START LEARNING
-              </a>
-              <a
-                href="#workflows"
-                class="px-6 py-3 border border-neonCyan/70 rounded-md text-sm font-semibold tracking-wide text-neonCyan hover:bg-neonCyan/10 transition"
-              >
-                VIEW AGENT PATTERNS
-              </a>
-            </div>
-          </div>
-
-          <!-- Right column: retro panel -->
-          <div class="bg-surface/80 border border-neonCyan/40 rounded-xl p-5 md:p-6 shadow-neon-cyan font-mono text-xs md:text-sm text-slate-200">
-            <div class="flex justify-between items-center mb-3">
-              <span class="text-neonCyan">/system/boot.log</span>
-              <span class="text-slate-500">v0.1.0</span>
-            </div>
-            <div class="space-y-1 text-[0.7rem] md:text-xs leading-relaxed">
-              <p>&gt; initializing &lt;agentic_control_runtime&gt;...</p>
-              <p>&gt; loading PLC toolchains: TwinCAT, TIA Portal, CODESYS...</p>
-              <p>&gt; attaching n8n workflow orchestrator... <span class="text-machineGreen">OK</span></p>
-              <p>&gt; enabling digital twin bridge... <span class="text-machineGreen">READY</span></p>
-              <p>&gt; waiting for engineer input... <span class="text-amber">AWAITING COMMAND</span></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- WHAT IS AGENTIC CONTROL -->
-      <section class="bg-background py-16 border-t border-surface/80">
-        <div class="max-w-6xl mx-auto px-4 space-y-10">
-          <div class="bg-surface/80 border border-neonCyan/40 rounded-xl p-6 md:p-8 shadow-neon-cyan/40">
-            <h2 class="font-display text-2xl md:text-3xl text-neonCyan mb-4 tracking-[0.2em]">
-              WHAT IS AGENTIC CONTROL?
-            </h2>
-            <p class="text-slate-200 mb-4 max-w-3xl">
-              AgenticControl.dev is a learning hub for automation and AI engineers
-              who want to design <span class="text-neonPink">practical agent workflows</span> — agents that talk
-              to PLCs, orchestrate digital twins, and integrate with industrial
-              systems using modern tools like n8n and LLMs.
-            </p>
-            <p class="text-slate-400 max-w-3xl">
-              Skip the hype. You'll see how to wire agents into
-              <span class="text-machineGreen">real machines</span> with safety, validation, and deterministic
-              control loops.
-            </p>
-
-            <div class="mt-6 grid md:grid-cols-3 gap-4">
-              <div class="bg-vhs/60 border border-neonPink/40 rounded-lg p-4 text-sm">
-                <div class="font-display text-neonPink text-lg mb-2">
-                  🤖 AGENT PATTERNS
+            <article class="bg-gradient-to-br from-neonPink/10 to-background border-2 border-neonPink/60 rounded-2xl p-8 md:p-10 shadow-2xl hover:shadow-[0_0_40px_rgba(255,79,216,0.3)] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:scale-[1.02]">
+              <div class="flex items-start justify-between mb-6">
+                <div>
+                  <div class="inline-block px-4 py-2 bg-neonPink/20 border border-neonPink rounded-lg font-mono text-sm text-neonPink mb-4">
+                    🔴 TRACK 4
+                  </div>
+                  <h3 class="font-display text-3xl md:text-4xl text-neonPink mb-3 tracking-wider">
+                    ARCHITECT
+                  </h3>
+                  <p class="text-2xl text-slate-200 font-semibold mb-2 italic">
+                    "Now I design platforms, not projects."
+                  </p>
                 </div>
-                <p class="text-slate-300">
-                  Supervisor loops, tool-using agents, watchdogs, safety agents,
-                  and evaluators adapted for industrial automation.
-                </p>
+                <div class="hidden md:block text-6xl opacity-40">🏗️</div>
               </div>
-              <div class="bg-vhs/60 border border-neonCyan/40 rounded-lg p-4 text-sm">
-                <div class="font-display text-neonCyan text-lg mb-2">
-                  ⚙️ PLC + CODE
+
+              <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <div class="text-sm font-mono text-neonPink mb-2">TARGET AUDIENCE</div>
+                  <p class="text-slate-300">Platform engineers, CTO-level architects, industrial AI founders</p>
                 </div>
-                <p class="text-slate-300">
-                  Generate, refactor, and validate TwinCAT ST, SCL, and other PLC
-                  code with agents that speak your control language.
-                </p>
-              </div>
-              <div class="bg-vhs/60 border border-neonPurple/40 rounded-lg p-4 text-sm">
-                <div class="font-display text-neonPurple text-lg mb-2">
-                  🌐 DIGITAL TWINS
+                <div>
+                  <div class="text-sm font-mono text-neonPink mb-2">TUTORIALS</div>
+                  <p class="text-slate-300">18 tutorials • Expert • Coming Q3 2025</p>
                 </div>
-                <p class="text-slate-300">
-                  Use agents to drive simulations, tune parameters, and close the
-                  loop between virtual models and real equipment.
-                </p>
               </div>
-            </div>
+
+              <div class="mb-6">
+                <div class="text-sm font-mono text-neonPink mb-3">CORE OUTCOMES</div>
+                <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+                  <div class="flex items-start gap-2">
+                    <span class="text-neonPink mt-1">→</span>
+                    <span>Distributed multi-agent architectures</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-neonPink mt-1">→</span>
+                    <span>Platform-scale orchestration (Temporal, CQRS)</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-neonPink mt-1">→</span>
+                    <span>Continuous learning & self-configuration</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-neonPink mt-1">→</span>
+                    <span>Market-based coordination & negotiation</span>
+                  </div>
+                  <div class="flex items-start gap-2">
+                    <span class="text-neonPink mt-1">→</span>
+                    <span>Emergent swarm intelligence</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <button disabled class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-semibold text-slate-500 cursor-not-allowed">
+                  COMING Q3 2025
+                </button>
+                <span class="px-6 py-3 bg-vhs/40 border border-slate-600 rounded-lg font-mono text-sm text-slate-400">
+                  Tutorials 23-40 • 0 published
+                </span>
+              </div>
+            </article>
           </div>
         </div>
       </section>
 
-      <!-- FEATURED TUTORIALS -->
-      <section id="tutorials" class="bg-background py-16 border-t border-surface/80">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="mb-6">
-            <div class="font-mono text-sm text-neonCyan">
-              /tutorials &gt; featured <span class="animate-cursor-blink">█</span>
-            </div>
-            <h2 class="font-display text-2xl md:text-3xl mt-2 text-slate-100">
-              Featured Tutorials
-            </h2>
-            <p class="text-slate-400 text-sm max-w-2xl mt-1">
-              Hands-on guides to building real agent workflows with PLCs, n8n,
-              and digital twins.
-            </p>
-          </div>
+      <!-- WHY THIS WORKS -->
+      <section id="progression" class="bg-vhs/80 py-20 border-t border-surface/80 scanlines">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+          <h2 class="font-display text-3xl md:text-4xl text-neonCyan mb-8 tracking-wider">
+            WHY THIS 4-TRACK STRUCTURE WORKS
+          </h2>
 
-          <div class="grid md:grid-cols-2 gap-6">
-            <!-- Card 1 -->
-            <article class="bg-surface/80 border border-neonCyan/40 rounded-xl p-5 shadow-neon-cyan/20 hover:shadow-neon-cyan/70 transition">
-              <div class="flex flex-wrap gap-2 mb-3 text-[0.7rem] font-mono">
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-neonCyan/60 text-neonCyan">
-                  AGENT PATTERN
-                </span>
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-plcBlue/60 text-plcBlue">
-                  PLC
-                </span>
-              </div>
-              <h3 class="font-display text-xl text-slate-100 mb-2">
-                Building Your First Industrial AI Agent
-              </h3>
-              <p class="text-sm text-slate-300 mb-3">
-                Implement the core agent loop for automation tasks: perception,
-                planning, tool use, and verification tailored to PLC-controlled
-                cells.
+          <div class="grid md:grid-cols-2 gap-6 text-left">
+            <div class="bg-background/80 border border-neonCyan/40 rounded-xl p-6">
+              <div class="text-neonCyan font-display text-xl mb-3">✅ POWER BEFORE COMPLEXITY</div>
+              <p class="text-slate-300 text-sm">
+                Start with immediate results — use AI agents safely in your PLC workflows from day one.
+                Build confidence before diving into multi-agent systems.
               </p>
-              <p class="font-mono text-xs text-slate-500">
-                &gt; uses: LLM + PLC tool + safety evaluator
-              </p>
-            </article>
-
-            <!-- Card 2 -->
-            <article class="bg-surface/80 border border-neonPink/40 rounded-xl p-5 shadow-neon-pink/10 hover:shadow-neon-pink/70 transition">
-              <div class="flex flex-wrap gap-2 mb-3 text-[0.7rem] font-mono">
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-neonPink/60 text-neonPink">
-                  DIGITAL TWIN
-                </span>
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-amber/60 text-amber">
-                  VALIDATION
-                </span>
-              </div>
-              <h3 class="font-display text-xl text-slate-100 mb-2">
-                PLC → AI → Digital Twin Workflow
-              </h3>
-              <p class="text-sm text-slate-300 mb-3">
-                Feed PLC logic into an agent that drives a digital twin, checks
-                safety envelopes, and proposes tuned parameters.
-              </p>
-              <p class="font-mono text-xs text-slate-500">
-                &gt; uses: sim bridge + metrics + feedback loop
-              </p>
-            </article>
-
-            <!-- Card 3 -->
-            <article class="bg-surface/80 border border-neonPurple/40 rounded-xl p-5 hover:shadow-neon-cyan/50 transition">
-              <div class="flex flex-wrap gap-2 mb-3 text-[0.7rem] font-mono">
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-neonPurple/60 text-neonPurple">
-                  PATTERNS
-                </span>
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-machineGreen/60 text-machineGreen">
-                  DESIGN
-                </span>
-              </div>
-              <h3 class="font-display text-xl text-slate-100 mb-2">
-                Agent Patterns for Automation Engineers
-              </h3>
-              <p class="text-sm text-slate-300 mb-3">
-                Learn how to adapt classic agent patterns—selectors, evaluators,
-                planners—to deterministic and safety-critical environments.
-              </p>
-              <p class="font-mono text-xs text-slate-500">
-                &gt; includes: diagrams, PLC examples, safety notes
-              </p>
-            </article>
-
-            <!-- Card 4 -->
-            <article class="bg-surface/80 border border-neonCyan/40 rounded-xl p-5 hover:shadow-neon-cyan/70 transition">
-              <div class="flex flex-wrap gap-2 mb-3 text-[0.7rem] font-mono">
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-neonCyan/60 text-neonCyan">
-                  n8n
-                </span>
-                <span class="px-2 py-0.5 rounded bg-vhs/70 border border-amber/60 text-amber">
-                  AUTOMATION
-                </span>
-              </div>
-              <h3 class="font-display text-xl text-slate-100 mb-2">
-                n8n + Agent Pipelines for Industrial AI
-              </h3>
-              <p class="text-sm text-slate-300 mb-3">
-                Orchestrate scraping, summarization, and publishing flows using
-                n8n plus LLM agents—perfect for industrial AI news and reports.
-              </p>
-              <p class="font-mono text-xs text-slate-500">
-                &gt; uses: webhooks + queues + LLM calls
-              </p>
-            </article>
-          </div>
-
-          <div class="mt-8">
-            <a href="#cta" class="inline-flex items-center gap-2 text-sm font-mono text-neonCyan hover:text-neonPink transition">
-              &gt; VIEW ALL TUTORIALS (soon)
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- AGENT WORKFLOWS -->
-      <section id="workflows" class="bg-vhs/80 py-16 border-t border-surface/80 scanlines">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="mb-6">
-            <div class="font-mono text-sm text-neonCyan">
-              /agents &gt; examples <span class="animate-cursor-blink">█</span>
-            </div>
-            <h2 class="font-display text-2xl md:text-3xl mt-2 text-slate-100">
-              Real Agent Workflows in Action
-            </h2>
-            <p class="text-slate-400 text-sm max-w-2xl mt-1">
-              Visual diagrams of agents hooked into PLCs, digital twins, and
-              automation runtimes.
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-3 gap-6 text-xs md:text-sm font-mono">
-            <!-- Workflow 1 -->
-            <div class="bg-background border border-neonCyan/60 rounded-xl p-4 shadow-neon-cyan/40">
-              <div class="text-neonCyan mb-2 font-display text-lg">
-                PLC CODE AGENT
-              </div>
-              <p class="text-slate-300 mb-3">
-                Optimize and validate PLC code with an agent loop.
-              </p>
-              <div class="space-y-1">
-                <div>&gt; RAW PLC CODE</div>
-                <div class="pl-2 text-neonCyan">→ LLM AGENT</div>
-                <div class="pl-4">→ STYLE + SAFETY CHECKS</div>
-                <div class="pl-2 text-neonCyan">→ VALIDATOR AGENT</div>
-                <div>&gt; OUTPUT: Optimized ST/SCL + report</div>
-              </div>
             </div>
 
-            <!-- Workflow 2 -->
-            <div class="bg-background border border-neonPurple/60 rounded-xl p-4 shadow-neon-pink/40">
-              <div class="text-neonPurple mb-2 font-display text-lg">
-                DIGITAL TWIN LOOP
-              </div>
-              <p class="text-slate-300 mb-3">
-                Close the loop between virtual models and real cells.
+            <div class="bg-background/80 border border-neonCyan/40 rounded-xl p-6">
+              <div class="text-neonCyan font-display text-xl mb-3">✅ TRUST BEFORE AUTONOMY</div>
+              <p class="text-slate-300 text-sm">
+                Master supervised, advisory agents first. Only then progress to coordination patterns
+                and eventually autonomous decision-making with proper guardrails.
               </p>
-              <div class="space-y-1">
-                <div>&gt; AGENT PROPOSES PARAMETERS</div>
-                <div class="pl-2 text-neonPurple">→ TWIN SIMULATION</div>
-                <div class="pl-4">→ METRICS: throughput, safety, energy</div>
-                <div class="pl-2 text-neonPurple">→ EVALUATOR AGENT</div>
-                <div>&gt; OUTPUT: tuned setpoints &amp; change log</div>
-              </div>
             </div>
 
-            <!-- Workflow 3 -->
-            <div class="bg-background border border-neonCyan/60 rounded-xl p-4 shadow-neon-cyan/40">
-              <div class="text-neonCyan mb-2 font-display text-lg">
-                n8n AUTOMATION
-              </div>
-              <p class="text-slate-300 mb-3">
-                Automate industrial AI news &amp; documentation.
+            <div class="bg-background/80 border border-neonCyan/40 rounded-xl p-6">
+              <div class="text-neonCyan font-display text-xl mb-3">✅ DEPLOYMENT BEFORE PLATFORMS</div>
+              <p class="text-slate-300 text-sm">
+                Learn to ship production systems with monitoring, cost control, and rollback strategies
+                before designing distributed intelligent infrastructure.
               </p>
-              <div class="space-y-1">
-                <div>&gt; SCRAPER NODE (RSS / APIs)</div>
-                <div class="pl-2 text-neonCyan">→ SUMMARIZER AGENT</div>
-                <div class="pl-4">→ TAGGING &amp; CATEGORIZATION</div>
-                <div class="pl-2 text-neonCyan">→ PUBLISHER AGENT</div>
-                <div>&gt; OUTPUT: blog posts, email digests, dashboards</div>
-              </div>
+            </div>
+
+            <div class="bg-background/80 border border-neonCyan/40 rounded-xl p-6">
+              <div class="text-neonCyan font-display text-xl mb-3">✅ ARCHITECTURE IS EARNED</div>
+              <p class="text-slate-300 text-sm">
+                You don't start as an architect. You become one by mastering each level:
+                Use → Build → Deploy → Design Platforms.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- NEWS FEED -->
-      <section id="news" class="bg-background py-16 border-t border-surface/80">
-        <div class="max-w-6xl mx-auto px-4">
-          <div class="mb-6">
-            <div class="font-mono text-sm text-neonCyan">
-              /news &gt; incoming_packets <span class="animate-cursor-blink">█</span>
-            </div>
-            <h2 class="font-display text-2xl md:text-3xl mt-2 text-slate-100">
-              Industrial AI &amp; Automation Stream
-            </h2>
-            <p class="text-slate-400 text-sm max-w-2xl mt-1">
-              Soon this feed will be powered by agents + n8n scraping industrial
-              AI sources and turning them into quick briefs.
-            </p>
+          <div class="mt-12 font-mono text-lg md:text-2xl text-slate-200 flex items-center justify-center gap-2 flex-wrap">
+            <span class="text-machineGreen">Technician</span>
+            <span class="text-slate-500">→</span>
+            <span class="text-amber">Developer</span>
+            <span class="text-slate-500">→</span>
+            <span class="text-plcBlue">System & Deployment</span>
+            <span class="text-slate-500">→</span>
+            <span class="text-neonPink">Architect</span>
           </div>
-
-          <div class="bg-surface/80 border border-neonCyan/40 rounded-xl p-4 font-mono text-xs md:text-sm scanlines">
-            <div class="space-y-2">
-              <p>[12:03] NEW RELEASE: HuggingFace skills for universal agent context.</p>
-              <p>[12:06] Whitepaper: AI-driven PLC code validation in safety-critical cells.</p>
-              <p>[12:12] Vendor update: digital twins with real-time LLM interfaces.</p>
-              <p>[12:17] n8n announces industrial integrations roadmap.</p>
-              <p class="text-slate-500">
-                [stream] demo data only – will soon be replaced with live agent
-                output.
-              </p>
-            </div>
-            <div class="mt-4 border-t border-surface/80 pt-2 text-[0.7rem]">
-              &gt; streaming industrial_automation_intel…
-            </div>
+          <div class="mt-4 text-sm text-slate-400">
+            This is not a blog. This is a complete professional identity progression.
           </div>
         </div>
       </section>
 
       <!-- CTA SECTION -->
-      <section id="cta" class="relative py-16 bg-gradient-to-r from-neonPurple/40 via-vhs to-neonCyan/40 border-t border-surface/80 scanlines">
+      <section id="cta" class="relative py-20 bg-gradient-to-r from-neonPurple/40 via-vhs to-neonCyan/40 border-t border-surface/80 scanlines">
         <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
-          <h2 class="font-display text-3xl md:text-4xl text-slate-100 mb-4 tracking-[0.2em]">
-            READY TO BUILD AGENTS FOR REAL MACHINES?
+          <h2 class="font-display text-4xl md:text-5xl text-slate-100 mb-6 tracking-[0.15em]">
+            BEGIN YOUR JOURNEY
           </h2>
-          <p class="text-slate-200 max-w-3xl mx-auto mb-6">
-            AgenticControl.dev will walk you through the patterns, tools, and
-            safe practices you need to bring agents into your PLC, robotics, and
-            digital twin projects.
+          <p class="text-xl text-slate-200 max-w-3xl mx-auto mb-4">
+            <span class="text-machineGreen font-bold">Technician Track (Tutorials 1-10)</span> is now live.
+          </p>
+          <p class="text-base text-slate-300 max-w-2xl mx-auto mb-8">
+            Start with safe, practical AI agent usage in your PLC workflows.
+            No platforms. No risky autonomy. Only controllable intelligence.
           </p>
           <a
-            href="#tutorials"
-            class="inline-block px-8 py-3 border border-neonPink/80 rounded-md text-sm font-semibold tracking-wide bg-vhs/80 shadow-neon-pink hover:bg-neonPink/25 hover:border-neonPink transition"
+            href="#tracks"
+            class="inline-block px-10 py-4 border-2 border-neonPink/80 rounded-lg text-lg font-bold tracking-wide bg-vhs/80 shadow-neon-pink hover:bg-neonPink/25 hover:border-neonPink transition"
           >
-            BEGIN THE JOURNEY
+            START TECHNICIAN TRACK →
           </a>
+
+          <div class="mt-8 font-mono text-sm text-slate-400">
+            <p>🟢 Track 1: LIVE (5/10 tutorials published)</p>
+            <p>🟡 Track 2: Coming Q1 2025</p>
+            <p>🔵 Track 3: Coming Q2 2025</p>
+            <p>🔴 Track 4: Coming Q3 2025</p>
+          </div>
         </div>
       </section>
-    </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-vhs border-t border-surface/80 text-xs text-slate-400">
-      <div class="max-w-6xl mx-auto px-4 py-6">
-        <div class="border-b border-surface/80 mb-4"></div>
-        <div class="flex flex-col md:flex-row justify-between gap-4">
-          <div>
-            <div class="font-display text-neonCyan text-lg">
-              AGENTICCONTROL.dev
-            </div>
-            <p class="text-slate-500 mt-1">
-              Agent engineering patterns &amp; workflows for industrial automation.
-            </p>
-          </div>
-          <div class="flex gap-8">
-            <div class="space-y-1">
-              <div class="font-mono text-slate-300">Navigate</div>
-              <a href="#tutorials" class="block hover:text-neonCyan">Tutorials</a>
-              <a href="#workflows" class="block hover:text-neonCyan">Agent Workflows</a>
-              <a href="#news" class="block hover:text-neonCyan">News</a>
-            </div>
-            <div class="space-y-1">
-              <div class="font-mono text-slate-300">Status</div>
-              <div>&gt; v0.1 • prototype</div>
-              <div>&gt; content: work-in-progress</div>
-            </div>
-          </div>
-        </div>
-        <div class="mt-4 font-mono text-[0.7rem] text-slate-500">
-          system: shutting down… <span class="animate-cursor-blink">█</span>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Typewriter effect -->
+  <!-- Smooth scroll -->
   <script>
-    const text = "AGENTIC CONTROL .DEV";
-    const el = document.getElementById("hero-type");
-    let idx = 0;
-
-    function type() {
-      if (!el) return;
-      el.textContent = text.slice(0, idx);
-      idx = (idx + 1) % (text.length + 10);
-    }
-
-    setInterval(type, 120);
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
   </script>
-</body>
-</html>
+</Layout>

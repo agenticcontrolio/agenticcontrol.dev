@@ -26,11 +26,16 @@ export default {
       animation: {
         'cursor-blink': 'cursor-blink 1.1s step-end infinite',
         'pulse-slow': 'pulse 4s ease-in-out infinite',
+        'hero-glow': 'hero-glow 8s ease-in-out infinite',
       },
       keyframes: {
         'cursor-blink': {
           '0%, 100%': { opacity: '0' },
           '50%': { opacity: '1' },
+        },
+        'hero-glow': {
+          '0%, 100%': { opacity: '0.7', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
         },
       },
     },
