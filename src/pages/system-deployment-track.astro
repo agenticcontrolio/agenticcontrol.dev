@@ -1,0 +1,334 @@
+---
+// src/pages/system-deployment-track.astro
+// Track 3 - System & Deployment overview page (Coming Q2 2025)
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Track 3: System & Deployment - AgenticControl.dev">
+  <div class="min-h-screen bg-background">
+    <!-- Header -->
+    <header class="border-b border-plcBlue/30 bg-surface/40 sticky top-0 z-50 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-sm font-mono text-slate-400 hover:text-neonCyan transition-colors">
+            ← Back to Home
+          </a>
+          <div class="flex items-center gap-3">
+            <div class="px-3 py-1 bg-plcBlue/20 border border-plcBlue rounded text-xs font-mono text-plcBlue">
+              🔵 TRACK 3
+            </div>
+            <span class="text-sm font-mono text-slate-400">
+              Coming Q2 2025
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="border-b border-plcBlue/30 bg-gradient-to-b from-plcBlue/5 to-background">
+      <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <!-- Track Badge -->
+        <div class="inline-block px-4 py-2 bg-plcBlue/20 border border-plcBlue rounded-lg font-mono text-sm text-plcBlue mb-6">
+          🔵 TRACK 3 - SYSTEM & DEPLOYMENT
+        </div>
+
+        <!-- Title -->
+        <h1 id="hero-title" class="font-display text-5xl md:text-7xl text-plcBlue mb-6 tracking-wider leading-tight">
+          <span class="animate-cursor-blink">█</span>
+        </h1>
+
+        <!-- Description -->
+        <div class="max-w-3xl space-y-4 text-lg text-slate-300 mb-8">
+          <p class="text-2xl text-slate-200 font-semibold">
+            For OT/IT managers, platform owners, and technical release engineers ready to deploy AI agents to production.
+          </p>
+          <p>
+            You built the system in Track 2. Now you need to <strong class="text-plcBlue">SHIP IT</strong> safely to production industrial environments with monitoring, cost controls, security constraints, and disaster recovery.
+          </p>
+          <p>
+            This track uses a <strong class="text-plcBlue">3-tier deployment model</strong>: Visibility & Baselines → Controlled Release & Cost → Legal, Security & Infrastructure.
+          </p>
+        </div>
+
+        <!-- Meta Information Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <!-- Structure -->
+          <div class="bg-surface/60 border border-plcBlue/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">STRUCTURE</div>
+            <div class="text-2xl font-display text-plcBlue">
+              3 Tiers
+            </div>
+            <div class="text-xs text-slate-500 mt-1">Advanced level</div>
+          </div>
+
+          <!-- Release Date -->
+          <div class="bg-surface/60 border border-plcBlue/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">RELEASE</div>
+            <div class="text-2xl font-display text-plcBlue">
+              Q2 2025
+            </div>
+            <div class="text-xs text-slate-500 mt-1">April - June</div>
+          </div>
+
+          <!-- Progress -->
+          <div class="bg-surface/60 border border-plcBlue/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">STATUS</div>
+            <div class="text-2xl font-display text-plcBlue">
+              Planning
+            </div>
+            <div class="text-xs text-slate-500 mt-1">Not started</div>
+          </div>
+        </div>
+
+        <!-- 3-Tier Structure -->
+        <div class="max-w-3xl space-y-6 mb-8">
+          <!-- Tier 1 -->
+          <div class="bg-gradient-to-r from-machineGreen/10 to-surface/40 border border-machineGreen/40 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="text-2xl">🟢</div>
+              <h2 class="font-display text-2xl text-machineGreen">TIER 1: VISIBILITY & BASELINES</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+              <div class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">→</span>
+                <span><strong>Monitoring & observability</strong> with Langfuse or similar</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">→</span>
+                <span><strong>Performance benchmarking</strong> & load testing</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">→</span>
+                <span><strong>Logging & tracing</strong> for agent decision chains</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">→</span>
+                <span><strong>Baseline metrics</strong> before production deployment</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tier 2 -->
+          <div class="bg-gradient-to-r from-amber/10 to-surface/40 border border-amber/40 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="text-2xl">🟡</div>
+              <h2 class="font-display text-2xl text-amber">TIER 2: CONTROLLED RELEASE & COST</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+              <div class="flex items-start gap-2">
+                <span class="text-amber mt-1">→</span>
+                <span><strong>Gradual rollout</strong> with canary deployments</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-amber mt-1">→</span>
+                <span><strong>A/B testing</strong> for agent performance</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-amber mt-1">→</span>
+                <span><strong>Cost optimization</strong> & budget constraints</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-amber mt-1">→</span>
+                <span><strong>Rollback strategies</strong> & circuit breakers</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tier 3 -->
+          <div class="bg-gradient-to-r from-neonPink/10 to-surface/40 border border-neonPink/40 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="text-2xl">🔴</div>
+              <h2 class="font-display text-2xl text-neonPink">TIER 3: LEGAL, SECURITY & INFRASTRUCTURE</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
+              <div class="flex items-start gap-2">
+                <span class="text-neonPink mt-1">→</span>
+                <span><strong>Security constraints</strong> & safety boundaries</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-neonPink mt-1">→</span>
+                <span><strong>Compliance</strong> (GDPR, industry standards)</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-neonPink mt-1">→</span>
+                <span><strong>Disaster recovery</strong> & backup strategies</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="text-neonPink mt-1">→</span>
+                <span><strong>Edge vs cloud</strong> deployment architecture</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="max-w-3xl bg-vhs/40 border border-slate-600/40 rounded-xl p-6">
+          <h2 class="font-display text-xl text-slate-200 mb-4">PREREQUISITES</h2>
+          <ul class="space-y-2 text-slate-300 text-sm">
+            <li class="flex items-start gap-2">
+              <span class="text-plcBlue">→</span>
+              <span><strong>Complete Track 2 (Developer)</strong> - You must have built multi-agent systems first</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>DevOps experience (Docker, CI/CD, monitoring tools)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>Understanding of OT/IT network architectures</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>Production PLC deployment experience</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="bg-surface/40 border border-plcBlue/40 rounded-xl p-12">
+          <div class="text-6xl mb-6">🚀</div>
+          <h2 class="font-display text-3xl text-plcBlue mb-4">COMING Q2 2025</h2>
+          <p class="text-slate-300 mb-6">
+            Track 3 content is currently in the planning phase. Complete Tracks 1 & 2 to prepare.
+          </p>
+          <div class="space-y-4">
+            <p class="text-sm font-mono text-slate-400">
+              Production deployment requires mastery of the fundamentals first.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/technician-track"
+                class="px-6 py-3 bg-surface border-2 border-plcBlue text-plcBlue font-mono rounded-lg hover:bg-plcBlue hover:text-background transition-all"
+              >
+                → TRACK 1
+              </a>
+              <a
+                href="/developer-track"
+                class="px-6 py-3 bg-surface border-2 border-plcBlue text-plcBlue font-mono rounded-lg hover:bg-plcBlue hover:text-background transition-all"
+              >
+                → TRACK 2
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Navigation -->
+    <footer class="border-t border-plcBlue/30 bg-surface/40">
+      <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <a href="/" class="text-sm font-mono text-slate-400 hover:text-neonCyan transition-colors">
+            ← Back to All Tracks
+          </a>
+          <div class="flex gap-6 text-sm font-mono text-slate-500">
+            <span>Track 3 of 4</span>
+            <span>•</span>
+            <span>3 Tiers</span>
+            <span>•</span>
+            <span>Coming Q2 2025</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar for track page */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0d0d0f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #1f75ff;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1a5dd9;
+  }
+</style>
+
+<script>
+  // Typewriter effect for hero title (runs on every navigation with view transitions)
+  let typewriterTimeouts = [];
+
+  const clearTypewriter = () => {
+    typewriterTimeouts.forEach(timeout => clearTimeout(timeout));
+    typewriterTimeouts = [];
+  };
+
+  function initTypewriter() {
+    const el = document.getElementById('hero-title');
+    if (!el) return;
+
+    clearTypewriter();
+
+    const lines = [
+      '"NOW I CAN SHIP',
+      'THIS WITHOUT',
+      'FEAR."'
+    ];
+    let lineIndex = 0;
+    let charIndex = 0;
+    let currentHtml = '';
+
+    el.innerHTML = '<span class="animate-cursor-blink">█</span>';
+
+    function typeWriter() {
+      if (!el) return;
+      if (lineIndex < lines.length) {
+        if (charIndex < lines[lineIndex].length) {
+          currentHtml += lines[lineIndex].charAt(charIndex);
+          el.innerHTML = currentHtml + '<span class="animate-cursor-blink">█</span>';
+          charIndex++;
+          typewriterTimeouts.push(setTimeout(typeWriter, 50));
+        } else {
+          lineIndex++;
+          charIndex = 0;
+          if (lineIndex < lines.length) {
+            currentHtml += '<br/>';
+            typewriterTimeouts.push(setTimeout(typeWriter, 100));
+          } else {
+            typewriterTimeouts.push(setTimeout(() => {
+              if (el) el.innerHTML = currentHtml;
+            }, 1000));
+          }
+        }
+      }
+    }
+
+    typewriterTimeouts.push(setTimeout(typeWriter, 300));
+  }
+
+  // Run immediately for this page view
+  initTypewriter();
+
+  // Run once after the Astro navigation completes (avoids stacking multiple listeners)
+  document.addEventListener('astro:page-load', initTypewriter, { once: true });
+
+  // Clear pending timers before the page is swapped out
+  document.addEventListener('astro:before-swap', clearTypewriter, { once: true });
+
+  // Fallback for BFCache restores
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      initTypewriter();
+    }
+  });
+</script>

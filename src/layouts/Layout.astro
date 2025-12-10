@@ -2,7 +2,6 @@
 // src/layouts/Layout.astro
 // Base layout used by all pages
 import '../styles/global.css';
-import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -54,8 +53,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-  <ViewTransitions />
 
   <style>
     /* Scanline effect */

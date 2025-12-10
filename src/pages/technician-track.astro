@@ -53,10 +53,8 @@ const totalCost = sortedTutorials.reduce((sum, t) => sum + t.data.estimatedCost,
         </div>
 
         <!-- Title -->
-        <h1 class="font-display text-5xl md:text-7xl text-machineGreen mb-6 tracking-wider leading-tight">
-          "I CAN USE THIS.<br/>
-          IT'S POWERFUL AND<br/>
-          UNDER MY CONTROL."
+        <h1 id="hero-title" class="font-display text-5xl md:text-7xl text-machineGreen mb-6 tracking-wider leading-tight">
+          <span class="animate-cursor-blink">█</span>
         </h1>
 
         <!-- Description -->
@@ -276,3 +274,74 @@ const totalCost = sortedTutorials.reduce((sum, t) => sum + t.data.estimatedCost,
     background: #00cc66;
   }
 </style>
+
+<script>
+  // Typewriter effect for hero title (runs on every navigation with view transitions)
+  let typewriterTimeouts = [];
+
+  const clearTypewriter = () => {
+    typewriterTimeouts.forEach(timeout => clearTimeout(timeout));
+    typewriterTimeouts = [];
+  };
+
+  function initTypewriter() {
+    const el = document.getElementById('hero-title');
+    if (!el) return;
+
+    clearTypewriter();
+
+    const lines = [
+      '"I CAN USE THIS.',
+      "IT'S POWERFUL AND",
+      'UNDER MY CONTROL."'
+    ];
+    let lineIndex = 0;
+    let charIndex = 0;
+    let currentHtml = '';
+
+    // Reset title to initial state
+    el.innerHTML = '<span class="animate-cursor-blink">█</span>';
+
+    function typeWriter() {
+      if (!el) return;
+      if (lineIndex < lines.length) {
+        if (charIndex < lines[lineIndex].length) {
+          currentHtml += lines[lineIndex].charAt(charIndex);
+          el.innerHTML = currentHtml + '<span class="animate-cursor-blink">█</span>';
+          charIndex++;
+          typewriterTimeouts.push(setTimeout(typeWriter, 50));
+        } else {
+          lineIndex++;
+          charIndex = 0;
+          if (lineIndex < lines.length) {
+            currentHtml += '<br/>';
+            typewriterTimeouts.push(setTimeout(typeWriter, 100));
+          } else {
+            typewriterTimeouts.push(setTimeout(() => {
+              if (el) el.innerHTML = currentHtml;
+            }, 1000));
+          }
+        }
+      }
+    }
+
+    typewriterTimeouts.push(setTimeout(typeWriter, 300));
+  }
+
+  // Run immediately for this page view
+  initTypewriter();
+
+  // Run once after the Astro navigation completes (avoids stacking multiple listeners)
+  document.addEventListener('astro:page-load', initTypewriter, { once: true });
+
+  // Clear pending timers before the page is swapped out
+  document.addEventListener('astro:before-swap', clearTypewriter, { once: true });
+
+  // Fallback for BFCache restores
+  window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+      // Page was loaded from cache, reset and run typewriter again
+      initTypewriter();
+    }
+  });
+</script>
