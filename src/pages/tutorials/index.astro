@@ -1,0 +1,312 @@
+---
+// src/pages/tutorials/index.astro
+// Tutorial listing page
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import TutorialCard from '../../components/TutorialCard.astro';
+
+// Fetch all published tutorials
+const allTutorials = await getCollection('tutorials', ({ data }) => {
+  return !data.draft;
+});
+
+// Sort tutorials by publish date (newest first)
+const sortedTutorials = allTutorials.sort((a, b) => {
+  return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+});
+
+// Separate featured and regular tutorials
+const featuredTutorials = sortedTutorials.filter(t => t.data.featured);
+const regularTutorials = sortedTutorials.filter(t => !t.data.featured);
+
+// Get unique categories and difficulties for filtering
+const categories = [...new Set(allTutorials.map(t => t.data.category))];
+const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
+---
+
+<Layout
+  title="Tutorials | AgenticControl.dev"
+  description="Learn to build AI agents for industrial automation. Hands-on tutorials for PLCs, SCADA, digital twins, and agentic workflows."
+>
+  <!-- Hero Section -->
+  <section class="relative scanlines bg-gradient-to-b from-neonCyan/20 via-background to-background border-b border-surface/80">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(4,217,255,0.08),_transparent_60%)] pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 py-16 md:py-20 relative z-10">
+      <div class="font-mono text-sm text-neonCyan mb-3">
+        /tutorials &gt; all <span class="animate-cursor-blink">█</span>
+      </div>
+
+      <h1 class="font-display text-4xl md:text-5xl lg:text-6xl text-slate-100 mb-4 tracking-wider">
+        INDUSTRIAL AI TUTORIALS
+      </h1>
+
+      <p class="text-lg md:text-xl text-slate-300 max-w-3xl mb-6">
+        Learn to build <span class="text-neonPink font-semibold">agentic AI workflows</span> for industrial
+        automation. From PLCs to digital twins, these tutorials teach production-ready patterns.
+      </p>
+
+      <div class="flex flex-wrap gap-4 text-sm">
+        <div class="px-4 py-2 bg-surface/60 border border-neonCyan/40 rounded-lg font-mono">
+          <span class="text-slate-400">Total Tutorials:</span>
+          <span class="text-neonCyan ml-2 font-semibold">{allTutorials.length}</span>
+        </div>
+        <div class="px-4 py-2 bg-surface/60 border border-neonPink/40 rounded-lg font-mono">
+          <span class="text-slate-400">Featured:</span>
+          <span class="text-neonPink ml-2 font-semibold">{featuredTutorials.length}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Section (Placeholder for future enhancement) -->
+  <section class="bg-vhs/40 border-b border-surface/80 sticky top-[73px] z-40 backdrop-blur-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex flex-wrap gap-3 items-center text-xs font-mono">
+        <span class="text-slate-400">FILTER:</span>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap gap-2">
+          {categories.map(category => (
+            <button
+              class="filter-btn px-3 py-1.5 rounded border border-neonCyan/40 text-neonCyan bg-background/60 hover:bg-neonCyan/20 hover:border-neonCyan transition"
+              data-filter-type="category"
+              data-filter-value={category}
+            >
+              {category.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        <span class="text-slate-600">|</span>
+
+        <!-- Difficulty Filters -->
+        <div class="flex flex-wrap gap-2">
+          {difficulties.map(difficulty => (
+            <button
+              class="filter-btn px-3 py-1.5 rounded border border-slate-600/40 text-slate-400 bg-background/60 hover:bg-slate-600/20 hover:border-slate-500 transition"
+              data-filter-type="difficulty"
+              data-filter-value={difficulty}
+            >
+              {difficulty.toUpperCase()}
+            </button>
+          ))}
+        </div>
+
+        <button
+          id="reset-filters"
+          class="ml-auto px-3 py-1.5 rounded border border-neonPink/40 text-neonPink bg-background/60 hover:bg-neonPink/20 hover:border-neonPink transition"
+        >
+          RESET FILTERS
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tutorials Grid -->
+  <section class="bg-background py-12 md:py-16">
+    <div class="max-w-6xl mx-auto px-4">
+
+      <!-- Featured Tutorials -->
+      {featuredTutorials.length > 0 && (
+        <div class="mb-12">
+          <div class="mb-6">
+            <h2 class="font-display text-2xl md:text-3xl text-neonPink mb-2 tracking-wider">
+              FEATURED TUTORIALS
+            </h2>
+            <p class="text-sm text-slate-400">
+              Recommended starting points and popular tutorials
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            {featuredTutorials.map(tutorial => (
+              <TutorialCard
+                slug={tutorial.slug}
+                title={tutorial.data.title}
+                subtitle={tutorial.data.subtitle}
+                description={tutorial.data.description}
+                difficulty={tutorial.data.difficulty}
+                estimatedTime={tutorial.data.estimatedTime}
+                estimatedCost={tutorial.data.estimatedCost}
+                tags={tutorial.data.tags}
+                category={tutorial.data.category}
+                featured={true}
+                image={tutorial.data.image}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- All Tutorials -->
+      <div>
+        <div class="mb-6">
+          <h2 class="font-display text-2xl md:text-3xl text-neonCyan mb-2 tracking-wider">
+            ALL TUTORIALS
+          </h2>
+          <p class="text-sm text-slate-400">
+            Complete collection sorted by newest first
+          </p>
+        </div>
+
+        <div id="tutorials-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedTutorials.map(tutorial => (
+            <TutorialCard
+              slug={tutorial.slug}
+              title={tutorial.data.title}
+              subtitle={tutorial.data.subtitle}
+              description={tutorial.data.description}
+              difficulty={tutorial.data.difficulty}
+              estimatedTime={tutorial.data.estimatedTime}
+              estimatedCost={tutorial.data.estimatedCost}
+              tags={tutorial.data.tags}
+              category={tutorial.data.category}
+              featured={tutorial.data.featured}
+              image={tutorial.data.image}
+            />
+          ))}
+        </div>
+
+        <!-- Empty State (shows when filters hide all tutorials) -->
+        <div id="empty-state" class="hidden text-center py-12">
+          <div class="font-display text-2xl text-slate-600 mb-2">
+            NO TUTORIALS FOUND
+          </div>
+          <p class="text-slate-500 mb-4">
+            No tutorials match your current filters
+          </p>
+          <button
+            id="reset-filters-empty"
+            class="px-6 py-3 border border-neonCyan/80 rounded-md text-sm font-semibold tracking-wide text-neonCyan hover:bg-neonCyan/20 hover:border-neonCyan transition"
+          >
+            RESET FILTERS
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative py-16 bg-gradient-to-r from-neonPurple/40 via-vhs to-neonCyan/40 border-t border-surface/80 scanlines">
+    <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+      <h2 class="font-display text-3xl md:text-4xl text-slate-100 mb-4 tracking-wider">
+        READY TO START BUILDING?
+      </h2>
+      <p class="text-slate-200 max-w-3xl mx-auto mb-6">
+        Start with the foundation tutorials and progress to advanced multi-agent patterns.
+        All tutorials include working code and honest failure stories.
+      </p>
+      <a
+        href="/#cta"
+        class="inline-block px-8 py-3 border border-neonPink/80 rounded-md text-sm font-semibold tracking-wide bg-vhs/80 shadow-neon-pink hover:bg-neonPink/25 hover:border-neonPink transition"
+      >
+        GET STARTED
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Simple client-side filtering
+  const filterButtons = document.querySelectorAll('[data-filter-type]');
+  const resetButtons = document.querySelectorAll('#reset-filters, #reset-filters-empty');
+  const tutorialsGrid = document.getElementById('tutorials-grid');
+  const emptyState = document.getElementById('empty-state');
+
+  let activeFilters = {
+    category: null as string | null,
+    difficulty: null as string | null
+  };
+
+  function applyFilters() {
+    if (!tutorialsGrid || !emptyState) return;
+
+    const cards = tutorialsGrid.querySelectorAll('article');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const element = card as HTMLElement;
+      const categoryMatch = !activeFilters.category ||
+        element.textContent?.includes(activeFilters.category.toUpperCase());
+      const difficultyMatch = !activeFilters.difficulty ||
+        element.textContent?.includes(activeFilters.difficulty.toUpperCase());
+
+      if (categoryMatch && difficultyMatch) {
+        element.style.display = '';
+        visibleCount++;
+      } else {
+        element.style.display = 'none';
+      }
+    });
+
+    // Show/hide empty state
+    if (visibleCount === 0) {
+      tutorialsGrid.style.display = 'none';
+      emptyState.style.display = 'block';
+    } else {
+      tutorialsGrid.style.display = 'grid';
+      emptyState.style.display = 'none';
+    }
+  }
+
+  function resetFilters() {
+    activeFilters = { category: null, difficulty: null };
+
+    // Reset button styles
+    filterButtons.forEach(btn => {
+      btn.classList.remove('bg-neonCyan/20', 'border-neonCyan', 'text-neonCyan');
+      btn.classList.remove('bg-slate-600/20', 'border-slate-500');
+
+      const filterType = btn.getAttribute('data-filter-type');
+      if (filterType === 'category') {
+        btn.classList.add('border-neonCyan/40', 'text-neonCyan', 'bg-background/60');
+      } else {
+        btn.classList.add('border-slate-600/40', 'text-slate-400', 'bg-background/60');
+      }
+    });
+
+    applyFilters();
+  }
+
+  // Filter button click handlers
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filterType = button.getAttribute('data-filter-type') as 'category' | 'difficulty';
+      const filterValue = button.getAttribute('data-filter-value');
+
+      if (!filterType || !filterValue) return;
+
+      // Toggle filter
+      if (activeFilters[filterType] === filterValue) {
+        activeFilters[filterType] = null;
+      } else {
+        activeFilters[filterType] = filterValue;
+      }
+
+      // Update button styles
+      filterButtons.forEach(btn => {
+        if (btn.getAttribute('data-filter-type') === filterType) {
+          if (btn.getAttribute('data-filter-value') === activeFilters[filterType]) {
+            btn.classList.add('bg-neonCyan/20', 'border-neonCyan', 'text-neonCyan');
+          } else {
+            btn.classList.remove('bg-neonCyan/20', 'border-neonCyan', 'text-neonCyan');
+            btn.classList.remove('bg-slate-600/20', 'border-slate-500');
+            if (filterType === 'category') {
+              btn.classList.add('border-neonCyan/40', 'text-neonCyan', 'bg-background/60');
+            } else {
+              btn.classList.add('border-slate-600/40', 'text-slate-400', 'bg-background/60');
+            }
+          }
+        }
+      });
+
+      applyFilters();
+    });
+  });
+
+  // Reset button click handlers
+  resetButtons.forEach(button => {
+    button.addEventListener('click', resetFilters);
+  });
+</script>

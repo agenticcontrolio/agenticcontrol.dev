@@ -1,0 +1,278 @@
+---
+// src/pages/technician-track.astro
+// Track 1 - Technician overview page
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import TutorialCard from '../components/TutorialCard.astro';
+
+// Get all tutorials in Technician Track
+const allTutorials = await getCollection('tutorials', ({ data }) => {
+  return data.series === 'Technician Track';
+});
+
+// Sort by seriesOrder (create a copy to avoid mutation)
+const sortedTutorials = [...allTutorials].sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+
+// Calculate progress
+const publishedCount = sortedTutorials.filter(t => !t.data.draft).length;
+const totalCount = sortedTutorials.length;
+const progressPercent = (publishedCount / totalCount) * 100;
+
+// Calculate total time and cost
+const totalTime = sortedTutorials.reduce((sum, t) => sum + t.data.estimatedTime, 0);
+const totalCost = sortedTutorials.reduce((sum, t) => sum + t.data.estimatedCost, 0);
+---
+
+<Layout title="Track 1: Technician - AgenticControl.dev">
+  <div class="min-h-screen bg-background">
+    <!-- Header -->
+    <header class="border-b border-machineGreen/30 bg-surface/40 sticky top-0 z-50 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-sm font-mono text-slate-400 hover:text-neonCyan transition-colors">
+            ← Back to Home
+          </a>
+          <div class="flex items-center gap-3">
+            <div class="px-3 py-1 bg-machineGreen/20 border border-machineGreen rounded text-xs font-mono text-machineGreen">
+              🟢 TRACK 1
+            </div>
+            <span class="text-sm font-mono text-slate-400">
+              {publishedCount} of {totalCount} published
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="border-b border-machineGreen/30 bg-gradient-to-b from-machineGreen/5 to-background">
+      <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <!-- Track Badge -->
+        <div class="inline-block px-4 py-2 bg-machineGreen/20 border border-machineGreen rounded-lg font-mono text-sm text-machineGreen mb-6">
+          🟢 TRACK 1 - TECHNICIAN
+        </div>
+
+        <!-- Title -->
+        <h1 class="font-display text-5xl md:text-7xl text-machineGreen mb-6 tracking-wider leading-tight">
+          "I CAN USE THIS.<br/>
+          IT'S POWERFUL AND<br/>
+          UNDER MY CONTROL."
+        </h1>
+
+        <!-- Description -->
+        <div class="max-w-3xl space-y-4 text-lg text-slate-300 mb-8">
+          <p class="text-2xl text-slate-200 font-semibold">
+            For automation engineers who want to safely use AI agents in their PLC workflows.
+          </p>
+          <p>
+            You don't need to become a machine learning expert. You don't need to understand transformers or neural networks.
+            You need to know how to safely prompt an LLM, structure its outputs, and constrain its behavior.
+          </p>
+          <p>
+            This track teaches you to <strong class="text-machineGreen">USE agentic AI</strong> the way you use a PLC: with clear inputs, predictable outputs, and absolute control.
+          </p>
+        </div>
+
+        <!-- Meta Information Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <!-- Total Time -->
+          <div class="bg-surface/60 border border-machineGreen/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">TOTAL TIME</div>
+            <div class="text-2xl font-display text-machineGreen">
+              {Math.floor(totalTime / 60)}h {totalTime % 60}m
+            </div>
+            <div class="text-xs text-slate-500 mt-1">Hands-on learning</div>
+          </div>
+
+          <!-- Total Cost -->
+          <div class="bg-surface/60 border border-machineGreen/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">TOTAL COST</div>
+            <div class="text-2xl font-display text-machineGreen">
+              ${totalCost.toFixed(2)}
+            </div>
+            <div class="text-xs text-slate-500 mt-1">API costs (estimated)</div>
+          </div>
+
+          <!-- Progress -->
+          <div class="bg-surface/60 border border-machineGreen/40 rounded-lg p-4">
+            <div class="text-xs font-mono text-slate-400 mb-1">PROGRESS</div>
+            <div class="text-2xl font-display text-machineGreen">
+              {publishedCount}/{totalCount}
+            </div>
+            <div class="text-xs text-slate-500 mt-1">Tutorials published</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="max-w-3xl mb-8">
+          <div class="h-2 bg-surface/60 border border-machineGreen/40 rounded-full overflow-hidden">
+            <div
+              class="h-full bg-gradient-to-r from-machineGreen to-machineGreen/60 transition-all duration-500"
+              style={`width: ${progressPercent}%`}
+            ></div>
+          </div>
+          <p class="text-xs font-mono text-slate-500 mt-2">
+            {progressPercent.toFixed(0)}% complete
+          </p>
+        </div>
+
+        <!-- What You'll Learn -->
+        <div class="max-w-3xl bg-surface/40 border border-machineGreen/40 rounded-xl p-6 mb-8">
+          <h2 class="font-display text-2xl text-machineGreen mb-4">CORE OUTCOMES</h2>
+          <ul class="space-y-3 text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="text-machineGreen mt-1">✓</span>
+              <span><strong>Step-by-step PLC code reasoning</strong> using the ReAct pattern (no blind code generation)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-machineGreen mt-1">✓</span>
+              <span><strong>Prompt-controlled code generation</strong> for IEC 61131-3 ST (safe, validated outputs)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-machineGreen mt-1">✓</span>
+              <span><strong>Tool-using agents</strong> that can call your PLC functions (via MCP or simple APIs)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-machineGreen mt-1">✓</span>
+              <span><strong>Structured outputs</strong> using Instructor (type-safe, validated LLM responses)</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-machineGreen mt-1">✓</span>
+              <span><strong>Log-based fault diagnosis</strong> where the agent reads PLC logs and suggests actions</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="max-w-3xl bg-vhs/40 border border-slate-600/40 rounded-xl p-6">
+          <h2 class="font-display text-xl text-slate-200 mb-4">PREREQUISITES</h2>
+          <ul class="space-y-2 text-slate-300 text-sm">
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>Basic PLC programming experience (ladder, ST, or SCL)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>Willingness to learn minimal Python (Tutorial T0 covers everything you need)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>OpenAI API access (or compatible API like Anthropic, Groq, or local LLM)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-slate-500">•</span>
+              <span>No machine learning knowledge required</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tutorial Listing -->
+    <section class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+      <div class="mb-12">
+        <h2 class="font-display text-4xl text-slate-100 mb-4">ALL TUTORIALS</h2>
+        <p class="text-slate-400 max-w-2xl">
+          Complete all {totalCount} tutorials to gain full control over agentic AI in your industrial workflows.
+          Start with T0 if you need Python basics.
+        </p>
+      </div>
+
+      <!-- Tutorial Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedTutorials.map((tutorial) => (
+          <div class={tutorial.data.draft ? 'opacity-50' : ''}>
+            <TutorialCard
+              slug={tutorial.slug}
+              title={tutorial.data.title}
+              subtitle={tutorial.data.subtitle}
+              description={tutorial.data.description}
+              difficulty={tutorial.data.difficulty}
+              estimatedTime={tutorial.data.estimatedTime}
+              estimatedCost={tutorial.data.estimatedCost}
+              tags={tutorial.data.tags}
+              category={tutorial.data.category}
+              featured={tutorial.data.featured}
+            />
+            {tutorial.data.draft && (
+              <div class="mt-2 text-center">
+                <span class="inline-block px-3 py-1 bg-surface/60 border border-slate-600/40 rounded text-xs font-mono text-slate-500">
+                  COMING SOON
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="border-t border-machineGreen/30 bg-gradient-to-b from-background to-machineGreen/5">
+      <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8 text-center">
+        <h2 class="font-display text-4xl md:text-5xl text-machineGreen mb-6">
+          READY TO START?
+        </h2>
+        <p class="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
+          Begin with Tutorial T0 if you need Python basics, or jump straight to Tutorial 1 to learn the difference between traditional automation and agentic AI.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a
+            href="/tutorials/technician-track-python-readiness-t0-v2"
+            class="px-8 py-4 bg-surface border-2 border-machineGreen text-machineGreen font-mono text-lg rounded-lg hover:bg-machineGreen hover:text-background transition-all shadow-lg hover:shadow-[0_0_20px_rgba(0,255,127,0.6)]"
+          >
+            → START WITH T0 (Python Basics)
+          </a>
+          <a
+            href="/tutorials/tutorial-01-agentic-vs-automation-technician-v1"
+            class="px-8 py-4 bg-machineGreen border-2 border-machineGreen text-background font-mono text-lg rounded-lg hover:bg-machineGreen/80 transition-all shadow-lg hover:shadow-[0_0_20px_rgba(0,255,127,0.6)]"
+          >
+            → START WITH TUTORIAL 1
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Navigation -->
+    <footer class="border-t border-machineGreen/30 bg-surface/40">
+      <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <a href="/" class="text-sm font-mono text-slate-400 hover:text-neonCyan transition-colors">
+            ← Back to All Tracks
+          </a>
+          <div class="flex gap-6 text-sm font-mono text-slate-500">
+            <span>Track 1 of 4</span>
+            <span>•</span>
+            <span>{publishedCount}/{totalCount} Published</span>
+            <span>•</span>
+            <span>${totalCost.toFixed(2)} Total Cost</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar for track page */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0d0d0f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #00ff7f;
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00cc66;
+  }
+</style>
