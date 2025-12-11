@@ -705,7 +705,7 @@ No fault conditions prevent safe operation, and the operational goal can be sati
 
       // Text
       fontFamily: 'JetBrains Mono, monospace',
-      fontSize: '14px',
+      fontSize: '18px',
 
       // Edge/Arrow styling
       edgeLabelBackground: '#1a1a1e',
@@ -725,6 +725,62 @@ No fault conditions prevent safe operation, and the operational goal can be sati
       useMaxWidth: true,
     }
   });
+
+  // Wait for mermaid to render, then add click handlers
+  setTimeout(() => {
+    const diagrams = document.querySelectorAll('pre.mermaid');
+
+    diagrams.forEach(diagram => {
+      diagram.style.cursor = 'pointer';
+      diagram.setAttribute('title', 'Click to expand');
+
+      diagram.addEventListener('click', () => {
+        expandDiagram(diagram);
+      });
+    });
+  }, 1000);
+
+  function expandDiagram(diagramElement) {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'diagram-modal';
+    modal.innerHTML = `
+      <div class="diagram-modal-backdrop"></div>
+      <div class="diagram-modal-content">
+        <button class="diagram-modal-close" aria-label="Close">✕</button>
+        <div class="diagram-modal-diagram">
+          ${diagramElement.outerHTML}
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    // Animate in
+    requestAnimationFrame(() => {
+      modal.classList.add('active');
+    });
+
+    // Close handlers
+    const closeModal = () => {
+      modal.classList.remove('active');
+      setTimeout(() => {
+        document.body.removeChild(modal);
+        document.body.style.overflow = '';
+      }, 300);
+    };
+
+    modal.querySelector('.diagram-modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.diagram-modal-backdrop').addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', function escapeHandler(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    });
+  }
 </script>
 
 <style is:global>
@@ -765,5 +821,200 @@ No fault conditions prevent safe operation, and the operational goal can be sati
   .mermaid .node.decision polygon {
     stroke: #ff4fd8 !important;
     filter: drop-shadow(0 0 5px rgba(255, 79, 216, 0.4));
+  }
+
+  /* Diagram Modal Styles */
+  .diagram-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .diagram-modal.active {
+    opacity: 1;
+  }
+
+  .diagram-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 6, 0.95);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+  }
+
+  .diagram-modal-content {
+    position: relative;
+    width: 75vw;
+    height: 85vh;
+    background: #0d0d0f;
+    border: 2px solid #04d9ff;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow:
+      0 0 30px rgba(4, 217, 255, 0.4),
+      0 0 60px rgba(4, 217, 255, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diagram-modal.active .diagram-modal-content {
+    transform: scale(1);
+  }
+
+  .diagram-modal-close {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    width: 3rem;
+    height: 3rem;
+    background: #ff4fd8;
+    border: 2px solid #ff4fd8;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow:
+      0 0 20px rgba(255, 79, 216, 0.6),
+      0 0 40px rgba(255, 79, 216, 0.3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .diagram-modal-close:hover {
+    background: #04d9ff;
+    border-color: #04d9ff;
+    box-shadow:
+      0 0 20px rgba(4, 217, 255, 0.6),
+      0 0 40px rgba(4, 217, 255, 0.3);
+    transform: rotate(90deg);
+  }
+
+  .diagram-modal-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .diagram-modal-diagram pre {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(2.6) !important;
+    transform-origin: center center;
+    pointer-events: none;
+  }
+
+  .diagram-modal-diagram svg {
+    filter: drop-shadow(0 0 20px rgba(4, 217, 255, 0.5));
+  }
+
+  /* Add hover effect to diagrams - but NOT in modal */
+  pre.mermaid:hover:not(.diagram-modal-diagram pre) {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+
+  /* Disable hover effects inside modal */
+  .diagram-modal-diagram pre.mermaid:hover {
+    transform: scale(2.6) !important;
+  }
+
+  pre.mermaid::after {
+    content: '🔍 Click to expand';
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(4, 217, 255, 0.2);
+    border: 1px solid rgba(4, 217, 255, 0.4);
+    color: #04d9ff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  pre.mermaid:hover::after {
+    opacity: 1;
+  }
+
+  pre.mermaid {
+    position: relative;
+  }
+
+  /* Responsive adjustments for mobile devices */
+  @media (max-width: 768px) {
+    .diagram-modal-content {
+      width: 95vw !important;
+      height: 80vh !important;
+      padding: 1rem !important;
+    }
+
+    .diagram-modal-diagram pre {
+      transform: scale(1.2) !important;
+    }
+
+    .diagram-modal-diagram pre.mermaid:hover {
+      transform: scale(1.2) !important;
+    }
+
+    .diagram-modal-close {
+      width: 2.5rem !important;
+      height: 2.5rem !important;
+      font-size: 1.25rem !important;
+      top: -0.75rem !important;
+      right: -0.75rem !important;
+    }
+  }
+
+  /* Responsive adjustments for tablets */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .diagram-modal-content {
+      width: 85vw !important;
+      height: 82vh !important;
+      padding: 1.5rem !important;
+    }
+
+    .diagram-modal-diagram pre {
+      transform: scale(1.8) !important;
+    }
+
+    .diagram-modal-diagram pre.mermaid:hover {
+      transform: scale(1.8) !important;
+    }
+
+    .diagram-modal-close {
+      width: 2.75rem !important;
+      height: 2.75rem !important;
+      font-size: 1.35rem !important;
+    }
   }
 </style>
