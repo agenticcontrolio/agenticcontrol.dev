@@ -1,0 +1,769 @@
+---
+// Professional HTML Tutorial - Tutorial 01
+// Uses HTMLTutorialLayout with manual spacing control
+import HTMLTutorialLayout from '../../layouts/HTMLTutorialLayout.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+
+const metadata = {
+  title: 'Introduction to Agentic AI vs Traditional Automation',
+  subtitle: 'From Deterministic Control to Reasoning Under Uncertainty',
+  description: 'Learn the fundamental difference between traditional automation and agentic AI. From execution to reasoning.',
+  publishDate: new Date('2024-12-09'),
+  lastModified: new Date('2024-12-09'),
+  author: 'Jaime Calvente',
+  difficulty: 'Beginner' as const,
+  estimatedTime: 30,
+  estimatedCost: 0.00,
+  tags: ['agentic-ai', 'automation', 'technician-track', 'beginner'],
+  series: 'Technician Track',
+  seriesOrder: 1,
+};
+---
+
+<HTMLTutorialLayout {...metadata}>
+  <!-- Core Mission Section -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      ✅ CORE MISSION OF THIS TUTORIAL
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      By the end of this tutorial, the reader will be able to:
+    </p>
+
+    <ul class="space-y-3 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Clearly distinguish <strong class="text-white">traditional automation</strong> from <strong class="text-white">agentic AI</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Understand the difference between <strong class="text-white">execution</strong> and <strong class="text-white">reasoning</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Identify where <strong class="text-white">LLMs stop</strong> and where <strong class="text-white">agents begin</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Recognize why <strong class="text-white">uncertainty handling</strong> is the core limitation of PLC logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Safely simulate both models using advisory-only Python examples</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-6">
+      This tutorial is the <strong class="text-neonCyan">conceptual foundation of the entire Technician Track</strong>.
+    </p>
+  </div>
+
+  <!-- Safety Boundary -->
+  <SafetyBoundary type="simulation" />
+
+  <!-- Vendor-Agnostic Note -->
+  <div class="mb-16 bg-slate-900/60 border border-slate-600/40 rounded-xl p-6">
+    <h3 class="text-xl font-display text-amber mb-4 tracking-wide">
+      🌍 VENDOR-AGNOSTIC ENGINEERING NOTE
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-4">
+      This tutorial uses:
+    </p>
+
+    <ul class="space-y-2 mb-4">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Generic automation concepts</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Generic agent concepts</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Standard Python only</span>
+      </li>
+    </ul>
+
+    <p class="text-sm text-slate-400 leading-relaxed">
+      No PLC runtime, vendor SDK, hardware interface, or fieldbus integration is used. The concepts apply to <strong class="text-white">all IEC 61131-3 environments</strong>.
+    </p>
+  </div>
+
+  <!-- Section 1: Traditional Automation -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — WHAT IS TRADITIONAL AUTOMATION?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Traditional automation is built on:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Deterministic logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Predefined rules</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Full predictability</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Full test coverage (in principle)</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      The core loop of automation is:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph LR
+    A[Read Inputs] --> B{Execute Rigid Logic}
+    B --> C[Write Outputs]
+    C --> A`}</pre>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      In PLC terms:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Read Inputs</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Execute Code</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Write Outputs</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Next Scan</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      This model is:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Fast</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Deterministic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Verifiable</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Stable</span>
+      </li>
+    </ul>
+
+    <div class="bg-neonPink/10 border-l-4 border-neonPink rounded-r-lg p-5 my-8">
+      <p class="text-base text-slate-200 leading-relaxed font-semibold">
+        But it has a critical limitation:
+      </p>
+      <p class="text-base text-neonPink leading-relaxed mt-2">
+        <strong>It cannot reason about situations it was not explicitly programmed for.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 2: Agentic AI -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ CONCEPT OVERVIEW — WHAT IS AGENTIC AI?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Agentic AI introduces:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Goals</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>State awareness</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Interpretation</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Reasoning</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Self-evaluation</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      Its core loop is:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph LR
+    A[Observe State] --> B{Reasoning Engine}
+    B --> G[Goal]
+    B --> C[Formulate Plan]
+    C --> D[Suggest Action]
+    D --> A`}</pre>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-6 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Key Differences
+      </h4>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-600/60">
+              <th class="text-left py-3 px-4 text-neonCyan font-display text-base">Automation</th>
+              <th class="text-left py-3 px-4 text-neonPurple font-display text-base">Agent</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">Executes rules</td>
+              <td class="py-3 px-4">Reasons about goals</td>
+            </tr>
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">No interpretation</td>
+              <td class="py-3 px-4">Interprets context</td>
+            </tr>
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">No uncertainty handling</td>
+              <td class="py-3 px-4">Handles ambiguity</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4">No self-reflection</td>
+              <td class="py-3 px-4">Can justify decisions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      An agent does <strong class="text-white">not replace automation</strong>. It augments it with <strong class="text-neonPurple">cognition</strong>.
+    </p>
+  </div>
+
+  <!-- Section 3: LLM vs Agent -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ LLM VS AGENT — CRITICAL DISTINCTION
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      An <strong class="text-white">LLM by itself</strong>:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Predicts the next token</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no goals</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no memory (beyond context)</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no control loop</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Cannot act in the world</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      An <strong class="text-white">Agent</strong> is:
+    </p>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-mono font-semibold">
+        LLM + Goals + State + Reasoning Loop + Safety Boundaries
+      </p>
+    </div>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph TB
+    LLM[LLM Core<br/>Language Model]
+    Goals[Goals<br/>Objectives]
+    State[State<br/>Memory & Context]
+    Loop[Reasoning Loop<br/>Think-Act-Observe]
+    Safety[Safety Boundaries<br/>Constraints]
+
+    LLM --> Agent[AGENT<br/>Cognitive System]
+    Goals --> Agent
+    State --> Agent
+    Loop --> Agent
+    Safety --> Agent
+
+    style LLM fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style Goals fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style State fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style Loop fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style Safety fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#fff
+    style Agent fill:#1a1a1e,stroke:#00ff7f,stroke-width:3px,color:#00ff7f,font-weight:bold`}</pre>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <p class="text-base text-slate-300 leading-relaxed mb-2">
+        <strong class="text-machineGreen">LLM</strong> = Brain tissue
+      </p>
+      <p class="text-base text-slate-300 leading-relaxed">
+        <strong class="text-neonPurple">Agent</strong> = Cognitive system
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 4: Clean Educational Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ CLEAN EDUCATIONAL SCENARIO
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We simulate a simple motor situation with uncertainty:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Start button is pressed</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>A fault might be present</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>The system must decide what <em>should</em> happen</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      We will compare:
+    </p>
+
+    <ol class="space-y-2 my-6 list-decimal list-inside">
+      <li class="text-slate-300 leading-relaxed ml-2">
+        A <strong class="text-neonCyan">rule-based automation response</strong>
+      </li>
+      <li class="text-slate-300 leading-relaxed ml-2">
+        An <strong class="text-neonPurple">agentic advisory response</strong>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Section 5: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      5️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <!-- Experiment 1 -->
+  <div class="mb-12 bg-surface/60 border border-neonCyan/40 rounded-xl overflow-hidden shadow-lg">
+    <div class="bg-vhs/80 border-b border-neonCyan/40 px-6 py-4">
+      <h3 class="font-display text-xl text-neonCyan tracking-wide">
+        🧪 Experiment 1: Traditional Rule-Based Automation
+      </h3>
+    </div>
+
+    <div class="px-6 py-6">
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3">
+        Objective
+      </h4>
+      <p class="text-base text-slate-300 leading-relaxed mb-6">
+        Demonstrate how deterministic logic works without reasoning.
+      </p>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Python Code
+      </h4>
+      <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden">
+        <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+          <span class="text-xs font-mono text-slate-400">Python</span>
+        </div>
+        <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`start_button = True
+fault = False
+
+motor_running = False
+
+if fault:
+    motor_running = False
+elif start_button:
+    motor_running = True
+
+print("Motor running:", motor_running)`}</code></pre>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Expected Output
+      </h4>
+      <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-4">
+        <pre class="text-sm font-mono text-machineGreen leading-relaxed">Motor running: True</pre>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Interpretation
+      </h4>
+      <p class="text-base text-slate-300 leading-relaxed mb-3">
+        The logic:
+      </p>
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-slate-500 flex-shrink-0">▸</span>
+          <span>Does not question conditions</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-slate-500 flex-shrink-0">▸</span>
+          <span>Does not evaluate risk</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-slate-500 flex-shrink-0">▸</span>
+          <span>Does not explain itself</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-slate-500 flex-shrink-0">▸</span>
+          <span>Simply executes</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Experiment 2 -->
+  <div class="mb-12 bg-surface/60 border border-neonPurple/40 rounded-xl overflow-hidden shadow-lg">
+    <div class="bg-vhs/80 border-b border-neonPurple/40 px-6 py-4">
+      <h3 class="font-display text-xl text-neonPurple tracking-wide">
+        🧪 Experiment 2: Agentic Advisory Reasoning (No Control Authority)
+      </h3>
+    </div>
+
+    <div class="px-6 py-6">
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3">
+        Objective
+      </h4>
+      <p class="text-base text-slate-300 leading-relaxed mb-6">
+        Demonstrate how an agent reasons about goals and uncertainty <strong class="text-white">without acting</strong>.
+      </p>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Python Code
+      </h4>
+      <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden">
+        <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+          <span class="text-xs font-mono text-slate-400">Python</span>
+        </div>
+        <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+state = {
+    "start_button": True,
+    "fault": False,
+    "motor_running": False
+}
+
+goal = "Ensure safe motor operation at all times."
+
+prompt = f'''
+You are an industrial advisory agent.
+
+You MUST:
+- Output REASONING first
+- Then output ADVISORY_DECISION
+- Then output JUSTIFICATION
+- You must NOT issue commands
+- You must NOT generate PLC code
+
+Current state:
+{json.dumps(state, indent=2)}
+
+Goal:
+{goal}
+'''
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}</code></pre>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Expected Output
+      </h4>
+      <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-4">
+        <pre class="text-sm font-mono text-neonPurple leading-relaxed">{`REASONING:
+The start button is pressed and no fault is present.
+
+ADVISORY_DECISION:
+It is safe to allow the motor to run.
+
+JUSTIFICATION:
+No fault conditions prevent safe operation, and the operational goal can be satisfied.`}</pre>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Key Difference Observed
+      </h4>
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonCyan flex-shrink-0">▸</span>
+          <span>Automation <strong class="text-neonCyan">executes</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPurple flex-shrink-0">▸</span>
+          <span>Agent <strong class="text-neonPurple">evaluates and explains</strong></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Using agents for safety-rated control</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Allowing agents to actuate hardware</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Bypassing PLC logic with AI</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Letting AI override emergency systems</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Running AI inside hard real-time loops</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-machineGreen mb-6 mt-16 pb-4 border-b-2 border-machineGreen/30 tracking-wider">
+      ✅ KEY TAKEAWAYS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Automation = <strong class="text-neonCyan">execution</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Agents = <strong class="text-neonPurple">reasoning</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">LLMs alone are not agents</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Agents must always remain <strong class="text-amber">advisory at this stage</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed">Cognition and control must stay <strong class="text-white">separated by design</strong></span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Next Tutorial -->
+  <div class="mb-16 bg-gradient-to-r from-neonCyan/10 to-neonPurple/10 border-2 border-neonCyan/40 rounded-xl p-8">
+    <h2 class="text-2xl font-display text-neonCyan mb-4 tracking-wider">
+      🔜 NEXT TUTORIAL
+    </h2>
+
+    <p class="text-lg text-white font-semibold mb-3">
+      Tutorial #2 — The ReAct Pattern for PLC Code Analysis
+    </p>
+
+    <p class="text-base text-slate-300 leading-relaxed">
+      You will now formalize how agents structure reasoning safely.
+    </p>
+  </div>
+
+  <!-- Engineering Posture -->
+  <div class="bg-vhs/60 border-l-4 border-amber rounded-r-lg p-6">
+    <h3 class="text-xl font-display text-amber mb-4 tracking-wide">
+      🧭 ENGINEERING POSTURE
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-4">
+      This tutorial enforced:
+    </p>
+
+    <ul class="space-y-2">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Cognition before execution</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Reasoning before tooling</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Human authority before autonomy</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-amber flex-shrink-0">▸</span>
+        <span>Safety before convenience</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #1
+    </p>
+  </div>
+</HTMLTutorialLayout>
+
+<!-- Mermaid.js for diagrams -->
+<script type="module" is:inline>
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      // Background colors
+      primaryColor: '#04d9ff',        // neonCyan
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#04d9ff',
+
+      secondaryColor: '#9e4aff',      // neonPurple
+      secondaryTextColor: '#ffffff',
+      secondaryBorderColor: '#9e4aff',
+
+      tertiaryColor: '#ff4fd8',       // neonPink
+      tertiaryTextColor: '#ffffff',
+      tertiaryBorderColor: '#ff4fd8',
+
+      // Node colors
+      nodeTextColor: '#ffffff',
+      mainBkg: '#1a1a1e',            // surface
+      nodeBorder: '#04d9ff',
+      clusterBkg: '#0d0d0f',         // background
+      clusterBorder: '#04d9ff',
+
+      // Line colors
+      lineColor: '#04d9ff',
+      arrowheadColor: '#04d9ff',
+
+      // Text
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '14px',
+
+      // Edge/Arrow styling
+      edgeLabelBackground: '#1a1a1e',
+
+      // Special node colors
+      specialTextColor: '#ff4fd8',
+
+      // Background
+      darkMode: true,
+    },
+    flowchart: {
+      curve: 'basis',
+      padding: 20,
+      nodeSpacing: 70,
+      rankSpacing: 70,
+      diagramPadding: 20,
+      useMaxWidth: true,
+    }
+  });
+</script>
+
+<style is:global>
+  /* Mermaid diagram styling */
+  pre.mermaid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  pre.mermaid svg {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0 10px rgba(4, 217, 255, 0.3));
+  }
+
+  /* Enhance node styling */
+  .mermaid .node rect,
+  .mermaid .node circle,
+  .mermaid .node polygon {
+    stroke-width: 2px !important;
+    filter: drop-shadow(0 0 5px rgba(4, 217, 255, 0.4));
+  }
+
+  /* Enhance arrow styling */
+  .mermaid .flowchart-link {
+    stroke-width: 2px !important;
+    filter: drop-shadow(0 0 3px rgba(4, 217, 255, 0.5));
+  }
+
+  /* Decision nodes (diamonds) get pink glow */
+  .mermaid .node.decision rect,
+  .mermaid .node.decision polygon {
+    stroke: #ff4fd8 !important;
+    filter: drop-shadow(0 0 5px rgba(255, 79, 216, 0.4));
+  }
+</style>
