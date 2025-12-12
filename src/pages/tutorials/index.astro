@@ -1,26 +1,22 @@
 ---
 // src/pages/tutorials/index.astro
 // Tutorial listing page
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import TutorialCard from '../../components/TutorialCard.astro';
+import { technicianTutorials } from '../../data/tutorials';
 
-// Fetch all published tutorials
-const allTutorials = await getCollection('tutorials', ({ data }) => {
-  return !data.draft;
-});
+// Get all published tutorials (currently only showing published technician tutorials)
+const allTutorials = technicianTutorials.filter(t => t.published);
 
-// Sort tutorials by publish date (newest first)
-const sortedTutorials = allTutorials.sort((a, b) => {
-  return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
-});
+// Sort by tutorial number (ascending)
+const sortedTutorials = [...allTutorials].sort((a, b) => a.number - b.number);
 
-// Separate featured and regular tutorials
-const featuredTutorials = sortedTutorials.filter(t => t.data.featured);
-const regularTutorials = sortedTutorials.filter(t => !t.data.featured);
+// Featured tutorial is tutorial 1
+const featuredTutorials = sortedTutorials.filter(t => t.number === 1);
+const regularTutorials = sortedTutorials.filter(t => t.number !== 1);
 
-// Get unique categories and difficulties for filtering
-const categories = [...new Set(allTutorials.map(t => t.data.category))];
+// Categories and difficulties (placeholder for now)
+const categories = ['Foundation'];
 const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
 ---
 
@@ -59,7 +55,7 @@ const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
     </div>
   </section>
 
-  <!-- Filter Section (Placeholder for future enhancement) -->
+  <!-- Filter Section -->
   <section class="bg-vhs/40 border-b border-surface/80 sticky top-[73px] z-40 backdrop-blur-sm">
     <div class="max-w-6xl mx-auto px-4 py-4">
       <div class="flex flex-wrap gap-3 items-center text-xs font-mono">
@@ -123,16 +119,15 @@ const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
             {featuredTutorials.map(tutorial => (
               <TutorialCard
                 slug={tutorial.slug}
-                title={tutorial.data.title}
-                subtitle={tutorial.data.subtitle}
-                description={tutorial.data.description}
-                difficulty={tutorial.data.difficulty}
-                estimatedTime={tutorial.data.estimatedTime}
-                estimatedCost={tutorial.data.estimatedCost}
-                tags={tutorial.data.tags}
-                category={tutorial.data.category}
+                title={tutorial.title}
+                subtitle=""
+                description={tutorial.description}
+                difficulty="Beginner"
+                estimatedTime={30}
+                estimatedCost={0.03}
+                tags={['technician-track']}
+                category="Foundation"
                 featured={true}
-                image={tutorial.data.image}
               />
             ))}
           </div>
@@ -154,16 +149,15 @@ const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
           {sortedTutorials.map(tutorial => (
             <TutorialCard
               slug={tutorial.slug}
-              title={tutorial.data.title}
-              subtitle={tutorial.data.subtitle}
-              description={tutorial.data.description}
-              difficulty={tutorial.data.difficulty}
-              estimatedTime={tutorial.data.estimatedTime}
-              estimatedCost={tutorial.data.estimatedCost}
-              tags={tutorial.data.tags}
-              category={tutorial.data.category}
-              featured={tutorial.data.featured}
-              image={tutorial.data.image}
+              title={tutorial.title}
+              subtitle=""
+              description={tutorial.description}
+              difficulty="Beginner"
+              estimatedTime={30}
+              estimatedCost={0.03}
+              tags={['technician-track']}
+              category="Foundation"
+              featured={tutorial.number === 1}
             />
           ))}
         </div>
