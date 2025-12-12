@@ -1,0 +1,474 @@
+---
+// Tutorial 03 - Autonomous Agents vs Rule-Based Systems
+// Converted from markdown to Astro format using extracted components
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-03-autonomous-vs-rule-based');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 03: Autonomous Agents vs Rule-Based Systems | AgenticControl.dev';
+const description = 'Distinguish rule-based automation from autonomous agents. Goals, state, and reasoning make the difference.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Distinguish <strong class="text-white">rule-based automation</strong> from <strong class="text-white">autonomous agent behavior</strong>',
+      'Understand how <strong class="text-white">goals, state, and reasoning</strong> differentiate agents from PLC logic',
+      'Simulate a <strong class="text-white">PLC scan cycle</strong> as a deterministic rule system',
+      'Simulate an <strong class="text-white">agent decision cycle</strong> as a goal-driven advisory system',
+      'Prepare conceptually for <strong class="text-white">Perception-Action Cycles</strong> in Tutorial #4'
+    ]}
+    footer='This tutorial establishes the <strong class="text-neonCyan">conceptual definition of an autonomous agent</strong>, before any tools or I/O are introduced.'
+  />
+
+  <SafetyBoundary type="simulation" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic control logic',
+      'Generic scan-cycle simulation',
+      'Generic goal-driven reasoning',
+      'Standard Python only'
+    ]}
+    footer='No vendor PLC API, runtime, or hardware is required. The concepts apply equally to TwinCAT, TIA Portal, CODESYS, Rockwell, and IEC-based systems.'
+  />
+
+  <!-- Section 1: Rules vs Agents -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — RULES VS AGENTS
+    </h2>
+
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-12">
+      Rule-Based System (PLC-style)
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      A rule-based system:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Executes <strong class="text-white">predefined logic</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has <strong class="text-white">no goals</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has <strong class="text-white">no self-evaluation</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has <strong class="text-white">no planning</strong></span>
+      </li>
+    </ul>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-4 my-6 font-mono text-sm text-slate-300">
+      Current Inputs → Current Logic → Current Outputs
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      This is why PLC programs are:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Deterministic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Verifiable</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Stable</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Predictable</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5 mt-8">
+      But also:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-lg flex-shrink-0">❌</span>
+        <span>Non-adaptive</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-lg flex-shrink-0">❌</span>
+        <span>Non-explanatory</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-lg flex-shrink-0">❌</span>
+        <span>Non-goal-seeking</span>
+      </li>
+    </ul>
+
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-16">
+      Autonomous Agent
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      An autonomous agent:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Has an <strong class="text-white">explicit goal</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Observes the <strong class="text-white">current state</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Reasons about <strong class="text-white">how to achieve the goal</strong></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Re-evaluates when conditions change</span>
+      </li>
+    </ul>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-4 my-6 font-mono text-sm text-neonPurple">
+      Observe → Reason → Decide → Observe Again
+    </div>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-slate-200 leading-relaxed">
+        A PLC executes <strong class="text-white">what it is told</strong>.<br />
+        An agent reasons about <strong class="text-neonPurple">what it should do next</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 2: Two Decision Models -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE ARCHITECTURE — TWO DECISION MODELS
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+        <h4 class="text-sm font-bold text-neonCyan uppercase mb-4 tracking-wide">
+          Rule System (PLC)
+        </h4>
+        <div class="font-mono text-xs text-slate-300 leading-relaxed">
+          Inputs → Logic → Outputs → Next Scan
+        </div>
+      </div>
+
+      <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+        <h4 class="text-sm font-bold text-neonPurple uppercase mb-4 tracking-wide">
+          Agent System
+        </h4>
+        <div class="font-mono text-xs text-slate-300 leading-relaxed">
+          State → Goal → Reasoning → Advisory Decision → Re-Evaluate
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Architectural Diagrams -->
+    <div class="grid md:grid-cols-2 gap-6 my-12">
+      <!-- PLC Rule-Based Flow Diagram -->
+      <div>
+        <h4 class="text-lg font-display text-neonCyan mb-4">PLC Rule-Based Flow</h4>
+        <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Read Inputs] --> B{IF-THEN Rules}
+    B --> C[Write Outputs]
+    C --> D[Next Scan]
+    D --> A
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#1f75ff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Deterministic, repeatable, no goals or reasoning
+        </p>
+      </div>
+
+      <!-- Agent Decision Flow Diagram -->
+      <div>
+        <h4 class="text-lg font-display text-neonPurple mb-4">Agent Autonomous Flow</h4>
+        <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Perceive State] --> B[Check Goal]
+    B --> C{Reasoning}
+    C --> D[Evaluate Options]
+    D --> E[Recommend Action]
+    E --> A
+
+    style A fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Goal-driven, adaptive reasoning, advisory only
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Boundaries in This Tutorial
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>PLC = deterministic simulation only</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Agent = advisory reasoning only</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Human = final authority</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 3: Clean Educational Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CLEAN EDUCATIONAL SCENARIO
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We simulate a very simple industrial situation:
+    </p>
+
+    <ul class="space-y-3 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <div>
+          <strong class="text-white">Motor states:</strong> OFF, RUNNING, FAULTED
+        </div>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <div>
+          <strong class="text-white">Inputs:</strong> Start button, Stop button, Fault signal
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-8">
+      We will now implement this <strong class="text-white">twice</strong>:
+    </p>
+
+    <ol class="space-y-2 my-6 list-decimal list-inside">
+      <li class="text-slate-300 leading-relaxed ml-2">
+        As a <strong class="text-neonCyan">rule-based PLC scan</strong>
+      </li>
+      <li class="text-slate-300 leading-relaxed ml-2">
+        As a <strong class="text-neonPurple">goal-driven advisory agent</strong>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Deterministic PLC Scan Simulation (Rule-Based)"
+    objective="Demonstrate how a scan-based rule system reacts without goals or reasoning."
+    code={`# Simulated PLC Scan Cycle (Rule-Based)
+
+class RuleBasedPLC:
+    def __init__(self):
+        self.motor_running = False
+
+    def scan(self, start_button, stop_button, fault):
+        if fault:
+            self.motor_running = False
+        elif stop_button:
+            self.motor_running = False
+        elif start_button:
+            self.motor_running = True
+
+        return self.motor_running
+
+# Simulated input sequence
+plc = RuleBasedPLC()
+
+inputs = [
+    {"start": True,  "stop": False, "fault": False},
+    {"start": False, "stop": False, "fault": False},
+    {"start": False, "stop": False, "fault": True},
+]
+
+for cycle, i in enumerate(inputs, 1):
+    state = plc.scan(i["start"], i["stop"], i["fault"])
+    print(f"Scan {cycle}: MotorRunning = {state}")`}
+    expectedOutput={`Scan 1: MotorRunning = True
+Scan 2: MotorRunning = True
+Scan 3: MotorRunning = False`}
+    interpretation={[
+      '✅ Pure simulation',
+      '✅ No goals',
+      '✅ No reasoning',
+      '✅ Fully deterministic',
+      'Cost: $0.00 | Runtime: <1 second'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Goal-Driven Advisory Agent (Autonomous Reasoning)"
+    objective="Demonstrate how an agent reasons about a goal, instead of executing fixed rules."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+current_state = {
+    "motor_running": False,
+    "fault": True,
+    "start_button_pressed": True
+}
+
+goal = "Keep the motor running safely without violating fault conditions."
+
+prompt = f"""
+You are an autonomous industrial reasoning assistant.
+
+You MUST:
+- Output REASONING first
+- Then output DECISION
+- Then output EXPLANATION
+- You are NOT allowed to control hardware
+- You are NOT allowed to issue commands
+
+Current state:
+{json.dumps(current_state, indent=2)}
+
+Goal:
+{goal}
+"""
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`REASONING:
+The motor is currently not running and a fault is active.
+Running the motor while a fault is present would violate safety.
+
+DECISION:
+Do not recommend starting the motor.
+
+EXPLANATION:
+Although the start button is pressed, the active fault prevents safe operation. The goal of safe operation overrides the start request.`}
+    interpretation={[
+      '✅ Advisory only',
+      '✅ No actuation',
+      '✅ No PLC write-back',
+      '✅ Human-only execution authority',
+      'Cost: ~$0.01-$0.02 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Writing PLC memory</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Generating control logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Issuing start/stop commands</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Overriding safety faults</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Auto-acknowledging alarms</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Connecting to live equipment</span>
+      </li>
+    </ul>
+  </div>
+
+  <KeyTakeaways items={[
+    'A PLC executes <strong class="text-white">rules</strong> without goals or reflection',
+    'An agent reasons about <strong class="text-white">goals and states</strong>',
+    'Agents can explain <strong class="text-white">why</strong> a decision is recommended',
+    'Rule-based systems cannot self-justify',
+    'Autonomy begins with <strong class="text-white">goals, not tools</strong>'
+  ]} />
+
+  <NextTutorial
+    number={4}
+    title="Agent Perception-Action Cycles (PLC Scan Mapping)"
+    description="You will extend this system by mapping agent perception to PLC inputs and agent decisions to advisory outputs."
+  />
+
+  <EngineeringPosture items={[
+    'Conceptual clarity over premature tooling',
+    'Deterministic rules vs goal-driven reasoning',
+    'Advisory intelligence over control authority',
+    'Human responsibility over machine autonomy'
+  ]} />
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #3
+    </p>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->

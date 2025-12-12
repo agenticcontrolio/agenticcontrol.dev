@@ -1,0 +1,498 @@
+---
+// Tutorial 05 - Prompt Engineering for IEC 61131-3 ST Code Generation
+// Converted from markdown to Astro format using extracted components
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-05-prompt-engineering-st');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 05: Prompt Engineering for IEC 61131-3 ST Code Generation | AgenticControl.dev';
+const description = 'Control AI code generation with prompt engineering. Create reviewable, deterministic PLC code drafts safely.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand what <strong class="text-white">prompt engineering</strong> really is in engineering terms',
+      'Control <strong class="text-white">format, structure, and limitations</strong> of generated PLC code',
+      'Generate <strong class="text-white">read-only IEC 61131-3 Structured Text (ST) drafts</strong>',
+      'Prevent unsafe, hallucinated, or uncontrolled code generation',
+      'Prepare for <strong class="text-white">Few-Shot Validation</strong> in Tutorial #6'
+    ]}
+    footer='This tutorial establishes the <strong class="text-neonCyan">human-to-AI control interface for industrial code generation</strong>.'
+  />
+
+  <SafetyBoundary type="advisory" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'Standard Python + OpenAI client',
+      'No PLC runtimes, hardware connections, or vendor SDKs'
+    ]}
+    footer='The patterns apply equally to TwinCAT, Siemens TIA Portal (SCL), CODESYS, Rockwell ST, and all IEC-compliant environments.'
+  />
+
+  <!-- Section 1: What Prompt Engineering Really Is -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — WHAT PROMPT ENGINEERING REALLY IS
+    </h2>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        In engineering terms: <strong class="text-white">A prompt is a control interface, not a question.</strong>
+      </p>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      <strong class="text-neonPink">Bad mental model:</strong><br />
+      "I ask the AI something nicely."
+    </p>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-8">
+      <strong class="text-machineGreen">Correct mental model:</strong><br />
+      <strong class="text-white">"I specify operating constraints for a probabilistic system."</strong>
+    </p>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      For PLC generation, prompt engineering controls:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>Output format</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>Language (ST only)</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>Scope (no overreach)</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>Safety boundaries</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>Determinism</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 2: Reference Architecture -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE ARCHITECTURE — HUMAN-IN-THE-LOOP CODE DRAFTING
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-4 my-6 font-mono text-xs text-slate-300">
+      You → Structured Prompt → LLM → Read-Only ST Draft → You Review → You Decide
+    </div>
+
+    <!-- Human-in-the-Loop Workflow Diagram -->
+    <div class="my-12">
+      <h4 class="text-lg font-display text-neonPink mb-4">Controlled Code Generation Pipeline</h4>
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-6">
+        <pre class="mermaid">{`graph LR
+    A[Engineer<br/>Define Requirements] --> B[Structured Prompt<br/>Constrained Input]
+    B --> C[LLM<br/>Generate ST Code]
+    C --> D[Read-Only Draft<br/>No Execution]
+    D --> E[Engineer Review<br/>Human Validation]
+    E --> F{Acceptable?}
+    F -->|No| A
+    F -->|Yes| G[Manual Integration]
+
+    style A fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#fec20b,stroke-width:2px,color:#fec20b
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f
+    style F fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#ff4fd8
+    style G fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+      </div>
+      <p class="text-xs text-slate-400 mt-3 italic">
+        Human authority at every step — LLM is a text generator, not a decision maker
+      </p>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Boundaries
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>AI generates text only</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>No compilation</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>No download to PLC</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>No execution</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Human is always the gatekeeper</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 3: Clean Educational Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CLEAN EDUCATIONAL SCENARIO
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We want to generate a <strong class="text-white">very simple IEC 61131-3 ST motor start/stop block</strong>:
+    </p>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Requirements
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonCyan flex-shrink-0">▸</span>
+          <span>Boolean inputs: StartButton, StopButton</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonCyan flex-shrink-0">▸</span>
+          <span>Boolean output: MotorRunning</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>No latches, timers, safety logic, or fault handling</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Pure start/stop behavior</span>
+        </li>
+      </ul>
+
+      <p class="text-sm text-slate-400 leading-relaxed mt-4">
+        We will learn how to <strong class="text-white">force the LLM to stay inside these boundaries</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Prompt Strategy Comparison -->
+  <div class="mb-16">
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-16">
+      Why Prompt Structure Matters
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-8">
+      Compare two fundamentally different approaches to AI code generation:
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6 my-12">
+      <!-- Uncontrolled Prompt Flow -->
+      <div>
+        <h4 class="text-lg font-display text-neonPink mb-4">❌ Uncontrolled Prompt</h4>
+        <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Vague Prompt] --> B[LLM]
+    B --> C[Unpredictable Output]
+    C --> D[❌ Risk]
+
+    style A fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#ff4fd8
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#fec20b,stroke-width:2px,color:#fec20b
+    style D fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#ff4fd8`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Dangerous: Adds safety logic, timers, features you didn't ask for
+        </p>
+      </div>
+
+      <!-- Controlled Prompt Flow -->
+      <div>
+        <h4 class="text-lg font-display text-machineGreen mb-4">✅ Controlled Prompt</h4>
+        <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Structured Prompt] --> B[LLM]
+    B --> C[Constrained Output]
+    C --> D[✅ Reviewable]
+
+    style A fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Safe: Generates only what you specified, in a reviewable format
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <!-- Combined Experiment 1: Uncontrolled vs Controlled -->
+  <div class="mb-12 bg-surface/60 border border-neonPurple/40 rounded-xl overflow-hidden shadow-lg">
+    <div class="bg-vhs/80 border-b border-neonPurple/40 px-6 py-4">
+      <h3 class="font-display text-xl text-neonPurple tracking-wide">
+        🧪 Experiment 1: Uncontrolled vs Controlled Prompt
+      </h3>
+    </div>
+
+    <div class="px-6 py-6">
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3">
+        Objective
+      </h4>
+      <p class="text-base text-slate-300 leading-relaxed mb-6">
+        See the difference between a <strong class="text-neonPink">loose prompt</strong> (unsafe, verbose) and a <strong class="text-machineGreen">controlled prompt</strong> (deterministic, auditable).
+      </p>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Part A — Uncontrolled Prompt (What NOT to Do)
+      </h4>
+      <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+        <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+          <span class="text-xs font-mono text-slate-400">Python</span>
+        </div>
+        <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`from openai import OpenAI
+
+client = OpenAI()
+
+bad_prompt = "Generate PLC code for a motor controller."
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": bad_prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}</code></pre>
+      </div>
+
+      <div class="bg-neonPink/10 border-l-4 border-neonPink rounded-r-lg p-4 mb-6">
+        <p class="text-sm text-slate-200 leading-relaxed">
+          <strong class="text-neonPink">Expected (Unstable) Output May Include:</strong><br />
+          ❌ Safety logic you didn't ask for<br />
+          ❌ Timers<br />
+          ❌ Fault latching<br />
+          ❌ Vendor-specific constructs<br />
+          ❌ Commentary mixed with code
+        </p>
+        <p class="text-sm text-neonPink leading-relaxed mt-2 font-semibold">
+          This is <strong class="text-white">unreviewable and unsafe by construction</strong>.
+        </p>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Part B — Controlled Engineering Prompt (IEC 61131-3 ST)
+      </h4>
+      <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+        <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+          <span class="text-xs font-mono text-slate-400">Python</span>
+        </div>
+        <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`controlled_prompt = '''You are generating IEC 61131-3 Structured Text (ST) only.
+
+Rules:
+- Output only code.
+- No comments.
+- No safety logic.
+- No timers.
+- No latches.
+- No vendor-specific libraries.
+- No additional features.
+
+Task:
+Create a basic motor start/stop logic with:
+
+Inputs:
+- StartButton : BOOL
+- StopButton  : BOOL
+
+Output:
+- MotorRunning : BOOL
+
+Behavior:
+- MotorRunning becomes TRUE when StartButton is TRUE.
+- MotorRunning becomes FALSE when StopButton is TRUE.
+'''
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": controlled_prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}</code></pre>
+      </div>
+
+      <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+        Expected Output
+      </h4>
+      <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-4 mb-6">
+        <pre class="text-sm font-mono text-machineGreen leading-relaxed">{`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}</pre>
+      </div>
+
+      <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-4">
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span>Read-only draft</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span>No execution</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span>Human-reviewed</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-slate-500 flex-shrink-0">▸</span>
+            <span>Cost: ~$0.02 | Runtime: &lt;1 second</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <ExperimentBlock
+    number={2}
+    title="Forcing Output Structure with a Generic ST Code Template"
+    objective="Force the AI to generate only inside a predefined IEC 61131-3 ST template."
+    borderColor="neonPurple"
+    outputColor="machineGreen"
+    code={`template_prompt = '''Generate ONLY the code that fills the body below.
+
+You are not allowed to modify the structure.
+
+TEMPLATE:
+
+VAR_INPUT
+    StartButton : BOOL;
+    StopButton  : BOOL;
+END_VAR
+
+VAR_OUTPUT
+    MotorRunning : BOOL;
+END_VAR
+
+(* CODE BELOW *)
+<INSERT CODE HERE>
+'''
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": template_prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}
+    interpretation={[
+      '✅ Structural confinement',
+      '✅ No unsafe expansion',
+      '✅ Draft-only output',
+      'Cost: ~$0.01 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Using generated code directly in production</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Downloading code to PLCs</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Bypassing code review</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Generating safety logic without validation</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Trusting output without human inspection</span>
+      </li>
+    </ul>
+  </div>
+
+  <KeyTakeaways items={[
+    'A prompt is a <strong class="text-white">safety and control interface</strong>',
+    'Unstructured prompts produce <strong class="text-neonPink">unreviewable risk</strong>',
+    'Structured prompts produce <strong class="text-machineGreen">auditable drafts</strong>',
+    'You can fully control: Language, Scope, Features, Format',
+    'AI must be treated like a <strong class="text-white">junior engineer under supervision</strong>'
+  ]} />
+
+  <NextTutorial
+    number={6}
+    title="Few-Shot Learning for PLC Validation"
+    description="You will extend this system by supplying validated PLC examples, teaching the AI what 'good' looks like, and improving consistency across generations."
+  />
+
+  <EngineeringPosture items={[
+    'Constraint-first design over creative freedom',
+    'Draft-only generation over execution',
+    'Human authority over machine output',
+    'Reviewability over automation'
+  ]} />
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #5
+    </p>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->

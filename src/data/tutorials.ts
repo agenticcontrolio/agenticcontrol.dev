@@ -54,7 +54,7 @@ export const technicianTutorials: Tutorial[] = [
     id: 'tutorial-01',
     number: 1,
     title: 'Agentic vs Automation Technician',
-    slug: 'tutorial-01-agentic-vs-automation-technician-v1',
+    slug: 'tutorial-01-agentic-vs-automation-technician',
     description: 'Understanding the fundamental difference between automation and agentic AI',
     published: true,
     track: 'technician'
@@ -63,7 +63,7 @@ export const technicianTutorials: Tutorial[] = [
     id: 'tutorial-02',
     number: 2,
     title: 'The ReAct Pattern for PLC Code Analysis',
-    slug: 'tutorial-02-react-plc-v2',
+    slug: 'tutorial-02-react-plc',
     description: 'Apply ReAct reasoning to PLC code analysis. Learn transparent, auditable AI reasoning for industrial automation.',
     published: true,
     track: 'technician'
@@ -72,7 +72,7 @@ export const technicianTutorials: Tutorial[] = [
     id: 'tutorial-03',
     number: 3,
     title: 'Autonomous Agents vs Rule-Based Systems',
-    slug: 'tutorial-03-autonomous-vs-rule-based-v1',
+    slug: 'tutorial-03-autonomous-vs-rule-based',
     description: 'Distinguish rule-based automation from autonomous agents through goals, state, and reasoning.',
     published: true,
     track: 'technician'
@@ -81,7 +81,7 @@ export const technicianTutorials: Tutorial[] = [
     id: 'tutorial-04',
     number: 4,
     title: 'Agent Perception-Action Cycles (PLC Scan Mapping)',
-    slug: 'tutorial-04-perception-action-plc-scan-v1',
+    slug: 'tutorial-04-perception-action-plc-scan',
     description: 'Map agent perception-action loops to PLC scan cycles. Understand advisory cognition without control.',
     published: true,
     track: 'technician'
@@ -90,7 +90,7 @@ export const technicianTutorials: Tutorial[] = [
     id: 'tutorial-05',
     number: 5,
     title: 'Prompt Engineering for IEC 61131-3 ST Code Generation',
-    slug: 'tutorial-05-prompt-engineering-st-v2',
+    slug: 'tutorial-05-prompt-engineering-st',
     description: 'Control AI code generation with prompt engineering. Create reviewable, deterministic PLC code drafts.',
     published: true,
     track: 'technician'

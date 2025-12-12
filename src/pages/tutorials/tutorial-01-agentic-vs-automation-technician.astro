@@ -1,0 +1,486 @@
+---
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-01-agentic-vs-automation-technician');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 01: Agentic AI vs Traditional Automation | AgenticControl.dev';
+const description = 'Learn the fundamental difference between traditional automation and agentic AI. From execution to reasoning.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Clearly distinguish <strong class="text-white">traditional automation</strong> from <strong class="text-white">agentic AI</strong>',
+      'Understand the difference between <strong class="text-white">execution</strong> and <strong class="text-white">reasoning</strong>',
+      'Identify where <strong class="text-white">LLMs stop</strong> and where <strong class="text-white">agents begin</strong>',
+      'Recognize why <strong class="text-white">uncertainty handling</strong> is the core limitation of PLC logic',
+      'Safely simulate both models using advisory-only Python examples'
+    ]}
+    footer='This tutorial is the <strong class="text-neonCyan">conceptual foundation of the entire Technician Track</strong>.'
+  />
+
+  <!-- Safety Boundary -->
+  <SafetyBoundary type="simulation" />
+
+  <VendorAgnosticNote
+    items={['Generic automation concepts', 'Generic agent concepts', 'Standard Python only']}
+    footer='No PLC runtime, vendor SDK, hardware interface, or fieldbus integration is used. The concepts apply to <strong class="text-white">all IEC 61131-3 environments</strong>.'
+  />
+
+  <!-- Section 1: Traditional Automation -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — WHAT IS TRADITIONAL AUTOMATION?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Traditional automation is built on:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Deterministic logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Predefined rules</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Full predictability</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Full test coverage (in principle)</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      The core loop of automation is:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph LR
+    A[Read Inputs] --> B{Execute Rigid Logic}
+    B --> C[Write Outputs]
+    C --> A`}</pre>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      In PLC terms:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Read Inputs</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Execute Code</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Write Outputs</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Next Scan</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      This model is:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Fast</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Deterministic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Verifiable</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0">✅</span>
+        <span>Stable</span>
+      </li>
+    </ul>
+
+    <div class="bg-neonPink/10 border-l-4 border-neonPink rounded-r-lg p-5 my-8">
+      <p class="text-base text-slate-200 leading-relaxed font-semibold">
+        But it has a critical limitation:
+      </p>
+      <p class="text-base text-neonPink leading-relaxed mt-2">
+        <strong>It cannot reason about situations it was not explicitly programmed for.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 2: Agentic AI -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ CONCEPT OVERVIEW — WHAT IS AGENTIC AI?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Agentic AI introduces:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Goals</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>State awareness</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Interpretation</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Reasoning</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Self-evaluation</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      Its core loop is:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph LR
+    A[Observe State] --> B{Reasoning Engine}
+    B --> G[Goal]
+    B --> C[Formulate Plan]
+    C --> D[Suggest Action]
+    D --> A`}</pre>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-6 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Key Differences
+      </h4>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-600/60">
+              <th class="text-left py-3 px-4 text-neonCyan font-display text-base">Automation</th>
+              <th class="text-left py-3 px-4 text-neonPurple font-display text-base">Agent</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">Executes rules</td>
+              <td class="py-3 px-4">Reasons about goals</td>
+            </tr>
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">No interpretation</td>
+              <td class="py-3 px-4">Interprets context</td>
+            </tr>
+            <tr class="border-b border-slate-700/40">
+              <td class="py-3 px-4">No uncertainty handling</td>
+              <td class="py-3 px-4">Handles ambiguity</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4">No self-reflection</td>
+              <td class="py-3 px-4">Can justify decisions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      An agent does <strong class="text-white">not replace automation</strong>. It augments it with <strong class="text-neonPurple">cognition</strong>.
+    </p>
+  </div>
+
+  <!-- Section 3: LLM vs Agent -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ LLM VS AGENT — CRITICAL DISTINCTION
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      An <strong class="text-white">LLM by itself</strong>:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Predicts the next token</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no goals</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no memory (beyond context)</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Has no control loop</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Cannot act in the world</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      An <strong class="text-white">Agent</strong> is:
+    </p>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-mono font-semibold">
+        LLM + Goals + State + Reasoning Loop + Safety Boundaries
+      </p>
+    </div>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph TB
+    LLM[LLM Core<br/>Language Model]
+    Goals[Goals<br/>Objectives]
+    State[State<br/>Memory & Context]
+    Loop[Reasoning Loop<br/>Think-Act-Observe]
+    Safety[Safety Boundaries<br/>Constraints]
+
+    LLM --> Agent[AGENT<br/>Cognitive System]
+    Goals --> Agent
+    State --> Agent
+    Loop --> Agent
+    Safety --> Agent
+
+    style LLM fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style Goals fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style State fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style Loop fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style Safety fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#fff
+    style Agent fill:#1a1a1e,stroke:#00ff7f,stroke-width:3px,color:#00ff7f,font-weight:bold`}</pre>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <p class="text-base text-slate-300 leading-relaxed mb-2">
+        <strong class="text-machineGreen">LLM</strong> = Brain tissue
+      </p>
+      <p class="text-base text-slate-300 leading-relaxed">
+        <strong class="text-neonPurple">Agent</strong> = Cognitive system
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 4: Clean Educational Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ CLEAN EDUCATIONAL SCENARIO
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We simulate a simple motor situation with uncertainty:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Start button is pressed</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>A fault might be present</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>The system must decide what <em>should</em> happen</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed my-5">
+      We will compare:
+    </p>
+
+    <ol class="space-y-2 my-6 list-decimal list-inside">
+      <li class="text-slate-300 leading-relaxed ml-2">
+        A <strong class="text-neonCyan">rule-based automation response</strong>
+      </li>
+      <li class="text-slate-300 leading-relaxed ml-2">
+        An <strong class="text-neonPurple">agentic advisory response</strong>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Section 5: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      5️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Traditional Rule-Based Automation"
+    objective="Demonstrate how deterministic logic works without reasoning."
+    code={`start_button = True
+fault = False
+
+motor_running = False
+
+if fault:
+    motor_running = False
+elif start_button:
+    motor_running = True
+
+print("Motor running:", motor_running)`}
+    expectedOutput="Motor running: True"
+    interpretation={[
+      'Does not question conditions',
+      'Does not evaluate risk',
+      'Does not explain itself',
+      'Simply executes'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Agentic Advisory Reasoning (No Control Authority)"
+    objective='Demonstrate how an agent reasons about goals and uncertainty <strong class="text-white">without acting</strong>.'
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+state = {
+    "start_button": True,
+    "fault": False,
+    "motor_running": False
+}
+
+goal = "Ensure safe motor operation at all times."
+
+prompt = f'''
+You are an industrial advisory agent.
+
+You MUST:
+- Output REASONING first
+- Then output ADVISORY_DECISION
+- Then output JUSTIFICATION
+- You must NOT issue commands
+- You must NOT generate PLC code
+
+Current state:
+{json.dumps(state, indent=2)}
+
+Goal:
+{goal}
+'''
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`REASONING:
+The start button is pressed and no fault is present.
+
+ADVISORY_DECISION:
+It is safe to allow the motor to run.
+
+JUSTIFICATION:
+No fault conditions prevent safe operation, and the operational goal can be satisfied.`}
+    interpretation={[
+      'Automation <strong class="text-neonCyan">executes</strong>',
+      'Agent <strong class="text-neonPurple">evaluates and explains</strong>'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Using agents for safety-rated control</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Allowing agents to actuate hardware</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Bypassing PLC logic with AI</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Letting AI override emergency systems</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Running AI inside hard real-time loops</span>
+      </li>
+    </ul>
+  </div>
+
+  <KeyTakeaways items={[
+    'Automation = <strong class="text-neonCyan">execution</strong>',
+    'Agents = <strong class="text-neonPurple">reasoning</strong>',
+    'LLMs alone are not agents',
+    'Agents must always remain <strong class="text-amber">advisory at this stage</strong>',
+    'Cognition and control must stay <strong class="text-white">separated by design</strong>'
+  ]} />
+
+  <NextTutorial
+    number={2}
+    title="The ReAct Pattern for PLC Code Analysis"
+    description="You will now formalize how agents structure reasoning safely."
+  />
+
+  <EngineeringPosture items={[
+    'Cognition before execution',
+    'Reasoning before tooling',
+    'Human authority before autonomy',
+    'Safety before convenience'
+  ]} />
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #1
+    </p>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->

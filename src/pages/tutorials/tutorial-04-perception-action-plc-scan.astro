@@ -1,0 +1,447 @@
+---
+// Tutorial 04 - Agent Perception-Action Cycles (PLC Scan Mapping)
+// Converted from markdown to Astro format using extracted components
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-04-perception-action-plc-scan');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 04: Agent Perception-Action Cycles (PLC Scan Mapping) | AgenticControl.dev';
+const description = 'Map agent perception-action loops to PLC scan cycles. Understand advisory cognition without control.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand the <strong class="text-white">Perception-Action Cycle</strong> as the core of agent behavior',
+      'Map the <strong class="text-white">PLC scan cycle</strong> directly to the Perception-Action loop',
+      'Simulate <strong class="text-white">perception as input sensing</strong>',
+      'Simulate <strong class="text-white">action as advisory output</strong>',
+      'Clearly separate <strong class="text-white">deterministic control</strong> from <strong class="text-white">advisory cognition</strong>'
+    ]}
+    footer='This tutorial establishes the <strong class="text-neonCyan">cognitive bridge between PLC scan-based control and agent-based reasoning</strong>.'
+  />
+
+  <SafetyBoundary type="simulation" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic PLC scan logic',
+      'Generic agent perception-action logic',
+      'Standard Python only'
+    ]}
+    footer='No vendor PLC runtime, SDK, or hardware is required. These patterns apply to <strong class="text-white">TwinCAT, TIA Portal, CODESYS, Rockwell, and all IEC-based systems</strong>.'
+  />
+
+  <!-- Section 1: What Is a Perception-Action Cycle? -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — WHAT IS A PERCEPTION-ACTION CYCLE?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      The <strong class="text-white">Perception-Action Cycle</strong> is the most fundamental loop in all intelligent systems:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-4 my-6 font-mono text-sm text-neonPurple">
+      Perceive → Decide → Act → Perceive Again
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      In cognition:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span><strong class="text-white">Perception</strong> = sensing the world</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span><strong class="text-white">Decision</strong> = reasoning about what to do</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span><strong class="text-white">Action</strong> = affecting the world</span>
+      </li>
+    </ul>
+
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-12">
+      The Critical Insight for PLC Engineers
+    </h3>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      A PLC already does this:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4 my-6 font-mono text-sm text-neonCyan">
+      Read Inputs → Execute Logic → Write Outputs → Repeat
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      That <strong class="text-white">is a perception-action loop</strong> — just without:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Goals</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Reflection</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Planning</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-slate-500 flex-shrink-0">▸</span>
+        <span>Explanation</span>
+      </li>
+    </ul>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        An agent adds: <strong class="text-white">Reasoning between perception and action.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 2: PLC vs Agent Loops -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE ARCHITECTURE — PLC VS AGENT LOOPS
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+        <h4 class="text-sm font-bold text-neonCyan uppercase mb-4 tracking-wide">
+          PLC Scan Cycle
+        </h4>
+        <div class="font-mono text-xs text-slate-300 leading-relaxed">
+          Inputs → Logic → Outputs → Next Scan
+        </div>
+      </div>
+
+      <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+        <h4 class="text-sm font-bold text-neonPurple uppercase mb-4 tracking-wide">
+          Agent Perception-Action Cycle (Advisory)
+        </h4>
+        <div class="font-mono text-xs text-slate-300 leading-relaxed">
+          State → Goal → Reasoning → Recommended Action → Re-Observe
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Perception-Action Cycle Diagrams -->
+    <div class="grid md:grid-cols-2 gap-6 my-12">
+      <!-- PLC Scan Cycle Diagram -->
+      <div>
+        <h4 class="text-lg font-display text-neonCyan mb-4">PLC Scan Cycle</h4>
+        <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[PERCEIVE<br/>Read Inputs] --> B[DECIDE<br/>Execute Logic]
+    B --> C[ACT<br/>Write Outputs]
+    C --> A
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#1f75ff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#fff`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Pure perception-action loop — no goals, no reasoning
+        </p>
+      </div>
+
+      <!-- Agent Perception-Action Cycle Diagram -->
+      <div>
+        <h4 class="text-lg font-display text-neonPurple mb-4">Agent Perception-Action Cycle</h4>
+        <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[PERCEIVE<br/>Observe State] --> B[REASONING<br/>Analyze & Evaluate]
+    B --> C[DECIDE<br/>Select Action]
+    C --> D[ACT<br/>Recommend]
+    D --> E[Human Review<br/>& Execute]
+    E --> A
+
+    style A fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Extended loop with reasoning, goal-driven, advisory only
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Boundaries in This Tutorial
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>PLC side = deterministic simulation</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Agent side = advisory reasoning only</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">✅</span>
+          <span>Human = final execution authority</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 3: Clean Educational Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CLEAN EDUCATIONAL SCENARIO
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We simulate a simple system:
+    </p>
+
+    <ul class="space-y-3 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <div>
+          <strong class="text-white">Inputs:</strong> Start Button, Stop Button, Fault Signal
+        </div>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <div>
+          <strong class="text-white">Output:</strong> Motor Running
+        </div>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <div>
+          <strong class="text-white">Goal (agent side only):</strong> "Keep the motor available and safe"
+        </div>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-8">
+      We will simulate:
+    </p>
+
+    <ol class="space-y-2 my-6 list-decimal list-inside">
+      <li class="text-slate-300 leading-relaxed ml-2">
+        A <strong class="text-neonCyan">PLC scan loop</strong>
+      </li>
+      <li class="text-slate-300 leading-relaxed ml-2">
+        An <strong class="text-neonPurple">agent perception-action loop</strong>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="PLC Scan as a Pure Perception-Action Machine"
+    objective="Demonstrate how a PLC implements a perceive → act loop without reasoning."
+    code={`# Pure PLC Scan Simulation (Perception → Action)
+
+class PLCScan:
+    def __init__(self):
+        self.motor_running = False
+
+    def scan(self, start_button, stop_button, fault):
+        # --- PERCEPTION ---
+        inputs = {
+            "start": start_button,
+            "stop": stop_button,
+            "fault": fault
+        }
+
+        # --- LOGIC (FIXED RULES) ---
+        if inputs["fault"]:
+            self.motor_running = False
+        elif inputs["stop"]:
+            self.motor_running = False
+        elif inputs["start"]:
+            self.motor_running = True
+
+        # --- ACTION ---
+        outputs = {
+            "motor_running": self.motor_running
+        }
+
+        return inputs, outputs
+
+
+plc = PLCScan()
+
+scan_sequence = [
+    {"start": True,  "stop": False, "fault": False},
+    {"start": False, "stop": False, "fault": False},
+    {"start": False, "stop": False, "fault": True},
+]
+
+for i, s in enumerate(scan_sequence, 1):
+    inp, out = plc.scan(s["start"], s["stop"], s["fault"])
+    print(f"Scan {i} | Inputs: {inp} → Outputs: {out}")`}
+    expectedOutput={`Scan 1 | Inputs: {'start': True, 'stop': False, 'fault': False} → Outputs: {'motor_running': True}
+Scan 2 | Inputs: {'start': False, 'stop': False, 'fault': False} → Outputs: {'motor_running': True}
+Scan 3 | Inputs: {'start': False, 'stop': False, 'fault': True} → Outputs: {'motor_running': False}`}
+    interpretation={[
+      '✅ Pure simulation',
+      '✅ Deterministic behavior',
+      '✅ No goals',
+      '✅ No reasoning',
+      'Cost: $0.00 | Runtime: <1 second'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Agent Perception-Action as Advisory Cognition"
+    objective="Demonstrate how an agent perceives state, reasons about a goal, and recommends an action — without executing it."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+perceived_state = {
+    "start_button": True,
+    "stop_button": False,
+    "fault": True,
+    "motor_running": False
+}
+
+goal = "Keep the motor available while maintaining safety."
+
+prompt = f"""
+You are an industrial advisory agent.
+
+You MUST:
+- Output PERCEPTION first
+- Then REASONING
+- Then RECOMMENDED_ACTION (advisory only)
+- You must NOT generate PLC code
+- You must NOT issue commands
+
+Perceived state:
+{json.dumps(perceived_state, indent=2)}
+
+Goal:
+{goal}
+"""
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`PERCEPTION:
+The system is currently stopped and a fault condition is active.
+
+REASONING:
+Starting the motor while a fault is present would violate safety. Even though the start button is pressed, safety must take priority.
+
+RECOMMENDED_ACTION:
+Do not start the motor. Investigate and clear the fault before resuming operation.`}
+    interpretation={[
+      '✅ Advisory only',
+      '✅ No actuation',
+      '✅ No PLC control',
+      '✅ Human-only execution authority',
+      'Cost: ~$0.01-$0.02 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Writing PLC memory</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Modifying control logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Issuing start/stop commands</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Overriding faults</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Acknowledging alarms automatically</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Connecting to live equipment</span>
+      </li>
+    </ul>
+  </div>
+
+  <KeyTakeaways items={[
+    'PLCs already operate as <strong class="text-white">perception-action machines</strong>',
+    'Agents extend this loop with <strong class="text-white">goals and reasoning</strong>',
+    'The PLC loop is fast, deterministic, and unquestioning',
+    'The agent loop is reflective, goal-driven, and advisory',
+    '<strong class="text-white">Control and cognition must remain separated</strong>'
+  ]} />
+
+  <NextTutorial
+    number={5}
+    title="Prompt Engineering for IEC 61131-3 ST Code Generation"
+    description="You will extend this system by learning deterministic prompt structures and generating read-only PLC code drafts."
+  />
+
+  <EngineeringPosture items={[
+    'Scan-cycle determinism over cognitive autonomy',
+    'Advisory recommendations over direct control',
+    'Human authority over machine execution',
+    'Separation of cognition and actuation'
+  ]} />
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #4
+    </p>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->

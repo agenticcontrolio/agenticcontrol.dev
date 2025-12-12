@@ -1,0 +1,359 @@
+---
+// Tutorial 02 - The ReAct Pattern for PLC Code Analysis
+// Converted from markdown to Astro format using extracted components
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-02-react-plc');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 02: The ReAct Pattern for PLC Code Analysis | AgenticControl.dev';
+const description = 'Apply ReAct reasoning to PLC code analysis. Learn transparent, auditable AI reasoning for industrial automation.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Apply the ReAct (Reason + Act) pattern to PLC code analysis',
+      'Interpret LLM reasoning through explicit step-by-step thought processes',
+      'Maintain strict advisory-only boundaries',
+      'Use deterministic reasoning scaffolds for industrial code reviews',
+      'Prepare for safe tool-using agents (Tutorial #3)'
+    ]}
+    footer='This tutorial establishes the <strong class="text-neonCyan">foundational reasoning layer</strong> required for all future AgenticControl tutorials.'
+  />
+
+  <SafetyBoundary type="analysis" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'TwinCAT, Siemens TIA Portal, CODESYS',
+      'Allen-Bradley ST',
+      'Any IEC-based runtime'
+    ]}
+    footer='No vendor APIs or libraries are required.'
+  />
+
+  <!-- Section 1: What Is ReAct? -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ CONCEPT OVERVIEW — WHAT IS REACT?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      <strong class="text-white">ReAct = "Reason + Act."</strong><br />
+      In industrial engineering, it is the first pattern that forces AI to behave like an auditor, not an oracle.
+    </p>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Instead of:
+    </p>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-4 mb-5 font-mono text-sm text-slate-300">
+      Input → Black-box output
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      ReAct enforces:
+    </p>
+
+    <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4 mb-8 font-mono text-sm text-neonCyan">
+      Input → Step-by-step reasoning → Conclusion
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Why this matters for PLCs:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>PLC logic is deterministic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Industrial systems require auditability</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>LLMs require scaffolding to avoid hallucinations</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>Reasoning must be human-verifiable</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-5">
+      ReAct gives us <strong class="text-neonCyan">transparent cognition</strong>, not hidden decisions.
+    </p>
+  </div>
+
+  <!-- Section 2: Reference Architecture -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE ARCHITECTURE
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6 my-8">
+      <pre class="mermaid">{`graph LR
+    A[PLC Code] --> B[ReAct Prompt]
+    B --> C[LLM Reasoning]
+    C --> D[LLM Conclusion]
+    D --> E[Human Reviewer]
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#8b5cf6,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#8b5cf6,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#6366f1,stroke-width:2px,color:#fff
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+    </div>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        Boundaries
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">▸</span>
+          <span>The LLM <strong class="text-white">never</strong> writes PLC code</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">▸</span>
+          <span>The LLM <strong class="text-white">never</strong> evaluates live signals</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-machineGreen flex-shrink-0">▸</span>
+          <span>The human makes the final judgment</span>
+        </li>
+      </ul>
+
+      <p class="text-sm text-slate-400 leading-relaxed mt-4">
+        This is the <strong class="text-white">Operator Track safety posture</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 3: Clean Educational Example -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CLEAN EDUCATIONAL EXAMPLE
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We use a simple start/stop logic example:
+    </p>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+      <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+        <span class="text-xs font-mono text-slate-400">IEC 61131-3 Structured Text</span>
+      </div>
+      <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`VAR
+    StartButton     : BOOL;
+    StopButton      : BOOL;
+    MotorRunning    : BOOL;
+END_VAR
+
+IF StartButton AND NOT MotorRunning THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}</code></pre>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed">
+      <strong class="text-neonCyan">Goal:</strong> Use ReAct to analyze this code deterministically.
+    </p>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-8">
+      You now run <strong class="text-white">two safe, advisory-only experiments</strong> using ReAct.
+    </p>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Baseline ReAct Interpretation"
+    objective="Validate that the LLM performs deterministic, step-by-step reasoning on PLC logic."
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+plc_code = """
+VAR
+    StartButton : BOOL;
+    StopButton : BOOL;
+    MotorRunning : BOOL;
+END_VAR
+
+IF StartButton AND NOT MotorRunning THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+prompt = f"""
+You are an industrial PLC code analysis assistant.
+
+Rules:
+- Use the ReAct pattern.
+- First write REASONING.
+- Then write CONCLUSION.
+- Do not propose code changes.
+- Do not infer behavior outside this block.
+
+Analyze the following code:
+{plc_code}
+"""
+
+result = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(result.choices[0].message.content)`}
+    expectedOutput={`REASONING:
+- Motor starts only when StartButton = TRUE and MotorRunning = FALSE.
+- Motor stops whenever StopButton = TRUE.
+- Stop has priority since it is evaluated second.
+
+CONCLUSION:
+The logic implements a basic start/stop latch without sealing circuits.`}
+    interpretation={[
+      '✅ Read-only',
+      '✅ Deterministic',
+      '✅ Human-review mandatory',
+      'Cost: ~$0.02 | Runtime: <1 second'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Controlled Variation (Order Change)"
+    objective="Show how ReAct detects behavioral changes when code order changes."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`plc_code_variant = """
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+
+IF StartButton AND NOT MotorRunning THEN
+    MotorRunning := TRUE;
+END_IF;
+"""
+
+prompt2 = f"""
+Apply the ReAct pattern.
+
+Analyze differences introduced by reordering:
+{plc_code_variant}
+"""
+
+result2 = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt2}
+    ]
+)
+
+print(result2.choices[0].message.content)`}
+    expectedOutput={`REASONING:
+- Now start logic executes *after* stop logic.
+- If both buttons are pressed, StartButton overrides StopButton.
+- This is a behavioral change from the previous version.
+
+CONCLUSION:
+Reversing the order reverses priority.`}
+    interpretation={[
+      '✅ Read-only',
+      '✅ Advisory-only',
+      '✅ Highlights unintended logic changes',
+      'Cost: ~$0.01 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Writing to a PLC</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Modifying production logic</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Bypassing interlocks</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Performing safety decisions</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+        <span class="leading-relaxed">Connecting directly to live equipment</span>
+      </li>
+    </ul>
+  </div>
+
+  <KeyTakeaways items={[
+    'ReAct forces LLMs to <strong class="text-white">show their reasoning</strong>, reducing risk',
+    'Step-order changes in PLC logic can be detected reliably',
+    'Deterministic patterns are safer than natural-language responses',
+    'This method prepares you for safe tool-using agents'
+  ]} />
+
+  <NextTutorial
+    number={3}
+    title="Building Your First Tool-Using Agent (Read-Only, Industrial Safe)"
+    description="You will extend this system by adding a controlled, read-only tool while maintaining ReAct safety constraints."
+  />
+
+  <EngineeringPosture items={[
+    'Determinism over creativity',
+    'Advisory intelligence over autonomy',
+    'Human authority over machine output',
+    'Transparency over opaque reasoning'
+  ]} />
+
+  <!-- Tutorial Complete -->
+  <div class="mt-16 text-center">
+    <p class="text-2xl font-display text-machineGreen tracking-wider">
+      ✅ END OF TUTORIAL #2
+    </p>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->
