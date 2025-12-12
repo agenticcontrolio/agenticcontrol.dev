@@ -1,0 +1,171 @@
+---
+// TutorialScripts.astro
+// Shared JavaScript for all tutorials: Mermaid diagrams, modal expansion, code copy
+---
+
+<!-- Mermaid.js for diagrams -->
+<script type="module" is:inline>
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      // Background colors
+      primaryColor: '#04d9ff',        // neonCyan
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#04d9ff',
+
+      secondaryColor: '#8b5cf6',      // neonPink (Violet Tech)
+      secondaryTextColor: '#ffffff',
+      secondaryBorderColor: '#8b5cf6',
+
+      tertiaryColor: '#6366f1',       // neonPurple (Violet Tech)
+      tertiaryTextColor: '#ffffff',
+      tertiaryBorderColor: '#6366f1',
+
+      // Node colors
+      nodeTextColor: '#ffffff',
+      mainBkg: '#1a1a1e',            // surface
+      nodeBorder: '#04d9ff',
+      clusterBkg: '#0d0d0f',         // background
+      clusterBorder: '#04d9ff',
+
+      // Line colors
+      lineColor: '#04d9ff',
+      arrowheadColor: '#04d9ff',
+
+      // Text
+      fontFamily: 'JetBrains Mono, monospace',
+      fontSize: '18px',
+
+      // Edge/Arrow styling
+      edgeLabelBackground: '#1a1a1e',
+
+      // Special node colors
+      specialTextColor: '#8b5cf6',
+
+      // Background
+      darkMode: true,
+    },
+    flowchart: {
+      curve: 'basis',
+      padding: 20,
+      nodeSpacing: 70,
+      rankSpacing: 70,
+      diagramPadding: 20,
+      useMaxWidth: true,
+    }
+  });
+
+  // Wait for mermaid to render, then add click handlers
+  setTimeout(() => {
+    const diagrams = document.querySelectorAll('pre.mermaid');
+
+    diagrams.forEach(diagram => {
+      diagram.style.cursor = 'pointer';
+      diagram.setAttribute('title', 'Click to expand');
+
+      diagram.addEventListener('click', () => {
+        expandDiagram(diagram);
+      });
+    });
+  }, 1000);
+
+  function expandDiagram(diagramElement) {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'diagram-modal';
+    modal.innerHTML = `
+      <div class="diagram-modal-backdrop"></div>
+      <div class="diagram-modal-content">
+        <button class="diagram-modal-close" aria-label="Close">✕</button>
+        <div class="diagram-modal-diagram">
+          ${diagramElement.outerHTML}
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+
+    // Animate in
+    requestAnimationFrame(() => {
+      modal.classList.add('active');
+    });
+
+    // Close handlers
+    const closeModal = () => {
+      modal.classList.remove('active');
+      setTimeout(() => {
+        document.body.removeChild(modal);
+        document.body.style.overflow = '';
+      }, 300);
+    };
+
+    modal.querySelector('.diagram-modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.diagram-modal-backdrop').addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', function escapeHandler(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    });
+  }
+
+  // Add copy buttons to code blocks
+  document.addEventListener('DOMContentLoaded', () => {
+    const codeBlocks = document.querySelectorAll('pre code');
+
+    codeBlocks.forEach((codeBlock) => {
+      const pre = codeBlock.parentElement;
+
+      // Create copy button
+      const copyButton = document.createElement('button');
+      copyButton.className = 'copy-code-button';
+      copyButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span class="copy-button-text">Copy</span>
+      `;
+      copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+
+      // Insert button inside pre element
+      pre.style.position = 'relative';
+      pre.appendChild(copyButton);
+
+      // Copy functionality
+      copyButton.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(codeBlock.textContent);
+
+          // Update button to show "Copied!"
+          copyButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="copy-button-text">Copied!</span>
+          `;
+          copyButton.classList.add('copied');
+
+          // Reset after 2 seconds
+          setTimeout(() => {
+            copyButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="copy-button-text">Copy</span>
+            `;
+            copyButton.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy code:', err);
+        }
+      });
+    });
+  });
+</script>

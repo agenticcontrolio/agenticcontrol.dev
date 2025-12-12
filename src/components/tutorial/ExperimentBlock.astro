@@ -1,0 +1,93 @@
+---
+// ExperimentBlock.astro
+// Experiment container for tutorial code experiments
+
+interface Props {
+  number: number;                  // Experiment number
+  title: string;                   // Experiment title
+  objective: string;               // What the experiment demonstrates
+  code: string;                    // Code to display
+  language?: string;               // Default: "python"
+  expectedOutput: string;          // Expected output text
+  interpretation?: string[];       // List of interpretation points (optional)
+  borderColor?: string;            // Default: "neonCyan"
+  outputColor?: string;            // Default: "machineGreen"
+}
+
+const {
+  number,
+  title,
+  objective,
+  code,
+  language = "python",
+  expectedOutput,
+  interpretation,
+  borderColor = "neonCyan",
+  outputColor = "machineGreen"
+} = Astro.props;
+
+// Map color names to actual CSS classes
+const borderColorClass = `border-${borderColor}/40`;
+const outputBorderClass = `border-${outputColor}/40`;
+const outputTextClass = `text-${outputColor}`;
+const titleColorClass = `text-${borderColor}`;
+---
+
+<div class={`mb-12 bg-surface/60 border ${borderColorClass} rounded-xl overflow-hidden shadow-lg`}>
+  <div class={`bg-vhs/80 border-b ${borderColorClass} px-6 py-4`}>
+    <h3 class={`font-display text-xl ${titleColorClass} tracking-wide`}>
+      🧪 Experiment {number}: {title}
+    </h3>
+  </div>
+
+  <div class="px-6 py-6">
+    <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3">
+      Objective
+    </h4>
+    <p class="text-base text-slate-300 leading-relaxed mb-6">
+      {objective}
+    </p>
+
+    <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+      {language.charAt(0).toUpperCase() + language.slice(1)} Code
+    </h4>
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden">
+      <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+        <span class="text-xs font-mono text-slate-400">{language.charAt(0).toUpperCase() + language.slice(1)}</span>
+      </div>
+      <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{code}</code></pre>
+    </div>
+
+    <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+      Expected Output
+    </h4>
+    <div class={`bg-slate-900/80 border ${outputBorderClass} rounded-lg p-4`}>
+      <pre class={`text-sm font-mono ${outputTextClass} leading-relaxed`}>{expectedOutput}</pre>
+    </div>
+
+    {interpretation && interpretation.length > 0 && (
+      <>
+        <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wide mb-3 mt-8">
+          {interpretation.length === 1 ? 'Key Difference Observed' : 'Interpretation'}
+        </h4>
+        <ul class="space-y-2">
+          {interpretation.map((item) => {
+            // Check if item has HTML tags for special formatting
+            const hasColorHint = item.includes('<strong');
+
+            return (
+              <li class="flex items-start gap-3 text-slate-300">
+                <span class="text-slate-500 flex-shrink-0">▸</span>
+                {hasColorHint ? (
+                  <span set:html={item} />
+                ) : (
+                  <span>{item}</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+  </div>
+</div>

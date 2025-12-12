@@ -1,0 +1,124 @@
+---
+// src/pages/tutorials/[...slug].astro
+// Dynamic route for individual tutorial pages
+import { getCollection } from 'astro:content';
+import HTMLTutorialLayout from '../../layouts/HTMLTutorialLayout.astro';
+
+// Get all tutorials for static path generation
+export async function getStaticPaths() {
+  const tutorials = await getCollection('tutorials');
+  return tutorials.map(tutorial => {
+    // Extract just the filename without the directory prefix
+    const slugParts = tutorial.slug.split('/');
+    const filename = slugParts[slugParts.length - 1];
+
+    return {
+      params: { slug: filename },
+      props: { tutorial }
+    };
+  });
+}
+
+const { tutorial } = Astro.props;
+const { Content } = await tutorial.render();
+
+// Prepare metadata for HTMLTutorialLayout
+const metadata = {
+  title: tutorial.data.title,
+  subtitle: tutorial.data.subtitle,
+  description: tutorial.data.description,
+  publishDate: tutorial.data.publishDate,
+  lastModified: tutorial.data.lastModified,
+  author: "Jaime Calvente",
+  difficulty: tutorial.data.difficulty,
+  estimatedTime: tutorial.data.estimatedTime,
+  estimatedCost: tutorial.data.estimatedCost,
+  tags: tutorial.data.tags,
+  series: tutorial.data.series,
+  seriesOrder: tutorial.data.seriesOrder,
+};
+
+// Get all tutorials in the same series for prev/next navigation
+const sameSeries = tutorial.data.series
+  ? await getCollection('tutorials', ({ data }) => data.series === tutorial.data.series)
+  : [];
+
+const sortedSeries = [...sameSeries].sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+const currentIndex = sortedSeries.findIndex(t => t.slug === tutorial.slug);
+const prevTutorial = currentIndex > 0 ? sortedSeries[currentIndex - 1] : null;
+const nextTutorial = currentIndex < sortedSeries.length - 1 ? sortedSeries[currentIndex + 1] : null;
+
+// Extract filenames for flat URLs
+const prevSlug = prevTutorial ? prevTutorial.slug.split('/').pop() : null;
+const nextSlug = nextTutorial ? nextTutorial.slug.split('/').pop() : null;
+
+// Determine track page URL from series name
+const trackUrls: Record<string, string> = {
+  'Technician Track': '/technician-track',
+  'Developer Track': '/developer-track',
+  'System & Deployment Track': '/system-deployment-track',
+  'Architect Track': '/architect-track'
+};
+const trackUrl = tutorial.data.series ? trackUrls[tutorial.data.series] : '/';
+
+// Track colors for theming
+const trackColors: Record<string, string> = {
+  'Technician Track': 'machineGreen',
+  'Developer Track': 'amber',
+  'System & Deployment Track': 'plcBlue',
+  'Architect Track': 'neonPink'
+};
+const trackColor = tutorial.data.series ? trackColors[tutorial.data.series] : 'neonCyan';
+---
+
+<HTMLTutorialLayout {...metadata}>
+  <script>
+    import mermaid from 'mermaid';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <!-- Tutorial Content with refined professional design -->
+  <div class="prose prose-invert prose-slate max-w-none
+    prose-headings:font-display prose-headings:text-white prose-headings:tracking-wide
+    prose-h1:text-4xl prose-h1:mb-8 prose-h1:mt-12 prose-h1:font-bold prose-h1:leading-tight
+    prose-h2:text-3xl prose-h2:mb-6 prose-h2:mt-16 prose-h2:pb-4 prose-h2:border-b prose-h2:border-neonCyan/30 prose-h2:font-bold prose-h2:leading-tight
+    prose-h3:text-xl prose-h3:mb-5 prose-h3:mt-10 prose-h3:font-semibold prose-h3:text-slate-100
+    prose-h4:text-sm prose-h4:mb-3 prose-h4:mt-6 prose-h4:text-slate-200 prose-h4:uppercase prose-h4:tracking-wider prose-h4:font-bold
+    prose-p:text-base prose-p:text-slate-300 prose-p:leading-relaxed prose-p:my-5
+    prose-a:text-neonPink prose-a:no-underline prose-a:font-semibold hover:prose-a:text-neonCyan prose-a:transition-colors
+    prose-strong:text-white prose-strong:font-semibold
+    prose-em:text-neonCyan prose-em:italic prose-em:not-italic
+    prose-code:text-neonCyan prose-code:bg-vhs/60 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:font-semibold
+    prose-pre:bg-slate-900/80 prose-pre:border prose-pre:border-slate-600/40 prose-pre:rounded-lg prose-pre:my-8 prose-pre:p-4 prose-pre:shadow-lg
+    prose-ul:text-base prose-ul:text-slate-300 prose-ul:my-6 prose-ul:space-y-2 prose-ul:leading-relaxed
+    prose-ol:text-base prose-ol:text-slate-300 prose-ol:my-6 prose-ol:space-y-2 prose-ol:leading-relaxed
+    prose-li:my-2
+    prose-blockquote:border-l-4 prose-blockquote:border-neonCyan/60 prose-blockquote:bg-neonCyan/5 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-xl prose-blockquote:my-8
+    prose-table:border prose-table:border-slate-600/40 prose-table:my-10 prose-table:rounded-lg prose-table:overflow-hidden prose-table:w-full
+    prose-thead:bg-slate-900/60 prose-thead:border-b prose-thead:border-slate-600/40
+    prose-th:text-neonCyan prose-th:font-bold prose-th:px-5 prose-th:py-3 prose-th:text-left prose-th:text-sm prose-th:uppercase prose-th:tracking-wide
+    prose-td:border prose-td:border-slate-700/30 prose-td:px-5 prose-td:py-3 prose-td:text-sm prose-td:text-slate-300
+    prose-tbody:divide-y prose-tbody:divide-slate-700/30
+    prose-tr:hover:bg-slate-800/40 prose-tr:transition-colors
+    prose-hr:border-neonCyan/20 prose-hr:my-10
+  ">
+    <Content />
+  </div>
+</HTMLTutorialLayout>
+
+<style>
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Code block styling */
+  :global(pre code) {
+    font-size: 0.875rem;
+    line-height: 1.625;
+  }
+
+  /* Remove default prose link underlines */
+  :global(.prose a) {
+    text-decoration: none;
+  }
+</style>

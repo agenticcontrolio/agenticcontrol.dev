@@ -1,0 +1,34 @@
+---
+// CoreMission.astro
+// Core Mission objectives section for tutorials
+
+interface Props {
+  items: string[];          // HTML allowed for <strong> tags
+  footer?: string;          // Optional footer text
+}
+
+const { items, footer } = Astro.props;
+---
+
+<div class="mb-16">
+  <h2 class="text-3xl font-display text-neonCyan mb-6 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+    ✅ CORE MISSION OF THIS TUTORIAL
+  </h2>
+
+  <p class="text-base text-slate-300 leading-relaxed mb-5">
+    By the end of this tutorial, the reader will be able to:
+  </p>
+
+  <ul class="space-y-3 my-6">
+    {items.map((item) => (
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed" set:html={item} />
+      </li>
+    ))}
+  </ul>
+
+  {footer && (
+    <p class="text-base text-slate-300 leading-relaxed mt-6" set:html={footer} />
+  )}
+</div>

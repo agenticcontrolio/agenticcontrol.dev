@@ -1,0 +1,25 @@
+---
+// KeyTakeaways.astro
+// Key takeaways section for tutorials
+
+interface Props {
+  items: string[];          // HTML allowed for <strong> tags
+}
+
+const { items } = Astro.props;
+---
+
+<div class="mb-16">
+  <h2 class="text-3xl font-display text-machineGreen mb-6 mt-16 pb-4 border-b-2 border-machineGreen/30 tracking-wider">
+    ✅ KEY TAKEAWAYS
+  </h2>
+
+  <ul class="space-y-3">
+    {items.map((item) => (
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen text-lg flex-shrink-0 mt-0.5">✅</span>
+        <span class="leading-relaxed" set:html={item} />
+      </li>
+    ))}
+  </ul>
+</div>
