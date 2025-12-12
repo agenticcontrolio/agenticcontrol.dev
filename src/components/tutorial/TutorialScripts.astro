@@ -76,14 +76,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
-    padding: 2rem;
+    min-height: 300px;
+    padding: 1rem;
+    overflow: auto;
+    width: 100%;
   }
 
   /* Mobile - small scale */
   .diagram-modal-diagram pre.mermaid,
   .diagram-modal-diagram svg {
-    transform: scale(1.5);
+    transform: scale(1.2);
     transform-origin: center center;
   }
 
@@ -91,7 +93,7 @@
   @media (min-width: 640px) {
     .diagram-modal-diagram pre.mermaid,
     .diagram-modal-diagram svg {
-      transform: scale(2.0);
+      transform: scale(1.5);
       transform-origin: center center;
     }
   }
@@ -100,7 +102,7 @@
   @media (min-width: 1024px) {
     .diagram-modal-diagram pre.mermaid,
     .diagram-modal-diagram svg {
-      transform: scale(2.5);
+      transform: scale(1.8);
       transform-origin: center center;
     }
   }
@@ -109,7 +111,7 @@
   @media (min-width: 1920px) {
     .diagram-modal-diagram pre.mermaid,
     .diagram-modal-diagram svg {
-      transform: scale(3.2);
+      transform: scale(2.2);
       transform-origin: center center;
     }
   }

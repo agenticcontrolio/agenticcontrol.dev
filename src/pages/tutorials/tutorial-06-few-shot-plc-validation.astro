@@ -1,0 +1,421 @@
+---
+// Tutorial 06 - Few-Shot Learning for PLC Validation
+// Converted from markdown to Astro format using skill-tutorial-writing
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-06-few-shot-plc-validation');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 06: Few-Shot Learning for PLC Validation | AgenticControl.dev';
+const description = 'Learn how to guide AI toward consistent and reliable PLC code validation by supplying high-quality examples.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand what <strong class="text-white">few-shot learning</strong> is in practical engineering terms',
+      'Provide <strong class="text-white">high-quality PLC examples</strong> that guide the model toward consistency',
+      'Validate PLC logic using <strong class="text-white">controlled, auditable prompts</strong>',
+      'Prevent "creative" or unsafe reinterpretations of logic',
+      'Prepare the foundation for <strong class="text-white">advisory safety reviews</strong> (Tutorial #7)'
+    ]}
+    footer='Few-shot learning is how you teach AI <strong class="text-neonCyan">patterns, not rules</strong> — safely.'
+  />
+
+  <SafetyBoundary type="analysis" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'TwinCAT, Siemens TIA Portal, CODESYS',
+      'Allen-Bradley ST',
+      'Any IEC-based runtime'
+    ]}
+    footer='No vendor APIs or libraries are required. No online PLC interactions.'
+  />
+
+  <!-- Section 1: What Is Few-Shot Learning? -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ WHAT IS FEW-SHOT LEARNING?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      In engineering terms:
+    </p>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        Few-shot learning is <strong class="text-white">pattern teaching through examples, not parameter training.</strong>
+      </p>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We are <strong class="text-white">not</strong> fine-tuning the model.<br />
+      We are <strong class="text-white">not</strong> training weights.
+    </p>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Instead:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>We show the LLM <em>how a good validation looks</em></span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>It imitates the format, structure, and tone</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>It becomes far more predictable</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-8">
+      Few-shot learning directly increases:
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-4 my-6">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Consistency</p>
+        <p class="text-sm text-slate-400 mt-2">Same format every time</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Accuracy</p>
+        <p class="text-sm text-slate-400 mt-2">Better pattern matching</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Traceability</p>
+        <p class="text-sm text-slate-400 mt-2">Predictable outputs</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Engineer Trust</p>
+        <p class="text-sm text-slate-400 mt-2">Reliable behavior</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Reference Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE SCENARIO — VALIDATING SIMPLE MOTOR LOGIC
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We define a <strong class="text-white">"golden example"</strong> for validating a minimal motor control block:
+    </p>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+      <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+        <span class="text-xs font-mono text-slate-400">IEC 61131-3 Structured Text</span>
+      </div>
+      <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}</code></pre>
+    </div>
+
+    <div class="bg-neonCyan/10 border-l-4 border-neonCyan rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonCyan leading-relaxed font-semibold">
+        Our goal: Build an AI validator that analyzes logic against expected behavior <strong class="text-white">without producing code.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 3: Constructing Few-Shot Prompts -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CONSTRUCTING A PROPER FEW-SHOT PROMPT
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      A few-shot validator prompt contains:
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-neonPurple mb-4">Prompt Components</h4>
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPurple flex-shrink-0">1.</span>
+            <div>
+              <strong class="text-white">Rules</strong>
+              <p class="text-sm text-slate-400 mt-1">Clear validation guidelines</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPurple flex-shrink-0">2.</span>
+            <div>
+              <strong class="text-white">Examples</strong>
+              <p class="text-sm text-slate-400 mt-1">One or more golden examples</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPurple flex-shrink-0">3.</span>
+            <div>
+              <strong class="text-white">Code to Validate</strong>
+              <p class="text-sm text-slate-400 mt-1">Target PLC logic</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPurple flex-shrink-0">4.</span>
+            <div>
+              <strong class="text-white">Format Template</strong>
+              <p class="text-sm text-slate-400 mt-1">Expected output structure</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-neonCyan mb-4">Few-Shot Flow</h4>
+        <pre class="mermaid">{`graph LR
+    A[Rules] --> B[Examples]
+    B --> C[Code Input]
+    C --> D[Validation Output]
+
+    style A fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Examples guide the model toward consistent format
+        </p>
+      </div>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-8">
+      This tutorial includes two experiments demonstrating how each layer improves reliability.
+    </p>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Single Example Few-Shot Validator"
+    objective="Show how even one good example stabilizes the validator output."
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+example_validation = """
+### EXAMPLE_VALIDATION
+INPUT_CODE:
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+
+VALIDATION_RESULT:
+- Logic correctly sets MotorRunning TRUE on StartButton.
+- Logic correctly resets MotorRunning on StopButton.
+- No latches, timers, or safety logic present.
+- Behavior matches expected specification.
+### END_EXAMPLE
+"""
+
+code_to_validate = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+prompt = f"""
+You are a PLC logic validator. Follow the example exactly.
+
+{example_validation}
+
+### VALIDATE_THIS
+INPUT_CODE:
+{code_to_validate}
+
+VALIDATION_RESULT:
+"""
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`- Logic correctly sets MotorRunning TRUE on StartButton.
+- Logic correctly resets MotorRunning on StopButton.
+- No latches, timers, or unexpected constructs detected.
+- Logic matches the expected specification.`}
+    interpretation={[
+      '✅ AI begins to <strong class="text-white">imitate the pattern</strong>',
+      '✅ Output becomes <strong class="text-white">auditable and stable</strong>',
+      '✅ No hallucinated features',
+      'Cost: ~$0.01 | Runtime: <1 second'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Multi-Example Few-Shot Validator"
+    objective="Improve robustness by supplying two examples, including one with a mistake."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+multi_examples = """
+### EXAMPLE_GOOD
+INPUT_CODE:
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+
+VALIDATION_RESULT:
+- Behavior follows the expected start/stop specification.
+- No timers, latches, or unexpected constructs detected.
+### END_EXAMPLE
+
+### EXAMPLE_FAULTY
+INPUT_CODE:
+MotorRunning := StartButton AND NOT StopButton;
+
+VALIDATION_RESULT:
+- Logic incorrectly ties output directly to input expression.
+- MotorRunning loses state when both inputs are FALSE.
+- Expected behavior: MotorRunning should latch TRUE until StopButton.
+### END_EXAMPLE
+"""
+
+code_to_validate = """
+MotorRunning := StartButton AND NOT StopButton;
+"""
+
+prompt = f"""
+You are a PLC logic validator. Use the examples as patterns.
+Be concise, deterministic, and avoid suggesting code.
+
+{multi_examples}
+
+### VALIDATE_THIS
+INPUT_CODE:
+{code_to_validate}
+
+VALIDATION_RESULT:
+"""
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt}
+    ]
+)
+
+print(response.choices[0].message.content)`}
+    expectedOutput={`- Logic directly binds MotorRunning to input expression.
+- This causes loss of state when both inputs are FALSE.
+- Expected behavior requires preserving MotorRunning until StopButton activates.
+- Pattern matches the faulty example case.`}
+    interpretation={[
+      '✅ More accurate with <strong class="text-white">two examples</strong>',
+      '✅ More specific error detection',
+      '✅ More robust to variations',
+      '✅ Better at identifying faulty patterns',
+      'Cost: ~$0.02 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        ❌ Never Use Few-Shot Validation For:
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Using few-shot validation as <strong class="text-white">final approval</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Using AI to sign off <strong class="text-white">safety-rated logic</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Automatically <strong class="text-white">fixing or rewriting PLC code</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Passing AI validation as <strong class="text-white">compliance documentation</strong></span>
+        </li>
+      </ul>
+
+      <p class="text-sm text-slate-400 leading-relaxed mt-4">
+        Few-shot validation is <strong class="text-white">guidance</strong>, not authorization.
+      </p>
+    </div>
+  </div>
+
+  <KeyTakeaways
+    items={[
+      'Few-shot learning teaches AI by example, not training',
+      'Examples drastically improve consistency and trust',
+      'Multiple examples strengthen error detection',
+      'Validation stays <strong class="text-white">advisory only</strong>',
+      'This forms the basis for <strong class="text-neonCyan">Tutorial #7 — Chain-of-Thought Safety Review</strong>'
+    ]}
+  />
+
+  <NextTutorial
+    number={7}
+    title="Chain-of-Thought for Logic Review (Advisory Only)"
+    description="Learn how to perform structured, transparent reasoning on PLC logic."
+    url="/tutorials/tutorial-07-chain-of-thought-safety-review"
+  />
+
+  <EngineeringPosture
+    items={[
+      'Pattern-guided validation',
+      'Controlled, predictable output',
+      'Human authority over all decisions',
+      'Safety-first educational design'
+    ]}
+  />
+</TutorialLayoutWithNav>

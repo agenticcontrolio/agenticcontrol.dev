@@ -1,0 +1,440 @@
+---
+// Tutorial 09 - Structured Outputs for PLC Data Extraction
+// Converted from markdown to Astro format using skill-tutorial-writing
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-09-structured-outputs-plc-data');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 09: Structured Outputs for PLC Data Extraction | AgenticControl.dev';
+const description = 'Learn how to force AI agents to return deterministic, structured outputs when analyzing PLC logic, enabling reliable downstream processing.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand why <strong class="text-white">free-text AI outputs are unreliable</strong> for systems',
+      'Design <strong class="text-white">strict output schemas</strong> for PLC analysis',
+      'Force AI agents to return <strong class="text-white">machine-readable JSON</strong>',
+      'Validate and parse structured outputs safely',
+      'Prepare agents for integration into larger systems'
+    ]}
+    footer='This tutorial marks the transition from <strong class="text-neonCyan">analysis for humans</strong> to <strong class="text-neonCyan">data for systems</strong>.'
+  />
+
+  <SafetyBoundary type="analysis" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'Python-only processing',
+      'JSON schemas',
+      'No PLC runtimes or SDKs'
+    ]}
+    footer='Applicable to all IEC-compliant environments.'
+  />
+
+  <!-- Section 1: Why Free-Text Is Not Enough -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ WHY FREE-TEXT IS NOT ENOUGH
+    </h2>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        Humans like prose.<br />
+        <strong class="text-white">Systems do not.</strong>
+      </p>
+    </div>
+
+    <h3 class="text-xl font-display text-slate-100 mb-4">
+      Free-Text AI Outputs:
+    </h3>
+
+    <div class="grid md:grid-cols-2 gap-4 my-6">
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-4">
+        <p class="text-neonPink font-semibold">❌ Are Ambiguous</p>
+        <p class="text-sm text-slate-400 mt-2">Wording varies unpredictably</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-4">
+        <p class="text-neonPink font-semibold">❌ Change Unpredictably</p>
+        <p class="text-sm text-slate-400 mt-2">No stable format</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-4">
+        <p class="text-neonPink font-semibold">❌ Hard to Parse</p>
+        <p class="text-sm text-slate-400 mt-2">No structured extraction</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-4">
+        <p class="text-neonPink font-semibold">❌ Break Downstream Logic</p>
+        <p class="text-sm text-slate-400 mt-2">Can't automate processing</p>
+      </div>
+    </div>
+
+    <div class="bg-neonCyan/10 border-l-4 border-neonCyan rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonCyan leading-relaxed font-semibold">
+        For agents to cooperate with software, <strong class="text-white">structure is mandatory</strong>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 2: Defining a Structured Extraction Target -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ DEFINING A STRUCTURED EXTRACTION TARGET
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We want to extract the following from PLC logic:
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4 my-6">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">📥 Inputs</p>
+        <p class="text-sm text-slate-400 mt-2">Button signals, sensors</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">📤 Outputs</p>
+        <p class="text-sm text-slate-400 mt-2">Motor states, actuators</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔄 Internal Variables</p>
+        <p class="text-sm text-slate-400 mt-2">State flags, counters</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-4">
+        <p class="text-neonPurple font-semibold">🔍 Detected Behaviors</p>
+        <p class="text-sm text-slate-400 mt-2">Logic patterns identified</p>
+      </div>
+      <div class="bg-slate-900/80 border border-amber/40 rounded-lg p-4">
+        <p class="text-amber font-semibold">⚠️ Potential Issues</p>
+        <p class="text-sm text-slate-400 mt-2">Edge cases, warnings</p>
+      </div>
+      <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-4">
+        <p class="text-machineGreen font-semibold">✅ Must Be JSON</p>
+        <p class="text-sm text-slate-400 mt-2">Strict structure required</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Reference PLC Logic & Schema -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ REFERENCE PLC LOGIC & OUTPUT SCHEMA
+    </h2>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <!-- PLC Code -->
+      <div>
+        <h4 class="text-lg font-display text-neonCyan mb-4">Reference PLC Logic</h4>
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+            <span class="text-xs font-mono text-slate-400">IEC 61131-3 ST</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}</code></pre>
+        </div>
+      </div>
+
+      <!-- Output Schema -->
+      <div>
+        <h4 class="text-lg font-display text-machineGreen mb-4">Target Output Schema</h4>
+        <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg overflow-hidden">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-machineGreen/40">
+            <span class="text-xs font-mono text-machineGreen">JSON Schema</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-machineGreen leading-relaxed">{`{
+  "inputs": [],
+  "outputs": [],
+  "internal_variables": [],
+  "behaviors": [],
+  "notes": []
+}`}</code></pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Anything outside this schema is invalid
+        </p>
+      </div>
+    </div>
+
+    <!-- Flow Diagram -->
+    <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6 my-8">
+      <h4 class="text-lg font-display text-neonPurple mb-4">Structured Output Flow</h4>
+      <pre class="mermaid">{`graph LR
+    A[PLC Code] --> B[Agent Analysis]
+    B --> C[JSON Schema]
+    C --> D[Validation]
+    D --> E[Structured Data]
+    E --> F[Downstream Systems]
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#fec20b,stroke-width:2px,color:#fec20b
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f
+    style F fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff`}</pre>
+      <p class="text-xs text-slate-400 mt-3 italic">
+        Validation ensures reliability before downstream processing
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Unstructured vs Structured Output"
+    objective="Observe the difference between free-text and structured output."
+    code={`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+code = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+# --- Unstructured prompt ---
+
+prompt_unstructured = f"""
+Analyze the following PLC logic and describe what it does:
+
+{code}
+"""
+
+resp_text = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_unstructured}
+    ]
+)
+
+print("UNSTRUCTURED OUTPUT:\\n")
+print(resp_text.choices[0].message.content)
+
+# --- Structured prompt ---
+
+prompt_structured = f"""
+You are a PLC analysis agent.
+
+Return ONLY valid JSON matching this schema exactly:
+
+{{
+  "inputs": [],
+  "outputs": [],
+  "internal_variables": [],
+  "behaviors": [],
+  "notes": []
+}}
+
+PLC LOGIC:
+{code}
+"""
+
+resp_json = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_structured}
+    ]
+)
+
+parsed = json.loads(resp_json.choices[0].message.content)
+print("\\nSTRUCTURED OUTPUT:\\n")
+print(json.dumps(parsed, indent=2))`}
+    expectedOutput={`UNSTRUCTURED OUTPUT:
+
+This PLC logic implements a basic start/stop control for a motor...
+(output varies with each run)
+
+STRUCTURED OUTPUT:
+
+{
+  "inputs": ["StartButton", "StopButton"],
+  "outputs": ["MotorRunning"],
+  "internal_variables": [],
+  "behaviors": [
+    "MotorRunning set TRUE when StartButton is TRUE",
+    "MotorRunning set FALSE when StopButton is TRUE"
+  ],
+  "notes": [
+    "No fault handling present",
+    "MotorRunning retains last state when no buttons are pressed"
+  ]
+}`}
+    interpretation={[
+      '❌ Free text is <strong class="text-white">expressive but unstable</strong>',
+      '✅ Structured output is <strong class="text-white">predictable and automatable</strong>',
+      '✅ JSON enables <strong class="text-white">reliable parsing</strong>',
+      'Cost: ~$0.03 | Runtime: 2-3 seconds'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Enforcing Schema Compliance"
+    objective="Reject invalid outputs and ensure reliability."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+import json
+
+client = OpenAI()
+
+def validate_schema(data: dict):
+    """Validate that response matches expected schema."""
+    required_keys = {
+        "inputs",
+        "outputs",
+        "internal_variables",
+        "behaviors",
+        "notes"
+    }
+    return set(data.keys()) == required_keys
+
+code = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+prompt_structured = f"""
+You are a PLC analysis agent.
+
+Return ONLY valid JSON matching this schema exactly:
+
+{{
+  "inputs": [],
+  "outputs": [],
+  "internal_variables": [],
+  "behaviors": [],
+  "notes": []
+}}
+
+PLC LOGIC:
+{code}
+"""
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_structured}
+    ]
+)
+
+try:
+    data = json.loads(response.choices[0].message.content)
+    if validate_schema(data):
+        print("✅ Schema valid:", json.dumps(data, indent=2))
+    else:
+        print("❌ Schema violation: Missing or extra keys")
+except json.JSONDecodeError as e:
+    print("❌ Invalid JSON:", e)
+except Exception as e:
+    print("❌ Validation error:", e)`}
+    expectedOutput={`✅ Schema valid: {
+  "inputs": ["StartButton", "StopButton"],
+  "outputs": ["MotorRunning"],
+  "internal_variables": [],
+  "behaviors": [
+    "MotorRunning set TRUE when StartButton is TRUE",
+    "MotorRunning set FALSE when StopButton is TRUE"
+  ],
+  "notes": [
+    "No fault handling present"
+  ]
+}`}
+    interpretation={[
+      '✅ AI outputs must be <strong class="text-white">validated like any other input</strong>',
+      '✅ Never trust raw responses',
+      '✅ Structured output enables <strong class="text-white">safe composition</strong>',
+      '✅ Validation catches malformed data',
+      'Cost: ~$0.02 | Runtime: <2 seconds'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        ❌ Never Use Structured Output For:
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Using structured output to <strong class="text-white">drive control logic</strong> directly</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Skipping <strong class="text-white">validation</strong> of schema compliance</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Allowing <strong class="text-white">partial schemas</strong> or missing fields</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Treating AI output as <strong class="text-white">ground truth</strong> without verification</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <KeyTakeaways
+    items={[
+      'Structured output is <strong class="text-white">mandatory</strong> for system integration',
+      'JSON schemas act as <strong class="text-white">contracts</strong> between agent and system',
+      'Validation is <strong class="text-white">non-negotiable</strong>',
+      'This enables <strong class="text-neonCyan">multi-agent and pipeline designs</strong>'
+    ]}
+  />
+
+  <NextTutorial
+    number={10}
+    title="Fault Diagnosis Agents from Clean Alarm Logs (Capstone)"
+    description="Combine reasoning + tools + structure into a complete advisory agent."
+    url="/tutorials/tutorial-10-fault-diagnosis-capstone"
+  />
+
+  <EngineeringPosture
+    items={[
+      'Determinism over creativity',
+      'Validation over trust',
+      'Data contracts over prose',
+      'Systems thinking over demos'
+    ]}
+  />
+</TutorialLayoutWithNav>

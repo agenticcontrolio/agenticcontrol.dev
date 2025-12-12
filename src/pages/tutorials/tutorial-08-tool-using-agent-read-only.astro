@@ -1,0 +1,400 @@
+---
+// Tutorial 08 - Building Your First Tool-Using Agent
+// Converted from markdown to Astro format using skill-tutorial-writing
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-08-tool-using-agent-read-only');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 08: Building Your First Tool-Using Agent | AgenticControl.dev';
+const description = 'Learn how to safely connect an AI agent to a single, read-only tool to analyze PLC logic without any control authority.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand what makes an agent <strong class="text-white">tool-using</strong>',
+      'Distinguish <strong class="text-white">reasoning from tool execution</strong>',
+      'Design a <strong class="text-white">single, read-only tool boundary</strong>',
+      'Safely connect AI reasoning to external data',
+      'Prevent accidental control or actuation'
+    ]}
+    footer='This tutorial introduces <strong class="text-neonCyan">controlled capability expansion</strong>.'
+  />
+
+  <SafetyBoundary type="analysis" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'Python-based tooling',
+      'No PLC runtimes',
+      'No vendor SDKs'
+    ]}
+    footer='Patterns apply to all industrial environments.'
+  />
+
+  <!-- Section 1: What Is a Tool-Using Agent? -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ WHAT IS A TOOL-USING AGENT?
+    </h2>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        A tool-using agent is: An agent that can <strong class="text-white">invoke external functions to gather information</strong>, then reason about the results.
+      </p>
+    </div>
+
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-12">
+      Key Distinction
+    </h3>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-neonPink mb-4">❌ Tool ≠ Control</h4>
+        <p class="text-slate-300 text-sm">
+          Tools are <strong class="text-white">not</strong> for commanding, writing, or actuating systems
+        </p>
+      </div>
+
+      <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-machineGreen mb-4">✅ Tool = Observation</h4>
+        <p class="text-slate-300 text-sm">
+          Tools are for <strong class="text-white">reading, parsing, and gathering</strong> information
+        </p>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-display text-slate-100 mb-4">
+      In Industrial Contexts
+    </h3>
+
+    <div class="grid md:grid-cols-2 gap-4 my-6">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">✅ Tools Read Logs</p>
+        <p class="text-sm text-slate-400 mt-2">Access historical data</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">✅ Tools Parse Code</p>
+        <p class="text-sm text-slate-400 mt-2">Extract structured information</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">✅ Tools Fetch Specifications</p>
+        <p class="text-sm text-slate-400 mt-2">Retrieve documentation</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-4">
+        <p class="text-neonPink font-semibold">❌ Tools Never Actuate</p>
+        <p class="text-sm text-slate-400 mt-2">No control authority</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Reference Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE SCENARIO — READING PLC LOGIC FROM A FILE
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We simulate a very common scenario:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>PLC logic exists as a text file</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-machineGreen flex-shrink-0">✅</span>
+        <span>The agent may <strong class="text-white">read and analyze</strong> it</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPink flex-shrink-0">❌</span>
+        <span>The agent may <strong class="text-white">not modify</strong> it</span>
+      </li>
+    </ul>
+
+    <div class="bg-neonCyan/10 border-l-4 border-neonCyan rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonCyan leading-relaxed font-semibold">
+        This is a <strong class="text-white">perfect first tool boundary.</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 3: Designing a Read-Only Tool -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ DESIGNING A READ-ONLY TOOL
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Our tool will:
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <!-- Tool Design Pattern -->
+      <div>
+        <h4 class="text-lg font-display text-neonPurple mb-4">Tool Design Pattern</h4>
+        <div class="bg-slate-900/80 border border-neonPurple/40 rounded-lg p-6">
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-neonPurple flex-shrink-0">1.</span>
+              <div>
+                <strong class="text-white">Accept a filename</strong>
+                <p class="text-sm text-slate-400 mt-1">Input parameter</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-neonPurple flex-shrink-0">2.</span>
+              <div>
+                <strong class="text-white">Return its contents</strong>
+                <p class="text-sm text-slate-400 mt-1">Pure function output</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-neonPurple flex-shrink-0">3.</span>
+              <div>
+                <strong class="text-white">Perform no side effects</strong>
+                <p class="text-sm text-slate-400 mt-1">Read-only guarantee</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tool-Using Agent Flow -->
+      <div>
+        <h4 class="text-lg font-display text-neonCyan mb-4">Tool-Using Agent Flow</h4>
+        <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[User Request] --> B[Agent Reasoning]
+    B --> C[Call Tool]
+    C --> D[Read File]
+    D --> E[Return Data]
+    E --> B
+    B --> F[Analysis Result]
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style E fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style F fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Agent decides when to use tool, reasons about results
+        </p>
+      </div>
+    </div>
+
+    <div class="bg-neonPink/10 border-l-4 border-neonPink rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPink leading-relaxed font-semibold">
+        This boundary is <strong class="text-white">deliberate and critical</strong> for safety.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Creating a Read-Only Tool"
+    objective="Define and test a safe, read-only tool function."
+    code={`def read_plc_code(file_path: str) -> str:
+    """
+    Read-only tool.
+    Returns the contents of a PLC logic file.
+    """
+    with open(file_path, "r") as f:
+        return f.read()
+
+
+# Example usage
+example_code = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+"""
+
+with open("plc_logic.st", "w") as f:
+    f.write(example_code)
+
+print(read_plc_code("plc_logic.st"))`}
+    expectedOutput={`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;`}
+    interpretation={[
+      '✅ The tool <strong class="text-white">only reads</strong>',
+      '✅ No writes, no execution, no control',
+      '✅ This boundary is <strong class="text-white">enforceable and auditable</strong>',
+      'Cost: $0.00 | Runtime: <1 second'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Agent Reasoning + Tool Usage"
+    objective="Allow the agent to decide when to call the tool and how to use its output."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+system_prompt = """
+You are an industrial analysis agent.
+
+Rules:
+- You may use the tool read_plc_code ONLY to read files.
+- You must never suggest code changes.
+- You must never issue commands.
+- You must explain when and why you use the tool.
+"""
+
+user_prompt = """
+Analyze the PLC logic in file plc_logic.st.
+Explain what the logic does.
+"""
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "read_plc_code",
+            "description": "Read PLC logic from a file",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "file_path": {"type": "string"}
+                },
+                "required": ["file_path"]
+            }
+        }
+    }
+]
+
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ],
+    tools=tools
+)
+
+# Handle tool call if present
+if response.choices[0].message.tool_calls:
+    tool_call = response.choices[0].message.tool_calls[0]
+    if tool_call.function.name == "read_plc_code":
+        # Execute the tool
+        import json
+        args = json.loads(tool_call.function.arguments)
+        result = read_plc_code(args["file_path"])
+
+        # Send result back to agent
+        response2 = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+                response.choices[0].message,
+                {
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": result
+                }
+            ],
+            tools=tools
+        )
+        print(response2.choices[0].message.content)
+else:
+    print(response.choices[0].message.content)`}
+    expectedOutput={`I will read the PLC logic file to understand its behavior.
+
+[Tool Call: read_plc_code with file_path="plc_logic.st"]
+
+The logic sets MotorRunning to TRUE when StartButton is pressed.
+No stop or fault logic is present.`}
+    interpretation={[
+      '✅ The agent decides <strong class="text-white">when</strong> to use the tool',
+      '✅ The tool provides <strong class="text-white">data only</strong>',
+      '✅ Reasoning remains <strong class="text-white">fully visible</strong>',
+      '✅ Human can audit tool calls',
+      'Cost: ~$0.03 | Runtime: 2-3 seconds'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        ❌ Never Allow Tools To:
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Allowing tools to <strong class="text-white">write or modify</strong> files/systems</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Letting agents <strong class="text-white">chain tools autonomously</strong> without oversight</span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Exposing <strong class="text-white">hardware or network APIs</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Skipping <strong class="text-white">explanation of tool usage</strong></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <KeyTakeaways
+    items={[
+      'Tools expand <strong class="text-white">perception</strong>, not authority',
+      'Read-only tools are the safest starting point',
+      'Tool usage must be <strong class="text-white">explicit and explainable</strong>',
+      'This is the foundation for <strong class="text-neonCyan">supervised agents</strong>'
+    ]}
+  />
+
+  <NextTutorial
+    number={9}
+    title="Structured Outputs for PLC Data Extraction"
+    description="Learn how to force agents to return machine-parseable results."
+    url="/tutorials/tutorial-09-structured-outputs"
+  />
+
+  <EngineeringPosture
+    items={[
+      'Capability before autonomy',
+      'Observation before action',
+      'Explicit boundaries',
+      'Human-in-the-loop by design'
+    ]}
+  />
+</TutorialLayoutWithNav>

@@ -1,0 +1,526 @@
+---
+// Tutorial 07 - Chain-of-Thought for Logic Review
+// Converted from markdown to Astro format using skill-tutorial-writing
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-07-chain-of-thought-logic-review');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Tutorial 07: Chain-of-Thought for Logic Review | AgenticControl.dev';
+const description = 'Learn how to get AI to explain its reasoning step-by-step when reviewing PLC logic, improving clarity, trust, and debuggability.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <CoreMission
+    items={[
+      'Understand what <strong class="text-white">chain-of-thought (CoT)</strong> means in practical engineering terms',
+      'Ask AI to <strong class="text-white">explain its reasoning</strong>, not just give a verdict',
+      'Use <strong class="text-white">structured reasoning formats</strong> for PLC logic review',
+      'Detect subtle logic issues more reliably through explicit reasoning',
+      'Prepare for future agent behavior that is <strong class="text-white">transparent and auditable</strong>'
+    ]}
+    footer='This tutorial focuses on <strong class="text-neonCyan">logic review</strong>, not safety certification.'
+  />
+
+  <SafetyBoundary type="analysis" />
+
+  <VendorAgnosticNote
+    items={[
+      'Generic IEC 61131-3 Structured Text (ST)',
+      'TwinCAT, Siemens TIA Portal, CODESYS',
+      'Allen-Bradley ST',
+      'Any IEC-based runtime'
+    ]}
+    footer='No vendor-specific libraries, no runtime access, no PLC connections.'
+  />
+
+  <!-- Section 1: What Is Chain-of-Thought? -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      1️⃣ WHAT IS CHAIN-OF-THOUGHT IN ENGINEERING TERMS?
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      In this context:
+    </p>
+
+    <div class="bg-neonPurple/10 border-l-4 border-neonPurple rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonPurple leading-relaxed font-semibold">
+        Chain-of-thought = <strong class="text-white">explicit, step-by-step reasoning that explains how a conclusion was reached.</strong>
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-neonPink mb-4">❌ Without Chain-of-Thought</h4>
+        <div class="bg-slate-800/60 rounded p-4 font-mono text-sm text-slate-400">
+          "Yes, the logic is correct."
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Not auditable, hard to verify
+        </p>
+      </div>
+
+      <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-6">
+        <h4 class="text-lg font-display text-machineGreen mb-4">✅ With Chain-of-Thought</h4>
+        <div class="bg-slate-800/60 rounded p-4 font-mono text-sm text-machineGreen">
+          Step 1: When StartButton is TRUE...<br/>
+          Step 2: When StopButton is TRUE...<br/>
+          Step 3: Therefore the logic behaves as specified.
+        </div>
+        <p class="text-xs text-slate-400 mt-3 italic">
+          Transparent, inspectable reasoning
+        </p>
+      </div>
+    </div>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Chain-of-thought does <strong class="text-white">not</strong> make the model smarter by itself.<br />
+      It makes the model's <strong class="text-white">thinking inspectable</strong> by you.
+    </p>
+
+    <h3 class="text-2xl font-display text-slate-100 mb-6 mt-12">
+      Benefits for PLC Engineers
+    </h3>
+
+    <div class="grid md:grid-cols-2 gap-4 my-6">
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 See Where AI Might Be Wrong</p>
+        <p class="text-sm text-slate-400 mt-2">Inspect each reasoning step</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Challenge Assumptions</p>
+        <p class="text-sm text-slate-400 mt-2">Correct flawed logic immediately</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Reuse Reasoning Patterns</p>
+        <p class="text-sm text-slate-400 mt-2">Apply across similar reviews</p>
+      </div>
+      <div class="bg-slate-900/80 border border-neonCyan/40 rounded-lg p-4">
+        <p class="text-neonCyan font-semibold">🔹 Build Trust Through Transparency</p>
+        <p class="text-sm text-slate-400 mt-2">Not blind faith</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Reference Scenario -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      2️⃣ REFERENCE SCENARIO — REVIEWING SIMPLE MOTOR LOGIC
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      We reuse a familiar IEC ST snippet:
+    </p>
+
+    <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+      <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+        <span class="text-xs font-mono text-slate-400">IEC 61131-3 Structured Text</span>
+      </div>
+      <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;`}</code></pre>
+    </div>
+
+    <h3 class="text-xl font-display text-slate-100 mb-4">
+      Specification (Informal)
+    </h3>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>When <code class="text-neonCyan">StartButton</code> is TRUE → <code class="text-neonCyan">MotorRunning</code> should become TRUE</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>When <code class="text-neonCyan">StopButton</code> is TRUE → <code class="text-neonCyan">MotorRunning</code> should become FALSE</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonCyan flex-shrink-0">▸</span>
+        <span>When neither button is pressed → <code class="text-neonCyan">MotorRunning</code> should keep its last state</span>
+      </li>
+    </ul>
+
+    <p class="text-base text-slate-300 leading-relaxed mt-8">
+      We want the AI to:
+    </p>
+
+    <ul class="space-y-2 my-6">
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Explain whether the logic matches the spec</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Show intermediate reasoning steps</span>
+      </li>
+      <li class="flex items-start gap-3 text-slate-300">
+        <span class="text-neonPurple flex-shrink-0">▸</span>
+        <span>Output a clear <strong class="text-white">VERDICT</strong></span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Section 3: Verdict-Only vs Chain-of-Thought -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      3️⃣ CONCEPT: VERDICT-ONLY VS CHAIN-OF-THOUGHT OUTPUT
+    </h2>
+
+    <p class="text-base text-slate-300 leading-relaxed mb-5">
+      Two modes of AI behavior:
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6 my-8">
+      <!-- Verdict-Only Flow -->
+      <div>
+        <h4 class="text-lg font-display text-neonPink mb-4">❌ Verdict-Only Mode</h4>
+        <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Code + Spec] --> B[AI Analysis]
+    B --> C[Verdict Only]
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#ff4fd8,stroke-width:2px,color:#ff4fd8`}</pre>
+        </div>
+        <ul class="space-y-2 mt-4">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink flex-shrink-0">❌</span>
+            <span class="text-sm">Hard to verify</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink flex-shrink-0">❌</span>
+            <span class="text-sm">Hard to challenge</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink flex-shrink-0">❌</span>
+            <span class="text-sm">Black box decision</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Chain-of-Thought Flow -->
+      <div>
+        <h4 class="text-lg font-display text-machineGreen mb-4">✅ Chain-of-Thought Mode</h4>
+        <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-6">
+          <pre class="mermaid">{`graph LR
+    A[Code + Spec] --> B[Assumptions]
+    B --> C[Step-by-Step]
+    C --> D[Verdict]
+
+    style A fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#fff
+    style B fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#fff
+    style D fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+        </div>
+        <ul class="space-y-2 mt-4">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span class="text-sm">Lists assumptions</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span class="text-sm">Walks through conditions</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span class="text-sm">Compares to spec</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-machineGreen flex-shrink-0">✅</span>
+            <span class="text-sm">Clear verdict</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bg-neonCyan/10 border-l-4 border-neonCyan rounded-r-lg p-5 my-8">
+      <p class="text-base text-neonCyan leading-relaxed font-semibold">
+        This tutorial teaches you to <strong class="text-white">always request the second mode</strong> for logic review.
+      </p>
+    </div>
+  </div>
+
+  <!-- Section 4: Practical Experiments -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+      4️⃣ PRACTICAL EXPERIMENTS
+    </h2>
+  </div>
+
+  <ExperimentBlock
+    number={1}
+    title="Verdict-Only vs Explicit Chain-of-Thought"
+    objective="See the difference between a shallow answer and a structured reasoning trace."
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+iec_code = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+END_IF;
+
+IF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+spec = """
+Specification:
+- When StartButton is TRUE, MotorRunning should become TRUE.
+- When StopButton is TRUE, MotorRunning should become FALSE.
+- When neither button is pressed, MotorRunning should retain its last state.
+"""
+
+# --- Part A: Verdict-only style prompt ---
+
+prompt_verdict_only = f"""
+You are a PLC logic reviewer.
+
+Here is the code (IEC 61131-3 ST):
+
+{iec_code}
+
+{spec}
+
+Question:
+Does this logic match the specification? Answer briefly with YES or NO and one short sentence.
+"""
+
+response_verdict = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_verdict_only}
+    ]
+)
+
+print("=== VERDICT-ONLY ===")
+print(response_verdict.choices[0].message.content)
+
+# --- Part B: Chain-of-thought style prompt ---
+
+prompt_cot = f"""
+You are a PLC logic reviewer.
+
+Here is the code (IEC 61131-3 ST):
+
+{iec_code}
+
+{spec}
+
+Follow this format exactly:
+
+ASSUMPTIONS:
+- ...
+
+STEP_BY_STEP_REASONING:
+1. ...
+2. ...
+3. ...
+
+VERDICT:
+- PASS or FAIL, with one short justification.
+
+Now perform the analysis.
+"""
+
+response_cot = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_cot}
+    ]
+)
+
+print("\\n=== CHAIN-OF-THOUGHT ===")
+print(response_cot.choices[0].message.content)`}
+    expectedOutput={`=== VERDICT-ONLY ===
+YES. The logic matches the specification.
+
+=== CHAIN-OF-THOUGHT ===
+ASSUMPTIONS:
+- MotorRunning keeps its previous value unless explicitly set.
+- StartButton and StopButton are momentary signals.
+
+STEP_BY_STEP_REASONING:
+1. When StartButton is TRUE, MotorRunning is set to TRUE.
+2. When StopButton is TRUE, MotorRunning is set to FALSE.
+3. When both are FALSE, MotorRunning is not reassigned and keeps its last state.
+
+VERDICT:
+- PASS. The logic behaves according to the given specification.`}
+    interpretation={[
+      '❌ Verdict-only is <strong class="text-white">not auditable</strong>',
+      '✅ Chain-of-thought exposes <strong class="text-white">assumptions and reasoning</strong>',
+      '✅ You can now <strong class="text-white">agree or disagree</strong> with concrete steps',
+      'Cost: ~$0.02 | Runtime: <2 seconds'
+    ]}
+  />
+
+  <ExperimentBlock
+    number={2}
+    title="Chain-of-Thought for Detecting a Logic Bug"
+    objective="Use structured reasoning to catch a subtle behavior issue."
+    borderColor="neonPurple"
+    outputColor="neonPurple"
+    code={`from openai import OpenAI
+
+client = OpenAI()
+
+# Deliberately faulty code with ELSIF
+iec_faulty = """
+IF StartButton THEN
+    MotorRunning := TRUE;
+ELSIF StopButton THEN
+    MotorRunning := FALSE;
+END_IF;
+"""
+
+spec = """
+Specification:
+- When StartButton is TRUE, MotorRunning should become TRUE.
+- When StopButton is TRUE, MotorRunning should become FALSE.
+- If both StartButton and StopButton are TRUE at the same time,
+  StopButton must take priority and MotorRunning should become FALSE.
+- When neither button is pressed, MotorRunning should retain its last state.
+"""
+
+prompt_faulty_cot = f"""
+You are a PLC logic reviewer.
+
+Here is the code (IEC 61131-3 ST):
+
+{iec_faulty}
+
+{spec}
+
+Follow this format exactly:
+
+ASSUMPTIONS:
+- ...
+
+STEP_BY_STEP_REASONING:
+1. ...
+2. ...
+3. ...
+
+EDGE_CASE_ANALYSIS:
+- Describe what happens when both StartButton and StopButton are TRUE.
+- Compare this to the specification.
+
+VERDICT:
+- PASS or FAIL, with a short justification.
+
+Now perform the analysis.
+"""
+
+response_faulty = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": prompt_faulty_cot}
+    ]
+)
+
+print(response_faulty.choices[0].message.content)`}
+    expectedOutput={`ASSUMPTIONS:
+- MotorRunning keeps its previous value unless assigned.
+- StartButton and StopButton can be TRUE at the same time.
+
+STEP_BY_STEP_REASONING:
+1. When StartButton is TRUE and StopButton is FALSE, MotorRunning is set to TRUE.
+2. When StartButton is FALSE and StopButton is TRUE, MotorRunning is set to FALSE.
+3. When both are FALSE, MotorRunning holds its last state.
+
+EDGE_CASE_ANALYSIS:
+- When both StartButton and StopButton are TRUE, only the StartButton branch executes due to ELSIF.
+- This sets MotorRunning to TRUE, while the specification requires StopButton to take priority and force MotorRunning to FALSE.
+
+VERDICT:
+- FAIL. The ELSIF structure prioritizes StartButton over StopButton, which violates the specification.`}
+    interpretation={[
+      '✅ Surfaces <strong class="text-white">edge case behavior</strong> clearly',
+      '✅ Maps behavior back to the <strong class="text-white">written specification</strong>',
+      '✅ Provides a <strong class="text-white">clear, auditable FAIL verdict</strong>',
+      '✅ ELSIF bug caught through <strong class="text-white">explicit reasoning</strong>',
+      'Cost: ~$0.01 | Runtime: <1 second'
+    ]}
+  />
+
+  <!-- Operational Prohibitions -->
+  <div class="mb-16">
+    <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+      🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+    </h2>
+
+    <div class="bg-slate-900/80 border border-neonPink/40 rounded-lg p-5 my-8">
+      <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+        ❌ Never Use Chain-of-Thought For:
+      </h4>
+
+      <ul class="space-y-2">
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Treating chain-of-thought outputs as <strong class="text-white">formal verification</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Using AI reasoning as a <strong class="text-white">replacement for testing or simulation</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Letting AI <strong class="text-white">approve or merge PLC code changes automatically</strong></span>
+        </li>
+        <li class="flex items-start gap-3 text-slate-300">
+          <span class="text-neonPink flex-shrink-0">❌</span>
+          <span>Using this process for <strong class="text-white">safety certification or compliance</strong></span>
+        </li>
+      </ul>
+
+      <p class="text-sm text-slate-400 leading-relaxed mt-4">
+        Chain-of-thought is a <strong class="text-white">review aid</strong>, not a formal method.
+      </p>
+    </div>
+  </div>
+
+  <KeyTakeaways
+    items={[
+      'Chain-of-thought = <strong class="text-white">showing the reasoning</strong>, not just verdicts',
+      'It makes AI outputs auditable, challengeable, and reusable',
+      'You can catch subtle logic bugs by <strong class="text-white">forcing edge case analysis</strong>',
+      'The engineer remains the final decision-maker',
+      'This pattern will later power <strong class="text-neonCyan">transparent agent behavior</strong> in higher tracks'
+    ]}
+  />
+
+  <NextTutorial
+    number={8}
+    title="Building Your First Tool-Using Agent"
+    description="Extend your skills by connecting reasoning to a single, strictly read-only tool in a controlled way."
+    url="/tutorials/tutorial-08-first-tool-agent"
+  />
+
+  <EngineeringPosture
+    items={[
+      'Transparency over black-box answers',
+      'Structured reasoning over intuition',
+      'Human authority over all conclusions',
+      'Advisory tooling over autonomous control'
+    ]}
+  />
+</TutorialLayoutWithNav>

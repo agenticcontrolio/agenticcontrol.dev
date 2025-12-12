@@ -1,0 +1,804 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import SafetyBoundary from '../../components/tutorial/SafetyBoundary.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import TutorialScripts from '../../components/tutorial/TutorialScripts.astro';
+import TutorialNavigation from '../../components/tutorial/TutorialNavigation.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-10-conveyor-jam-diagnosis');
+const currentNumber = tutorial?.number || 10;
+---
+
+<BaseLayout
+  title="Tutorial #10: Conveyor Jam Diagnosis from Alarm Logs"
+  description="Build a professional, end-to-end advisory diagnostic agent that analyzes conveyor alarm logs and correlates them with known fault patterns."
+>
+  <TutorialScripts />
+
+  <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
+    <!-- Header -->
+    <div class="border-b border-neonCyan/30 bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-machineGreen font-display text-2xl">🟢</span>
+          <span class="text-slate-400 font-mono text-sm">TECHNICIAN TRACK</span>
+          <span class="text-slate-600">•</span>
+          <span class="text-amber font-mono text-sm">CAPSTONE PROJECT</span>
+        </div>
+        <h1 class="text-4xl font-display text-neonCyan mb-2 tracking-wide">
+          Tutorial #10: Conveyor Jam Diagnosis from Alarm Logs
+        </h1>
+        <p class="text-slate-300 text-lg font-mono">
+          An Extensible Advisory Agent with Multiple Read-Only Tools
+        </p>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <!-- Core Mission -->
+      <CoreMission
+        outcomes={[
+          'Build a professional advisory diagnostic agent from scratch',
+          'Analyze historical conveyor alarm logs for jam patterns',
+          'Correlate alarm sequences with known fault reference data',
+          'Produce structured diagnostic hypotheses with explanations',
+          'Understand complete agent pipeline from input to validated output'
+        ]}
+      />
+
+      <!-- Safety Boundary -->
+      <SafetyBoundary type="advisory">
+        <p><strong>This capstone builds a diagnostic advisory agent.</strong></p>
+        <p>It must never be used for:</p>
+        <ul>
+          <li>Automated maintenance decisions</li>
+          <li>Controlling conveyors or equipment</li>
+          <li>Replacing safety systems or interlocks</li>
+          <li>Operating without human review</li>
+          <li>Live PLC or fieldbus access</li>
+        </ul>
+        <p><strong>All diagnostic outputs are advisory-only and require human validation.</strong></p>
+      </SafetyBoundary>
+
+      <!-- Vendor Agnostic Note -->
+      <VendorAgnosticNote>
+        <p>This tutorial uses <strong>generic alarm log formats</strong> and fault pattern structures.</p>
+        <p>Patterns apply to:</p>
+        <ul>
+          <li>Rockwell FactoryTalk alarm exports</li>
+          <li>Siemens WinCC alarm logs</li>
+          <li>Beckhoff TwinCAT event logs</li>
+          <li>CODESYS alarm historians</li>
+          <li>Any timestamped alarm sequence data</li>
+        </ul>
+        <p>No vendor-specific APIs, no live connections, no proprietary formats required.</p>
+      </VendorAgnosticNote>
+
+      <!-- Tutorial Metadata -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div class="bg-surface/50 border border-machineGreen/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Estimated Time</div>
+          <div class="text-2xl font-display text-machineGreen">100 min</div>
+        </div>
+        <div class="bg-surface/50 border border-plcBlue/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Estimated Cost</div>
+          <div class="text-2xl font-display text-plcBlue">~$0.12</div>
+        </div>
+        <div class="bg-surface/50 border border-amber/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Difficulty</div>
+          <div class="text-2xl font-display text-amber">Beginner</div>
+        </div>
+      </div>
+
+      <div class="bg-surface/30 border border-neonPink/30 rounded-lg p-6 mb-12">
+        <h3 class="text-lg font-bold text-neonPink mb-3 flex items-center gap-2">
+          <span>📋</span>
+          Prerequisites
+        </h3>
+        <p class="text-slate-300 mb-2">This capstone integrates concepts from all previous Technician Track tutorials:</p>
+        <ul class="text-slate-300 space-y-1 ml-4">
+          <li>• Tutorials 1-9 (Technician Track fundamentals)</li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="prose prose-invert max-w-none">
+
+        <!-- Section: Capstone Overview -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            🎯 Capstone Overview — Why This Exists
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6 mb-6">
+            <p class="text-slate-300 leading-relaxed mb-4">
+              Packaging and conveyor systems frequently experience <strong class="text-neonPink">jam-related interruptions</strong>.
+              Experienced engineers diagnose these issues by correlating <strong class="text-plcBlue">alarm sequences</strong>,
+              <strong class="text-plcBlue">timing</strong>, and <strong class="text-plcBlue">known failure modes</strong>.
+            </p>
+
+            <p class="text-slate-300 leading-relaxed mb-4">This capstone builds an <strong class="text-neonCyan">advisory diagnostic agent</strong> that:</p>
+
+            <ul class="space-y-2 text-slate-300">
+              <li class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">✓</span>
+                <span>Analyzes historical conveyor alarm logs</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">✓</span>
+                <span>Correlates alarms with known jam patterns</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">✓</span>
+                <span>Produces structured diagnostic hypotheses</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-machineGreen mt-1">✓</span>
+                <span>Explains <em>why</em> each hypothesis was generated</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Section: System Boundary -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            1️⃣ System Boundary & Constraints
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-plcBlue/10 border border-plcBlue/30 rounded-lg p-6">
+              <h3 class="text-xl font-bold text-plcBlue mb-4 flex items-center gap-2">
+                <span>📥</span>
+                Inputs
+              </h3>
+              <ul class="space-y-2 text-slate-300">
+                <li class="flex items-start gap-2">
+                  <span class="text-plcBlue">•</span>
+                  <span>Alarm log file (historical, cleaned)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-plcBlue">•</span>
+                  <span>Fault reference file (known patterns)</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-machineGreen/10 border border-machineGreen/30 rounded-lg p-6">
+              <h3 class="text-xl font-bold text-machineGreen mb-4 flex items-center gap-2">
+                <span>📤</span>
+                Outputs
+              </h3>
+              <ul class="space-y-2 text-slate-300">
+                <li class="flex items-start gap-2">
+                  <span class="text-machineGreen">•</span>
+                  <span>Structured diagnostic hypotheses (JSON)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-neonPink/10 border border-neonPink/30 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-neonPink mb-4 flex items-center gap-2">
+              <span>⚠️</span>
+              Hard Constraints
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
+              <div class="flex items-center gap-2">
+                <span class="text-neonPink">🔒</span>
+                <span>Read-only</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-neonPink">🔒</span>
+                <span>Advisory-only</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-neonPink">🔒</span>
+                <span>Stateless</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-neonPink">🔒</span>
+                <span>No live PLC or fieldbus access</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Architecture -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            2️⃣ Architecture at a Glance
+          </h2>
+
+          <div class="bg-slate-900/50 border border-neonPurple/30 rounded-lg p-6 mb-6">
+            <div class="diagram-container relative">
+              <button class="diagram-expand-btn" aria-label="Expand diagram">
+                <span class="text-xs">Click to Expand</span>
+                <span class="text-lg">⛶</span>
+              </button>
+
+              <pre class="mermaid">{`graph LR
+    A[Alarm Log File] --> C[Reasoning Agent]
+    B[Fault Reference File] --> C
+    C --> D[Structured Diagnosis JSON]
+    D --> E[Human Review]
+
+    style A fill:#1a1a1e,stroke:#1f75ff,stroke-width:2px,color:#1f75ff
+    style B fill:#1a1a1e,stroke:#1f75ff,stroke-width:2px,color:#1f75ff
+    style C fill:#1a1a1e,stroke:#9e4aff,stroke-width:2px,color:#9e4aff
+    style D fill:#1a1a1e,stroke:#04d9ff,stroke-width:2px,color:#04d9ff
+    style E fill:#1a1a1e,stroke:#00ff7f,stroke-width:2px,color:#00ff7f`}</pre>
+            </div>
+
+            <div class="mt-4 text-sm text-slate-400 font-mono">
+              <p class="mb-2">Agent Pipeline Flow:</p>
+              <ul class="space-y-1 ml-4">
+                <li><span class="text-plcBlue">1. Read</span> alarm logs and fault reference data</li>
+                <li><span class="text-neonPurple">2. Reason</span> about correlations and patterns</li>
+                <li><span class="text-neonCyan">3. Structure</span> output as validated JSON</li>
+                <li><span class="text-machineGreen">4. Review</span> by human operator</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Data Model -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            3️⃣ Data Model — Alarm Logs
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6 mb-6">
+            <p class="text-slate-300 mb-4">Example alarm log format (timestamped sequence):</p>
+
+            <div class="bg-black/50 border border-plcBlue/30 rounded-lg p-4 overflow-x-auto">
+              <pre class="text-sm font-mono text-plcBlue leading-relaxed">08:12:01 | PHOTOEYE_BLOCKED
+08:12:03 | CONVEYOR_MOTOR_RUNNING
+08:12:07 | JAM_TIMEOUT
+08:12:08 | CONVEYOR_STOPPED
+08:12:10 | OPERATOR_RESET
+08:12:12 | PHOTOEYE_BLOCKED
+08:12:15 | JAM_TIMEOUT</pre>
+            </div>
+
+            <div class="mt-4 text-sm text-slate-400">
+              <p class="mb-2"><strong class="text-neonCyan">Format:</strong> <code class="text-plcBlue">TIMESTAMP | ALARM_NAME</code></p>
+              <p>Each line represents a discrete alarm event in chronological order.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Tool 1 - Alarm Log Loader -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            4️⃣ Tool 1 — Alarm Log Loader (Read-Only)
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">Simple file reader that loads alarm log as list of strings:</p>
+
+            <div class="bg-black/50 border border-machineGreen/30 rounded-lg overflow-hidden">
+              <div class="bg-machineGreen/10 px-4 py-2 border-b border-machineGreen/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-machineGreen">Tool Implementation</span>
+                <span class="text-xs font-mono text-slate-400">Python</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">def load_alarm_log(file_path: str) -> list[str]:
+    """
+    Loads alarm log file and returns list of alarm lines.
+
+    Args:
+        file_path: Path to alarm log file
+
+    Returns:
+        List of alarm strings (stripped, non-empty)
+    """
+    with open(file_path, "r") as f:
+        return [line.strip() for line in f if line.strip()]</code></pre>
+            </div>
+
+            <div class="mt-4 p-4 bg-machineGreen/10 border border-machineGreen/30 rounded-lg">
+              <p class="text-sm text-slate-300">
+                <strong class="text-machineGreen">Read-Only Guarantee:</strong>
+                This tool opens files in read mode only (<code class="text-plcBlue">"r"</code>).
+                No write operations possible.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Tool 2 - Fault Reference Loader -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            5️⃣ Tool 2 — Fault Pattern Reference Loader (Read-Only)
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">Loads known fault patterns from JSON reference file:</p>
+
+            <div class="bg-black/50 border border-machineGreen/30 rounded-lg overflow-hidden">
+              <div class="bg-machineGreen/10 px-4 py-2 border-b border-machineGreen/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-machineGreen">Tool Implementation</span>
+                <span class="text-xs font-mono text-slate-400">Python</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">def load_fault_reference(file_path: str) -> dict:
+    """
+    Loads fault reference patterns from JSON file.
+
+    Args:
+        file_path: Path to fault_reference.json
+
+    Returns:
+        Dictionary of known fault patterns
+    """
+    import json
+    with open(file_path, "r") as f:
+        return json.load(f)</code></pre>
+            </div>
+
+            <div class="mt-4 p-4 bg-plcBlue/10 border border-plcBlue/30 rounded-lg">
+              <p class="text-sm text-slate-300 mb-2">
+                <strong class="text-plcBlue">Example Fault Reference Structure:</strong>
+              </p>
+              <pre class="text-xs font-mono text-slate-400 overflow-x-auto">{`{
+  "recurring_jam": {
+    "signature": ["PHOTOEYE_BLOCKED", "JAM_TIMEOUT"],
+    "description": "Repeated blockage at same photoeye"
+  },
+  "motor_stall": {
+    "signature": ["CONVEYOR_MOTOR_RUNNING", "JAM_TIMEOUT", "CONVEYOR_STOPPED"],
+    "description": "Motor running but jam timeout triggered"
+  }
+}`}</pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Output Contract -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            6️⃣ Output Contract — Structured Diagnosis Schema
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">All agent outputs must conform to this JSON schema:</p>
+
+            <div class="bg-black/50 border border-neonCyan/30 rounded-lg overflow-hidden">
+              <div class="bg-neonCyan/10 px-4 py-2 border-b border-neonCyan/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-neonCyan">Required Output Schema</span>
+                <span class="text-xs font-mono text-slate-400">JSON</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`{
+  "detected_patterns": [],
+  "possible_faults": [
+    {
+      "fault_name": "",
+      "confidence": 0.0,
+      "matched_alarms": []
+    }
+  ],
+  "notes": []
+}`}</code></pre>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div class="p-3 bg-neonCyan/10 border border-neonCyan/30 rounded">
+                <p class="font-bold text-neonCyan mb-1">detected_patterns</p>
+                <p class="text-slate-400">List of alarm sequences found</p>
+              </div>
+              <div class="p-3 bg-neonCyan/10 border border-neonCyan/30 rounded">
+                <p class="font-bold text-neonCyan mb-1">possible_faults</p>
+                <p class="text-slate-400">Fault hypotheses with confidence</p>
+              </div>
+              <div class="p-3 bg-neonCyan/10 border border-neonCyan/30 rounded">
+                <p class="font-bold text-neonCyan mb-1">notes</p>
+                <p class="text-slate-400">Additional observations</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Prompt Construction -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            7️⃣ Prompt Construction
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">Build system prompt that embeds rules, schema, data:</p>
+
+            <div class="bg-black/50 border border-neonPurple/30 rounded-lg overflow-hidden">
+              <div class="bg-neonPurple/10 px-4 py-2 border-b border-neonPurple/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-neonPurple">Prompt Builder</span>
+                <span class="text-xs font-mono text-slate-400">Python</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">def build_diagnostic_prompt(alarms: list[str], fault_reference: dict) -> str:
+    """
+    Constructs diagnostic prompt with embedded rules and data.
+
+    Args:
+        alarms: List of alarm log lines
+        fault_reference: Known fault patterns dictionary
+
+    Returns:
+        Formatted prompt string
+    """
+    return f"""
+You are an industrial diagnostic analysis agent.
+
+Rules:
+- Advisory only
+- No control decisions
+- No maintenance actions
+- Output ONLY valid JSON
+- Follow the schema exactly
+
+Schema:
+{{
+  "detected_patterns": [],
+  "possible_faults": [
+    {{
+      "fault_name": "",
+      "confidence": 0.0,
+      "matched_alarms": []
+    }}
+  ],
+  "notes": []
+}}
+
+Known fault patterns:
+{fault_reference}
+
+Alarm log:
+{alarms}
+"""</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Agent Execution -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            8️⃣ Agent Execution Pipeline
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">Execute agent with loaded data and parse JSON response:</p>
+
+            <div class="bg-black/50 border border-neonPurple/30 rounded-lg overflow-hidden">
+              <div class="bg-neonPurple/10 px-4 py-2 border-b border-neonPurple/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-neonPurple">Agent Execution</span>
+                <span class="text-xs font-mono text-slate-400">Python</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">from openai import OpenAI
+import json
+
+client = OpenAI()
+
+# Load data using tools
+alarms = load_alarm_log("alarms.log")
+fault_reference = load_fault_reference("fault_reference.json")
+
+# Execute agent
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {
+            "role": "user",
+            "content": build_diagnostic_prompt(alarms, fault_reference)
+        }
+    ],
+    response_format={"type": "json_object"}
+)
+
+# Parse structured output
+diagnosis = json.loads(response.choices[0].message.content)</code></pre>
+            </div>
+
+            <div class="mt-4 p-4 bg-amber/10 border border-amber/30 rounded-lg">
+              <p class="text-sm text-slate-300">
+                <strong class="text-amber">Note:</strong>
+                Using <code class="text-plcBlue">response_format={"type": "json_object"}</code> enforces JSON output from the model.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Validation -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            9️⃣ Output Validation
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <p class="text-slate-300 mb-4">Validate agent output before accepting diagnosis:</p>
+
+            <div class="bg-black/50 border border-machineGreen/30 rounded-lg overflow-hidden">
+              <div class="bg-machineGreen/10 px-4 py-2 border-b border-machineGreen/30 flex items-center justify-between">
+                <span class="text-sm font-bold text-machineGreen">Schema Validator</span>
+                <span class="text-xs font-mono text-slate-400">Python</span>
+              </div>
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">def validate_diagnosis(data: dict) -> bool:
+    """
+    Validates diagnostic output against required schema.
+
+    Args:
+        data: Parsed JSON output from agent
+
+    Returns:
+        True if valid, False otherwise
+    """
+    required_keys = ["detected_patterns", "possible_faults", "notes"]
+    return all(key in data for key in required_keys)
+
+
+# Usage
+if validate_diagnosis(diagnosis):
+    print("✓ Valid diagnostic output")
+else:
+    raise ValueError("Invalid diagnosis schema")</code></pre>
+            </div>
+
+            <div class="mt-4 p-4 bg-neonPink/10 border border-neonPink/30 rounded-lg">
+              <p class="text-sm text-slate-300">
+                <strong class="text-neonPink">Critical:</strong>
+                Never accept unvalidated agent outputs. Validation acts as a schema contract enforcer.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Single Lab -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            🔟 Single Lab — Run Complete Pipeline
+          </h2>
+
+          <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-6">
+            <div class="mb-6">
+              <h3 class="text-xl font-bold text-amber mb-3">📋 Objective</h3>
+              <p class="text-slate-300 leading-relaxed">
+                Execute the complete diagnostic agent pipeline once and inspect the structured diagnostic output.
+                Verify that all components integrate correctly.
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h3 class="text-xl font-bold text-amber mb-3">🛠️ Setup Requirements</h3>
+              <div class="space-y-2 text-slate-300">
+                <p>Create two files in your working directory:</p>
+
+                <div class="mt-3 bg-black/50 border border-plcBlue/30 rounded-lg p-4">
+                  <p class="text-sm font-bold text-plcBlue mb-2">1. alarms.log</p>
+                  <pre class="text-xs font-mono text-slate-400">08:12:01 | PHOTOEYE_BLOCKED
+08:12:03 | CONVEYOR_MOTOR_RUNNING
+08:12:07 | JAM_TIMEOUT
+08:12:08 | CONVEYOR_STOPPED
+08:12:10 | OPERATOR_RESET
+08:12:12 | PHOTOEYE_BLOCKED
+08:12:15 | JAM_TIMEOUT</pre>
+                </div>
+
+                <div class="mt-3 bg-black/50 border border-plcBlue/30 rounded-lg p-4">
+                  <p class="text-sm font-bold text-plcBlue mb-2">2. fault_reference.json</p>
+                  <pre class="text-xs font-mono text-slate-400">{`{
+  "recurring_jam": {
+    "signature": ["PHOTOEYE_BLOCKED", "JAM_TIMEOUT"],
+    "description": "Repeated blockage at same location"
+  },
+  "motor_stall": {
+    "signature": ["CONVEYOR_MOTOR_RUNNING", "JAM_TIMEOUT"],
+    "description": "Motor running but jam timeout triggered"
+  }
+}`}</pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <h3 class="text-xl font-bold text-amber mb-3">▶️ Execution Steps</h3>
+              <ol class="space-y-2 text-slate-300 ml-4">
+                <li>1. Create the two data files above</li>
+                <li>2. Run the reference implementation (see Section 11 below)</li>
+                <li>3. Inspect the JSON diagnostic output</li>
+                <li>4. Verify schema compliance with validator</li>
+              </ol>
+            </div>
+
+            <div class="p-4 bg-machineGreen/10 border border-machineGreen/30 rounded-lg">
+              <p class="text-sm text-slate-300">
+                <strong class="text-machineGreen">Expected Behavior:</strong>
+                Agent should detect both "recurring_jam" (PHOTOEYE_BLOCKED appears twice) and "motor_stall" patterns in the alarm sequence.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Limitations -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            1️⃣1️⃣ Known Limitations
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-neonPink/10 border border-neonPink/30 rounded-lg p-4">
+              <h3 class="text-lg font-bold text-neonPink mb-3 flex items-center gap-2">
+                <span>📊</span>
+                Pattern-Based Diagnosis
+              </h3>
+              <p class="text-sm text-slate-300">
+                Agent relies on pre-defined fault patterns. Novel failure modes may not be detected.
+              </p>
+            </div>
+
+            <div class="bg-neonPink/10 border border-neonPink/30 rounded-lg p-4">
+              <h3 class="text-lg font-bold text-neonPink mb-3 flex items-center gap-2">
+                <span>🧹</span>
+                Clean Data Required
+              </h3>
+              <p class="text-sm text-slate-300">
+                Assumes alarm logs are pre-processed and formatted consistently. No noise filtering.
+              </p>
+            </div>
+
+            <div class="bg-neonPink/10 border border-neonPink/30 rounded-lg p-4">
+              <h3 class="text-lg font-bold text-neonPink mb-3 flex items-center gap-2">
+                <span>👤</span>
+                Human Review Mandatory
+              </h3>
+              <p class="text-sm text-slate-300">
+                All diagnostic outputs are advisory. Operator must validate before acting.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Reference Implementation -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            1️⃣2️⃣ Reference Implementation (Complete Assembly)
+          </h2>
+
+          <div class="bg-amber/10 border border-amber/30 rounded-lg p-6 mb-6">
+            <p class="text-slate-300">
+              <strong class="text-amber">Note:</strong>
+              This section provides a <strong>known-good reference implementation</strong>.
+              It is intended for verification, not as the primary learning path.
+            </p>
+          </div>
+
+          <div class="bg-black/50 border border-neonCyan/30 rounded-lg overflow-hidden">
+            <div class="bg-neonCyan/10 px-4 py-2 border-b border-neonCyan/30 flex items-center justify-between">
+              <span class="text-sm font-bold text-neonCyan">conveyor_diagnostic_agent.py</span>
+              <span class="text-xs font-mono text-slate-400">Complete Pipeline</span>
+            </div>
+            <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed"># conveyor_diagnostic_agent.py
+
+from openai import OpenAI
+import json
+
+def load_alarm_log(file_path: str) -> list[str]:
+    with open(file_path, "r") as f:
+        return [line.strip() for line in f if line.strip()]
+
+def load_fault_reference(file_path: str) -> dict:
+    import json
+    with open(file_path, "r") as f:
+        return json.load(f)
+
+def build_diagnostic_prompt(alarms: list[str], fault_reference: dict) -> str:
+    return f"""
+You are an industrial diagnostic analysis agent.
+
+Rules:
+- Advisory only
+- No control decisions
+- No maintenance actions
+- Output ONLY valid JSON
+- Follow the schema exactly
+
+Schema:
+{{
+  "detected_patterns": [],
+  "possible_faults": [
+    {{
+      "fault_name": "",
+      "confidence": 0.0,
+      "matched_alarms": []
+    }}
+  ],
+  "notes": []
+}}
+
+Known fault patterns:
+{fault_reference}
+
+Alarm log:
+{alarms}
+"""
+
+def validate_diagnosis(data: dict) -> bool:
+    return all(key in data for key in ["detected_patterns", "possible_faults", "notes"])
+
+def run_agent():
+    alarms = load_alarm_log("alarms.log")
+    faults = load_fault_reference("fault_reference.json")
+
+    client = OpenAI()
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "user",
+                "content": build_diagnostic_prompt(alarms, faults)
+            }
+        ],
+        response_format={"type": "json_object"}
+    )
+
+    diagnosis = json.loads(response.choices[0].message.content)
+    assert validate_diagnosis(diagnosis), "Invalid diagnosis schema"
+    return diagnosis
+
+if __name__ == "__main__":
+    print(json.dumps(run_agent(), indent=2))</code></pre>
+          </div>
+        </section>
+
+        <!-- Engineering Posture -->
+        <section class="mb-16">
+          <h2 class="text-3xl font-display text-neonCyan mb-6 border-b border-neonCyan/30 pb-2">
+            🧭 Engineering Posture
+          </h2>
+
+          <div class="bg-surface/30 border border-machineGreen/30 rounded-lg p-6">
+            <p class="text-slate-300 leading-relaxed mb-4">This capstone reinforced:</p>
+
+            <ul class="space-y-3 text-slate-300">
+              <li class="flex items-start gap-3">
+                <span class="text-machineGreen text-xl">✓</span>
+                <span><strong class="text-neonCyan">Read-only tools</strong> over data modification</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-machineGreen text-xl">✓</span>
+                <span><strong class="text-neonCyan">Structured outputs</strong> over unstructured text</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-machineGreen text-xl">✓</span>
+                <span><strong class="text-neonCyan">Schema validation</strong> over blind acceptance</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-machineGreen text-xl">✓</span>
+                <span><strong class="text-neonCyan">Advisory diagnostics</strong> over automated actions</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-machineGreen text-xl">✓</span>
+                <span><strong class="text-neonCyan">Human authority</strong> over machine autonomy</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Completion Badge -->
+        <div class="bg-gradient-to-r from-machineGreen/20 to-neonCyan/20 border-2 border-machineGreen rounded-lg p-8 text-center">
+          <div class="text-6xl mb-4">🎓</div>
+          <h2 class="text-3xl font-display text-machineGreen mb-4">
+            Capstone Complete!
+          </h2>
+          <p class="text-xl text-slate-300 mb-6">
+            You've completed the Technician Track and built a professional advisory diagnostic agent.
+          </p>
+          <div class="inline-block bg-surface/50 border border-neonCyan/30 rounded-lg px-6 py-3">
+            <p class="text-sm text-slate-400 mb-1">Next Step</p>
+            <p class="text-lg font-display text-neonCyan">Explore Developer Track →</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tutorial Navigation -->
+    <TutorialNavigation currentNumber={currentNumber} track="technician" />
+  </div>
+</BaseLayout>

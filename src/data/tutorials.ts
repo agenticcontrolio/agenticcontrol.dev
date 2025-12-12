@@ -98,46 +98,46 @@ export const technicianTutorials: Tutorial[] = [
   {
     id: 'tutorial-06',
     number: 6,
-    title: 'Safety Boundaries & Constraints',
-    slug: 'tutorial-06-safety-boundaries',
-    description: 'Implement safety guardrails for industrial AI agents',
-    published: false,
+    title: 'Few-Shot Learning for PLC Validation',
+    slug: 'tutorial-06-few-shot-plc-validation',
+    description: 'Learn how to guide AI toward consistent and reliable PLC code validation by supplying high-quality examples.',
+    published: true,
     track: 'technician'
   },
   {
     id: 'tutorial-07',
     number: 7,
-    title: 'Log-Based Fault Diagnosis',
-    slug: 'tutorial-07-fault-diagnosis',
-    description: 'Build agents that diagnose faults from system logs',
-    published: false,
+    title: 'Chain-of-Thought for Logic Review',
+    slug: 'tutorial-07-chain-of-thought-logic-review',
+    description: 'Learn how to get AI to explain its reasoning step-by-step when reviewing PLC logic, improving clarity, trust, and debuggability.',
+    published: true,
     track: 'technician'
   },
   {
     id: 'tutorial-08',
     number: 8,
-    title: 'Code Generation Validation',
-    slug: 'tutorial-08-code-validation',
-    description: 'Validate AI-generated PLC code for safety and correctness',
-    published: false,
+    title: 'Building Your First Tool-Using Agent',
+    slug: 'tutorial-08-tool-using-agent-read-only',
+    description: 'Learn how to safely connect an AI agent to a single, read-only tool to analyze PLC logic without any control authority.',
+    published: true,
     track: 'technician'
   },
   {
     id: 'tutorial-09',
     number: 9,
-    title: 'Advisory Agent Design Patterns',
-    slug: 'tutorial-09-advisory-patterns',
-    description: 'Design patterns for safe advisory agents',
-    published: false,
+    title: 'Structured Outputs for PLC Data Extraction',
+    slug: 'tutorial-09-structured-outputs-plc-data',
+    description: 'Learn how to force AI agents to return deterministic, structured outputs when analyzing PLC logic, enabling reliable downstream processing.',
+    published: true,
     track: 'technician'
   },
   {
     id: 'tutorial-10',
     number: 10,
-    title: 'Building Your First Industrial Agent',
-    slug: 'tutorial-10-first-agent',
-    description: 'Complete project: Build a production-ready advisory agent',
-    published: false,
+    title: 'Conveyor Jam Diagnosis from Alarm Logs',
+    slug: 'tutorial-10-conveyor-jam-diagnosis',
+    description: 'Build a professional, end-to-end advisory diagnostic agent that analyzes conveyor alarm logs and correlates them with known fault patterns.',
+    published: true,
     track: 'technician'
   }
 ];
