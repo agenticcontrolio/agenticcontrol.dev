@@ -1,0 +1,370 @@
+---
+// Tutorial: Python Readiness for PLC Engineers
+// The Only Python You Need to Safely Use Agentic AI as a PLC Engineer
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
+import CoreMission from '../../components/tutorial/CoreMission.astro';
+import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
+import ExperimentBlock from '../../components/tutorial/ExperimentBlock.astro';
+import KeyTakeaways from '../../components/tutorial/KeyTakeaways.astro';
+import NextTutorial from '../../components/tutorial/NextTutorial.astro';
+import EngineeringPosture from '../../components/tutorial/EngineeringPosture.astro';
+import { getTutorialBySlug } from '../../data/tutorials';
+
+const tutorial = getTutorialBySlug('tutorial-python-readiness');
+
+if (!tutorial) {
+  throw new Error('Tutorial not found');
+}
+
+const title = 'Python Readiness for PLC Engineers | AgenticControl.dev';
+const description = 'Learn the minimal Python needed for industrial AI. Variables, loops, conditions - nothing more. Ready in 45 minutes.';
+---
+
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+
+  <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
+    <!-- Header -->
+    <div class="border-b border-neonCyan/30 bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-machineGreen font-display text-2xl">🟢</span>
+          <span class="text-slate-400 font-mono text-sm">TECHNICIAN TRACK</span>
+          <span class="text-slate-600">•</span>
+          <span class="text-amber font-mono text-sm">FOUNDATION</span>
+        </div>
+        <h1 class="text-4xl font-display text-neonCyan mb-2 tracking-wide">
+          Python Readiness for PLC Engineers
+        </h1>
+        <p class="text-slate-300 text-lg font-mono">
+          The Only Python You Need to Safely Use Agentic AI
+        </p>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <CoreMission
+        items={[
+          'Run Python scripts safely on their own machine',
+          'Understand the basic Python syntax used in Technician Track tutorials',
+          'Modify simple variables, conditions, and dictionaries',
+          'Use for-loops and while-loops with industrial-style examples',
+          'Install required Python packages',
+          'Confidently run all Technician Track experiments without fear'
+        ]}
+        footer='This tutorial establishes the <strong class="text-neonCyan">minimum Python foundation required for safe Technician use of AI systems</strong>.'
+      />
+
+      <SafetyBoundary type="simulation" />
+
+      <VendorAgnosticNote
+        items={[
+          'Standard Python 3.x',
+          'Local execution only',
+          'No vendor SDKs',
+          'No PLC communication libraries',
+          'No automation system access'
+        ]}
+        footer='Safe to use on Windows, macOS, and Linux.'
+      />
+
+      <!-- Tutorial Metadata -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div class="bg-surface/50 border border-machineGreen/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Estimated Time</div>
+          <div class="text-2xl font-display text-machineGreen">45 min</div>
+        </div>
+        <div class="bg-surface/50 border border-plcBlue/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Estimated Cost</div>
+          <div class="text-2xl font-display text-plcBlue">$0.00</div>
+        </div>
+        <div class="bg-surface/50 border border-amber/30 rounded-lg p-4">
+          <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Difficulty</div>
+          <div class="text-2xl font-display text-amber">Beginner</div>
+        </div>
+      </div>
+
+      <!-- Section 1: Concept Overview -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+          1️⃣ CONCEPT OVERVIEW — WHY PYTHON IS USED IN THE TECHNICIAN TRACK
+        </h2>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          Python is used because it is:
+        </p>
+
+        <ul class="space-y-2 my-6">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonCyan flex-shrink-0">▸</span>
+            <span>Simple to read</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonCyan flex-shrink-0">▸</span>
+            <span>Safe to sandbox</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonCyan flex-shrink-0">▸</span>
+            <span>Cross-platform</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonCyan flex-shrink-0">▸</span>
+            <span>Widely supported</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonCyan flex-shrink-0">▸</span>
+            <span>The standard language for AI tooling</span>
+          </li>
+        </ul>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          In this track, Python is used <strong class="text-white">only as a simulator and AI interface</strong>, never as a control system.
+        </p>
+
+        <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-4 mb-5">
+          <p class="text-base text-slate-300 leading-relaxed">
+            <strong class="text-machineGreen">Python = your safe AI workbench</strong><br />
+            <strong class="text-plcBlue">PLC = your real machine controller</strong>
+          </p>
+        </div>
+
+        <p class="text-base text-slate-300 leading-relaxed">
+          They must never be confused.
+        </p>
+      </div>
+
+      <!-- Section 2: Reference Architecture -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+          2️⃣ REFERENCE ARCHITECTURE — HOW YOU WILL USE PYTHON
+        </h2>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-4 mb-5 font-mono text-sm text-slate-300">
+          You → Run Python Script → AI Gives Advisory Output → You Decide
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg p-5 my-8">
+          <h4 class="text-sm font-bold text-slate-200 uppercase mb-4 tracking-wide">
+            Boundaries
+          </h4>
+
+          <ul class="space-y-2">
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-machineGreen flex-shrink-0">▸</span>
+              <span>Python does NOT control machines</span>
+            </li>
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-machineGreen flex-shrink-0">▸</span>
+              <span>Python does NOT write PLC memory</span>
+            </li>
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-machineGreen flex-shrink-0">▸</span>
+              <span>Python does NOT touch safety systems</span>
+            </li>
+            <li class="flex items-start gap-3 text-slate-300">
+              <span class="text-machineGreen flex-shrink-0">▸</span>
+              <span>You remain the operator</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Section 3: Clean Educational Example -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+          3️⃣ CLEAN EDUCATIONAL EXAMPLE — YOUR FIRST PYTHON PROGRAM
+        </h2>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          Create a file called <code class="text-plcBlue bg-slate-900/80 px-2 py-1 rounded">hello.py</code>
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+            <span class="text-xs font-mono text-slate-400">Python</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`print("Hello from Python. This is my AI workbench.")`}</code></pre>
+        </div>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          Run it from your terminal:
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+            <span class="text-xs font-mono text-slate-400">Bash</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`python hello.py`}</code></pre>
+        </div>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          <strong class="text-neonCyan">Expected Output:</strong>
+        </p>
+
+        <div class="bg-slate-900/80 border border-machineGreen/40 rounded-lg p-4 mb-5 font-mono text-sm text-machineGreen">
+          Hello from Python. This is my AI workbench.
+        </div>
+      </div>
+
+      <!-- Section 4: Practical Experiments -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+          4️⃣ PRACTICAL EXPERIMENTS
+        </h2>
+      </div>
+
+      <ExperimentBlock
+        number={1}
+        title="Variables, Conditions, and Motor State"
+        objective="Understand how Python simulates simple industrial logic using variables and conditions."
+        code={`motor_running = False
+start_button = True
+fault = False
+
+if fault:
+    motor_running = False
+elif start_button:
+    motor_running = True
+
+print("Motor running:", motor_running)`}
+        expectedOutput={`Motor running: True`}
+        interpretation={[
+          '✅ Local only',
+          '✅ No hardware',
+          '✅ No side effects',
+          'Cost: $0.00 | Runtime: <1 second'
+        ]}
+      />
+
+      <ExperimentBlock
+        number={2}
+        title="Lists, for-Loops, and while-Loops with Alarm Scanning"
+        objective="Learn how Python processes collections of industrial data and how loops simulate repetitive machine checks."
+        borderColor="neonPurple"
+        outputColor="neonPurple"
+        code={`# Part A: Using a List and a for-Loop (Alarm Log Scan)
+alarm_log = [
+    {"id": 101, "message": "Motor Overcurrent"},
+    {"id": 102, "message": "Emergency Stop"},
+    {"id": 103, "message": "Drive Ready"}
+]
+
+print("Scanning alarm log:")
+for alarm in alarm_log:
+    print(alarm["id"], "-", alarm["message"])
+
+print()
+
+# Part B: Using a while-Loop (Simulated Machine Polling)
+scan_count = 0
+max_scans = 3
+
+while scan_count < max_scans:
+    print("Polling machine status... Scan:", scan_count + 1)
+    scan_count += 1`}
+        expectedOutput={`Scanning alarm log:
+101 - Motor Overcurrent
+102 - Emergency Stop
+103 - Drive Ready
+
+Polling machine status... Scan: 1
+Polling machine status... Scan: 2
+Polling machine status... Scan: 3`}
+        interpretation={[
+          '✅ Read-only data',
+          '✅ No writes',
+          '✅ No automation risk',
+          'Cost: $0.00 | Runtime: <1 second'
+        ]}
+      />
+
+      <!-- Section 5: Installing Packages -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
+          5️⃣ INSTALLING PACKAGES (REQUIRED SKILL)
+        </h2>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          All future tutorials will require installing packages.
+        </p>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          Example:
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+            <span class="text-xs font-mono text-slate-400">Bash</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`pip install openai`}</code></pre>
+        </div>
+
+        <p class="text-base text-slate-300 leading-relaxed mb-5">
+          To verify:
+        </p>
+
+        <div class="bg-slate-900/80 border border-slate-600/40 rounded-lg overflow-hidden mb-6">
+          <div class="bg-slate-800/60 px-4 py-2 border-b border-slate-600/40">
+            <span class="text-xs font-mono text-slate-400">Bash</span>
+          </div>
+          <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`pip list`}</code></pre>
+        </div>
+      </div>
+
+      <!-- Operational Prohibitions -->
+      <div class="mb-16">
+        <h2 class="text-3xl font-display text-neonPink mb-6 mt-16 pb-4 border-b-2 border-neonPink/30 tracking-wider">
+          🔒 EXPLICIT OPERATIONAL PROHIBITIONS
+        </h2>
+
+        <ul class="space-y-3">
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+            <span class="leading-relaxed">Using Python to control PLCs</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+            <span class="leading-relaxed">Using Python to bypass safety</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+            <span class="leading-relaxed">Using Python for live machine actuation</span>
+          </li>
+          <li class="flex items-start gap-3 text-slate-300">
+            <span class="text-neonPink text-xl flex-shrink-0">❌</span>
+            <span class="leading-relaxed">Connecting Python to real industrial networks</span>
+          </li>
+        </ul>
+      </div>
+
+      <KeyTakeaways items={[
+        'Python is your <strong class="text-white">safe AI sandbox</strong>',
+        'You only need: Variables, Conditions, Lists & dictionaries, for-loops and while-loops',
+        'All Technician Track tutorials stay inside this boundary',
+        'You never need to be a "software engineer" to succeed here'
+      ]} />
+
+      <NextTutorial
+        number={0}
+        title="OpenAI API Setup"
+        description="Configure your AI workbench and make your first test call."
+      />
+
+      <EngineeringPosture items={[
+        'Simulation over real actuation',
+        'Education over production control',
+        'Human authority over automation',
+        'Safety over convenience'
+      ]} />
+
+      <!-- Tutorial Complete -->
+      <div class="mt-16 text-center">
+        <p class="text-2xl font-display text-machineGreen tracking-wider">
+          ✅ END OF PYTHON READINESS TUTORIAL
+        </p>
+      </div>
+    </div>
+  </div>
+</TutorialLayoutWithNav>
+
+<!-- Scripts and styles are now auto-included by TutorialLayoutWithNav -->

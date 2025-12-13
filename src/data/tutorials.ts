@@ -51,6 +51,15 @@ export const tracks: Record<string, Track> = {
 
 export const technicianTutorials: Tutorial[] = [
   {
+    id: 'tutorial-python',
+    number: -1,
+    title: 'Python Readiness for PLC Engineers',
+    slug: 'tutorial-python-readiness',
+    description: 'Learn the minimal Python needed for industrial AI. Variables, loops, conditions - nothing more. Ready in 45 minutes.',
+    published: true,
+    track: 'technician'
+  },
+  {
     id: 'tutorial-00',
     number: 0,
     title: 'OpenAI API Setup',

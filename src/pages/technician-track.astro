@@ -16,6 +16,18 @@ const progressPercent = (publishedCount / totalCount) * 100;
 // Calculate total time and cost (placeholder values until we add these to tutorials.ts)
 const totalTime = publishedCount * 30; // Placeholder: 30 min per tutorial
 const totalCost = publishedCount * 0.03; // Placeholder: $0.03 per tutorial
+
+// Helper function to get tutorial category and difficulty
+function getTutorialMetadata(tutorialNumber: number) {
+  if (tutorialNumber === -1 || tutorialNumber === 0) {
+    return { category: 'Foundation', difficulty: 'Beginner' as const };
+  } else if (tutorialNumber >= 1 && tutorialNumber <= 9) {
+    return { category: 'Beginner', difficulty: 'Beginner' as const };
+  } else if (tutorialNumber === 10) {
+    return { category: 'Capstone', difficulty: 'Advanced' as const };
+  }
+  return { category: 'Beginner', difficulty: 'Beginner' as const };
+}
 ---
 
 <Layout title="Track 1: Technician - AgenticControl.dev">
@@ -174,6 +186,7 @@ const totalCost = publishedCount * 0.03; // Placeholder: $0.03 per tutorial
       <!-- Tutorial Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {technicianTutorials.map((tutorial) => {
+          const metadata = getTutorialMetadata(tutorial.number);
           return (
           <div class={!tutorial.published ? 'opacity-50' : ''}>
             <TutorialCard
@@ -181,11 +194,11 @@ const totalCost = publishedCount * 0.03; // Placeholder: $0.03 per tutorial
               title={tutorial.title}
               subtitle=""
               description={tutorial.description}
-              difficulty="Beginner"
+              difficulty={metadata.difficulty}
               estimatedTime={30}
               estimatedCost={0.03}
               tags={['technician-track']}
-              category="Foundation"
+              category={metadata.category}
               featured={tutorial.number === 1}
             />
             {!tutorial.published && (

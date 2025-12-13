@@ -15,9 +15,21 @@ const sortedTutorials = [...allTutorials].sort((a, b) => a.number - b.number);
 const featuredTutorials = sortedTutorials.filter(t => t.number === 1);
 const regularTutorials = sortedTutorials.filter(t => t.number !== 1);
 
-// Categories and difficulties (placeholder for now)
-const categories = ['Foundation'];
-const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
+// Helper function to get tutorial category and difficulty
+function getTutorialMetadata(tutorialNumber: number) {
+  if (tutorialNumber === -1 || tutorialNumber === 0) {
+    return { category: 'Foundation', difficulty: 'Beginner' as const };
+  } else if (tutorialNumber >= 1 && tutorialNumber <= 9) {
+    return { category: 'Beginner', difficulty: 'Beginner' as const };
+  } else if (tutorialNumber === 10) {
+    return { category: 'Capstone', difficulty: 'Advanced' as const };
+  }
+  return { category: 'Beginner', difficulty: 'Beginner' as const };
+}
+
+// Categories and difficulties for filtering
+const categories = ['Foundation', 'Beginner', 'Capstone'];
+const difficulties = ['Beginner', 'Advanced'] as const;
 ---
 
 <Layout
@@ -116,20 +128,23 @@ const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
           </div>
 
           <div class="grid md:grid-cols-2 gap-6">
-            {featuredTutorials.map(tutorial => (
-              <TutorialCard
-                slug={tutorial.slug}
-                title={tutorial.title}
-                subtitle=""
-                description={tutorial.description}
-                difficulty="Beginner"
-                estimatedTime={30}
-                estimatedCost={0.03}
-                tags={['technician-track']}
-                category="Foundation"
-                featured={true}
-              />
-            ))}
+            {featuredTutorials.map(tutorial => {
+              const metadata = getTutorialMetadata(tutorial.number);
+              return (
+                <TutorialCard
+                  slug={tutorial.slug}
+                  title={tutorial.title}
+                  subtitle=""
+                  description={tutorial.description}
+                  difficulty={metadata.difficulty}
+                  estimatedTime={30}
+                  estimatedCost={0.03}
+                  tags={['technician-track']}
+                  category={metadata.category}
+                  featured={true}
+                />
+              );
+            })}
           </div>
         </div>
       )}
@@ -146,20 +161,23 @@ const difficulties = ['Beginner', 'Intermediate', 'Advanced'] as const;
         </div>
 
         <div id="tutorials-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedTutorials.map(tutorial => (
-            <TutorialCard
-              slug={tutorial.slug}
-              title={tutorial.title}
-              subtitle=""
-              description={tutorial.description}
-              difficulty="Beginner"
-              estimatedTime={30}
-              estimatedCost={0.03}
-              tags={['technician-track']}
-              category="Foundation"
-              featured={tutorial.number === 1}
-            />
-          ))}
+          {sortedTutorials.map(tutorial => {
+            const metadata = getTutorialMetadata(tutorial.number);
+            return (
+              <TutorialCard
+                slug={tutorial.slug}
+                title={tutorial.title}
+                subtitle=""
+                description={tutorial.description}
+                difficulty={metadata.difficulty}
+                estimatedTime={30}
+                estimatedCost={0.03}
+                tags={['technician-track']}
+                category={metadata.category}
+                featured={tutorial.number === 1}
+              />
+            );
+          })}
         </div>
 
         <!-- Empty State (shows when filters hide all tutorials) -->

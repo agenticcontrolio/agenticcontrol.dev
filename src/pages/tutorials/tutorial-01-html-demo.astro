@@ -1,0 +1,475 @@
+---
+// src/pages/tutorials/tutorial-01-html-demo.astro
+// HTML version demo - first 3 sections of Tutorial 01
+import HTMLTutorialLayout from '../../layouts/HTMLTutorialLayout.astro';
+import SectionHeading from '../../components/html/SectionHeading.astro';
+import SubHeading from '../../components/html/SubHeading.astro';
+import Paragraph from '../../components/html/Paragraph.astro';
+import BulletList from '../../components/html/BulletList.astro';
+import ListItem from '../../components/html/ListItem.astro';
+import Callout from '../../components/html/Callout.astro';
+import CodeBlock from '../../components/html/CodeBlock.astro';
+
+const metadata = {
+  title: "Tutorial 01: Introduction to Agentic AI (HTML VERSION)",
+  subtitle: "Why the Next Generation of Industrial Systems Will Be Autonomous, Not Just Automated",
+  description: "Build your first tool-using AI agent. Learn the difference between automation and autonomy (HTML demo version)",
+  publishDate: new Date('2024-12-08'),
+  author: "Jaime Calvente",
+  difficulty: "Beginner" as const,
+  estimatedTime: 45,
+  estimatedCost: 0.10,
+  tags: ["agents", "plc", "industrial-ai", "automation", "fundamentals"],
+};
+---
+
+<HTMLTutorialLayout {...metadata}>
+  <!-- Core Mission -->
+  <SectionHeading id="core-mission">
+    Core Mission of This Tutorial
+  </SectionHeading>
+
+  <Paragraph>
+    By the end of this tutorial, you will be able to:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="✅">Understand the limits of traditional automation</ListItem>
+    <ListItem icon="✅">Distinguish automation from autonomy in clear engineering terms</ListItem>
+    <ListItem icon="✅">Define what an AI agent actually is (beyond hype and chatbots)</ListItem>
+    <ListItem icon="✅">Build and run a real tool-using industrial agent</ListItem>
+    <ListItem icon="✅">Understand exactly where agents belong — and where they must never be used</ListItem>
+  </BulletList>
+
+  <Paragraph>
+    This tutorial establishes both the <strong class="text-white font-bold bg-neonCyan/10 px-2 py-0.5 rounded border border-neonCyan/20">conceptual AND practical foundation</strong> of the entire AgenticControl series.
+  </Paragraph>
+
+  <!-- Vendor Note -->
+  <Callout type="warning" title="Vendor-Agnostic Note">
+    <p class="mb-4">
+      This tutorial uses <strong class="text-white font-bold">Claude (Anthropic)</strong> for reliability and tool-calling quality. The <strong class="text-white font-bold">architecture and control loop are fully vendor-neutral</strong>.
+    </p>
+    <p>
+      In later tutorials you can swap in <strong class="text-white font-bold">OpenAI, Qwen, DeepSeek, or local models</strong> without changing the agent design.
+    </p>
+  </Callout>
+
+  <!-- Section 1 -->
+  <SectionHeading id="hard-truth">
+    1. The Hard Truth About Modern Automation
+  </SectionHeading>
+
+  <Paragraph>
+    Most factories today are highly automated—but almost none are truly autonomous.
+  </Paragraph>
+
+  <Paragraph>
+    We have:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="→">PLCs executing deterministic logic</ListItem>
+    <ListItem icon="→">SCADA systems visualizing real-time data</ListItem>
+    <ListItem icon="→">MES platforms scheduling production</ListItem>
+    <ListItem icon="→">ERP systems managing business processes</ListItem>
+  </BulletList>
+
+  <Paragraph>
+    Yet despite this impressive stack, almost every system still depends on <strong class="text-white font-bold bg-neonCyan/10 px-2 py-0.5 rounded border border-neonCyan/20">human cognition</strong> for:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="→">Root cause analysis</ListItem>
+    <ListItem icon="→">Decision-making under uncertainty</ListItem>
+    <ListItem icon="→">Optimization across changing constraints</ListItem>
+    <ListItem icon="→">Strategy adaptation when conditions change</ListItem>
+  </BulletList>
+
+  <Paragraph>
+    In other words:
+  </Paragraph>
+
+  <Callout type="info">
+    <p class="text-lg font-semibold">
+      We automated execution—but we never automated reasoning.
+    </p>
+  </Callout>
+
+  <Paragraph>
+    This is the gap that <em class="text-neonCyan italic">Agentic AI</em> exists to fill.
+  </Paragraph>
+
+  <!-- Section 2 -->
+  <SectionHeading id="traditional-automation">
+    2. What Traditional Automation Actually Is
+  </SectionHeading>
+
+  <Paragraph>
+    Traditional industrial automation is built on a control model that looks like this:
+  </Paragraph>
+
+  <div class="my-12 p-8 bg-black/60 border border-neonCyan/40 rounded-xl font-mono text-sm text-slate-300 overflow-x-auto">
+    <pre class="leading-loose" set:html={`Sensors → PLC Logic → Actuators
+              ↓
+          SCADA / HMI
+              ↓
+             MES
+              ↓
+             ERP`} />
+  </div>
+
+  <SubHeading id="core-characteristics">
+    Core Characteristics
+  </SubHeading>
+
+  <Paragraph>
+    Traditional automation systems are:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="◆"><strong class="text-white font-bold">Deterministic</strong> — The same inputs always produce the same outputs</ListItem>
+    <ListItem icon="◆"><strong class="text-white font-bold">Rule-based</strong> — Logic is defined by explicit if/then conditions</ListItem>
+    <ListItem icon="◆"><strong class="text-white font-bold">Static</strong> — Behavior only changes when engineers change the code</ListItem>
+    <ListItem icon="◆"><strong class="text-white font-bold">Reactive</strong> — Systems do not act unless explicitly triggered</ListItem>
+    <ListItem icon="◆"><strong class="text-white font-bold">Memory-less</strong> — No long-term reasoning over historical context</ListItem>
+  </BulletList>
+
+  <Paragraph>
+    This architecture is incredibly powerful for:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="✓">Safety</ListItem>
+    <ListItem icon="✓">Reliability</ListItem>
+    <ListItem icon="✓">Repeatability</ListItem>
+    <ListItem icon="✓">Hard real-time execution</ListItem>
+  </BulletList>
+
+  <Paragraph>
+    But it has a fundamental limitation:
+  </Paragraph>
+
+  <Callout type="warning">
+    <p class="text-lg font-semibold">
+      It cannot understand <em class="italic">why</em> something is happening—only that it <em class="italic">is</em> happening.
+    </p>
+  </Callout>
+
+  <!-- Code Block Example -->
+  <SubHeading id="code-example">
+    Example: Python Agent Code
+  </SubHeading>
+
+  <Paragraph>
+    Here's a simple agent implementation with working copy button:
+  </Paragraph>
+
+  <CodeBlock language="python" filename="simple_agent.py">{`from anthropic import Anthropic
+
+client = Anthropic(api_key="your-api-key")
+
+def simple_agent(goal: str) -> str:
+    """
+    A basic agent that reasons about a goal.
+
+    Args:
+        goal: What the agent should accomplish
+
+    Returns:
+        Agent's response
+    """
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=500,
+        messages=[{
+            "role": "user",
+            "content": f"My goal: {goal}\\n\\nWhat's your strategy?"
+        }]
+    )
+
+    return response.content[0].text
+
+# Test it
+result = simple_agent("Validate PLC safety logic")
+print(result)`}</CodeBlock>
+
+  <Paragraph>
+    Click the <strong class="text-white font-bold bg-neonCyan/10 px-2 py-0.5 rounded border border-neonCyan/20">COPY</strong> button to copy the code to your clipboard!
+  </Paragraph>
+
+  <!-- Section 3 -->
+  <SectionHeading id="failed-attempt">
+    3. My First Failed Attempt at "AI in PLCs"
+  </SectionHeading>
+
+  <div class="my-12 p-8 bg-amber/5 border-l-4 border-amber rounded-r-xl">
+    <p class="text-base text-amber font-bold mb-4 font-display tracking-wider">
+      📝 LAB NOTE FROM AUGUST 2023
+    </p>
+    <p class="text-base text-slate-300 leading-[1.9]">
+      I thought I could add "intelligence" to PLC validation by just throwing code at an LLM.
+    </p>
+  </div>
+
+  <Paragraph>
+    Here's what I tried:
+  </Paragraph>
+
+  <CodeBlock language="python" filename="naive_approach.py">{`# My first naive attempt (DON'T DO THIS)
+from anthropic import Anthropic
+
+client = Anthropic(api_key="your-key-here")
+
+def validate_plc_code(code):
+    """Just ask the LLM to validate - what could go wrong?"""
+    response = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=500,
+        messages=[{
+            "role": "user",
+            "content": f"Is this PLC code safe?\\n\\n{code}"
+        }]
+    )
+    return response.content[0].text
+
+# Test it
+plc_code = """
+VAR
+    EmergencyStop : BOOL;
+    MotorRunning : BOOL;
+END_VAR
+
+IF NOT EmergencyStop THEN
+    MotorRunning := TRUE;
+END_IF
+"""
+
+print(validate_plc_code(plc_code))`}</CodeBlock>
+
+  <SubHeading>
+    What I Expected
+  </SubHeading>
+
+  <Paragraph>
+    Intelligent safety analysis with specific, actionable feedback.
+  </Paragraph>
+
+  <SubHeading>
+    What I Got
+  </SubHeading>
+
+  <BulletList>
+    <ListItem icon="❌">Hallucinated PLC syntax that doesn't exist in TwinCAT</ListItem>
+    <ListItem icon="❌">Confident assertions about "best practices" that were wrong</ListItem>
+    <ListItem icon="❌">No actual validation—just chatbot-style responses</ListItem>
+    <ListItem icon="❌">Zero reproducibility (different answer each time)</ListItem>
+    <ListItem icon="❌">References to functions that don't exist in IEC 61131-3</ListItem>
+  </BulletList>
+
+  <SubHeading>
+    Why It Failed
+  </SubHeading>
+
+  <Paragraph>
+    This wasn't an agent. It was just an LLM in a box.
+  </Paragraph>
+
+  <Paragraph>
+    No tools. No structure. No validation. No grounding in reality.
+  </Paragraph>
+
+  <Callout type="warning">
+    <p class="text-lg font-semibold mb-4">
+      An LLM alone is like a brain in a jar—lots of thinking, but no way to interact with the world or verify its thoughts.
+    </p>
+    <div class="flex items-center gap-4 text-sm text-slate-300 mt-6 pt-6 border-t border-amber/30">
+      <span class="font-bold">Cost of this lesson:</span>
+      <span>$0.50 in wasted API calls</span>
+      <span class="text-slate-500">•</span>
+      <span>3 hours debugging</span>
+      <span class="text-slate-500">•</span>
+      <span class="text-machineGreen">Understanding what an agent actually needs ✓</span>
+    </div>
+  </Callout>
+
+  <!-- Section 4 -->
+  <SectionHeading id="what-is-agent">
+    4. What an AI Agent Actually Is
+  </SectionHeading>
+
+  <Paragraph>
+    An <strong class="text-white font-bold bg-neonCyan/10 px-2 py-0.5 rounded border border-neonCyan/20">AI Agent</strong> is not a chatbot. It is not an LLM. It is not a workflow.
+  </Paragraph>
+
+  <Paragraph>
+    An AI Agent is a <strong class="text-white font-bold">goal-driven, tool-using, reasoning system</strong> that can operate in a loop of:
+  </Paragraph>
+
+  <BulletList>
+    <ListItem icon="1️⃣">Perceiving its environment</ListItem>
+    <ListItem icon="2️⃣">Reasoning about its situation</ListItem>
+    <ListItem icon="3️⃣">Selecting actions</ListItem>
+    <ListItem icon="4️⃣">Executing tools</ListItem>
+    <ListItem icon="5️⃣">Observing results</ListItem>
+    <ListItem icon="6️⃣">Updating its strategy</ListItem>
+  </BulletList>
+
+  <SubHeading>
+    Engineering Definition
+  </SubHeading>
+
+  <Callout type="info">
+    <p class="text-lg font-semibold">
+      An agent is a system that can independently pursue objectives using perception, reasoning, memory, and tools.
+    </p>
+  </Callout>
+
+  <SubHeading>
+    Mapping to Control Engineering
+  </SubHeading>
+
+  <div class="my-12 overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead class="bg-slate-900/80 border-b-2 border-neonCyan/30">
+        <tr>
+          <th class="px-6 py-4 text-left text-sm font-bold text-neonCyan uppercase tracking-wider">Control Concept</th>
+          <th class="px-6 py-4 text-left text-sm font-bold text-neonCyan uppercase tracking-wider">AI Agent Equivalent</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hover:bg-slate-900/40 transition-colors border-b border-slate-700/50">
+          <td class="px-6 py-4 text-base text-slate-300 font-semibold">Setpoint</td>
+          <td class="px-6 py-4 text-base text-slate-300">Goal</td>
+        </tr>
+        <tr class="hover:bg-slate-900/40 transition-colors border-b border-slate-700/50">
+          <td class="px-6 py-4 text-base text-slate-300 font-semibold">Sensors</td>
+          <td class="px-6 py-4 text-base text-slate-300">Perception</td>
+        </tr>
+        <tr class="hover:bg-slate-900/40 transition-colors border-b border-slate-700/50">
+          <td class="px-6 py-4 text-base text-slate-300 font-semibold">PLC Logic</td>
+          <td class="px-6 py-4 text-base text-slate-300">Reasoning</td>
+        </tr>
+        <tr class="hover:bg-slate-900/40 transition-colors border-b border-slate-700/50">
+          <td class="px-6 py-4 text-base text-slate-300 font-semibold">Actuators</td>
+          <td class="px-6 py-4 text-base text-slate-300">Tools</td>
+        </tr>
+        <tr class="hover:bg-slate-900/40 transition-colors">
+          <td class="px-6 py-4 text-base text-slate-300 font-semibold">Feedback Loop</td>
+          <td class="px-6 py-4 text-base text-slate-300">Reflection / Memory</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <Paragraph>
+    This mapping is critical:
+  </Paragraph>
+
+  <Callout type="success">
+    <p class="text-lg font-semibold">
+      Agentic AI is not anti-automation. It is automation extended into the cognitive domain.
+    </p>
+  </Callout>
+
+  <!-- Section 5 -->
+  <SectionHeading id="workflows-vs-agents">
+    5. Workflows vs Agents: A Critical Distinction
+  </SectionHeading>
+
+  <Paragraph>
+    Modern automation platforms promote "AI workflows" built with tools like n8n, Node-RED, Zapier, and low-code orchestration systems.
+  </Paragraph>
+
+  <Paragraph>
+    These are powerful—but fundamentally <strong class="text-white font-bold bg-neonPink/10 px-2 py-0.5 rounded border border-neonPink/20">not agents</strong>.
+  </Paragraph>
+
+  <div class="my-16 grid md:grid-cols-2 gap-8">
+    <div class="bg-slate-900/60 border-2 border-slate-600/40 rounded-xl p-8">
+      <h4 class="text-xl font-display text-slate-100 mb-6 tracking-wider">
+        ⚙️ WORKFLOW AUTOMATION
+      </h4>
+      <ul class="space-y-4 text-base text-slate-300">
+        <li class="flex items-start gap-3">
+          <span class="text-neonPink mt-0.5">→</span>
+          <span><strong class="text-white">Execution:</strong> Fixed sequence</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonPink mt-0.5">→</span>
+          <span><strong class="text-white">Behavior:</strong> Predefined</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonPink mt-0.5">→</span>
+          <span><strong class="text-white">Goals:</strong> None</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonPink mt-0.5">→</span>
+          <span><strong class="text-white">Tool Selection:</strong> Hardcoded</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonPink mt-0.5">→</span>
+          <span><strong class="text-white">Learning:</strong> None</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="bg-neonCyan/5 border-2 border-neonCyan/40 rounded-xl p-8">
+      <h4 class="text-xl font-display text-neonCyan mb-6 tracking-wider">
+        🤖 AI AGENT
+      </h4>
+      <ul class="space-y-4 text-base text-slate-300">
+        <li class="flex items-start gap-3">
+          <span class="text-neonCyan mt-0.5">→</span>
+          <span><strong class="text-white">Execution:</strong> Dynamic</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonCyan mt-0.5">→</span>
+          <span><strong class="text-white">Behavior:</strong> Adaptive</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonCyan mt-0.5">→</span>
+          <span><strong class="text-white">Goals:</strong> Explicit goals</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonCyan mt-0.5">→</span>
+          <span><strong class="text-white">Tool Selection:</strong> Autonomous</span>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="text-neonCyan mt-0.5">→</span>
+          <span><strong class="text-white">Learning:</strong> Continuous</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <Paragraph>
+    <strong class="text-white font-bold bg-neonCyan/10 px-2 py-0.5 rounded border border-neonCyan/20">A workflow executes instructions.</strong>
+  </Paragraph>
+
+  <Paragraph>
+    <strong class="text-white font-bold bg-neonPink/10 px-2 py-0.5 rounded border border-neonPink/20">An agent decides what to do next.</strong>
+  </Paragraph>
+
+  <!-- Comparison Note -->
+  <div class="my-32 p-16 bg-gradient-to-br from-neonCyan/10 to-neonPink/10 border-2 border-neonCyan/30 rounded-3xl">
+    <h4 class="font-display text-3xl text-neonCyan mb-12 tracking-wider text-center">
+      📊 FULL TUTORIAL PREVIEW
+    </h4>
+    <div class="max-w-3xl mx-auto space-y-8 text-center">
+      <p class="text-lg text-slate-200 leading-[2.0]">
+        Notice how much <strong class="text-white">MORE BREATHING ROOM</strong> this HTML version has? Each section feels distinct. Lists are easier to scan. The content doesn't feel cramped.
+      </p>
+      <p class="text-lg text-slate-200 leading-[2.0]">
+        Tables are readable. Code blocks have space. Callouts pop. Comparisons are visual.
+      </p>
+      <p class="text-lg text-slate-200 leading-[2.0]">
+        This is because we have <strong class="text-white bg-neonCyan/20 px-3 py-1 rounded border-2 border-neonCyan">FULL CONTROL</strong> over every spacing value with custom components.
+      </p>
+      <div class="pt-8 text-base text-slate-400">
+        <p>This is just 5 sections out of 12. Imagine the complete tutorial with all experiments, diagrams, and code examples!</p>
+      </div>
+    </div>
+  </div>
+
+</HTMLTutorialLayout>
