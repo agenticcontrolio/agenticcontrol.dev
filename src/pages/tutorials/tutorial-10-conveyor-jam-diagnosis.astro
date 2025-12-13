@@ -1,21 +1,17 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import TutorialLayoutWithNav from '../../layouts/TutorialLayoutWithNav.astro';
 import CoreMission from '../../components/tutorial/CoreMission.astro';
-import SafetyBoundary from '../../components/tutorial/SafetyBoundary.astro';
+import SafetyBoundary from '../../components/SafetyBoundary.astro';
 import VendorAgnosticNote from '../../components/tutorial/VendorAgnosticNote.astro';
-import TutorialScripts from '../../components/tutorial/TutorialScripts.astro';
-import TutorialNavigation from '../../components/tutorial/TutorialNavigation.astro';
 import { getTutorialBySlug } from '../../data/tutorials';
 
 const tutorial = getTutorialBySlug('tutorial-10-conveyor-jam-diagnosis');
 const currentNumber = tutorial?.number || 10;
+const title = "Tutorial #10: Conveyor Jam Diagnosis from Alarm Logs";
+const description = "Build a professional, end-to-end advisory diagnostic agent that analyzes conveyor alarm logs and correlates them with known fault patterns.";
 ---
 
-<BaseLayout
-  title="Tutorial #10: Conveyor Jam Diagnosis from Alarm Logs"
-  description="Build a professional, end-to-end advisory diagnostic agent that analyzes conveyor alarm logs and correlates them with known fault patterns."
->
-  <TutorialScripts />
+<TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
 
   <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
     <!-- Header -->
@@ -39,13 +35,14 @@ const currentNumber = tutorial?.number || 10;
     <div class="max-w-6xl mx-auto px-6 py-12">
       <!-- Core Mission -->
       <CoreMission
-        outcomes={[
+        items={[
           'Build a professional advisory diagnostic agent from scratch',
           'Analyze historical conveyor alarm logs for jam patterns',
           'Correlate alarm sequences with known fault reference data',
           'Produce structured diagnostic hypotheses with explanations',
           'Understand complete agent pipeline from input to validated output'
         ]}
+        footer='This capstone integrates all Technician Track concepts into one complete diagnostic system.'
       />
 
       <!-- Safety Boundary -->
@@ -63,18 +60,17 @@ const currentNumber = tutorial?.number || 10;
       </SafetyBoundary>
 
       <!-- Vendor Agnostic Note -->
-      <VendorAgnosticNote>
-        <p>This tutorial uses <strong>generic alarm log formats</strong> and fault pattern structures.</p>
-        <p>Patterns apply to:</p>
-        <ul>
-          <li>Rockwell FactoryTalk alarm exports</li>
-          <li>Siemens WinCC alarm logs</li>
-          <li>Beckhoff TwinCAT event logs</li>
-          <li>CODESYS alarm historians</li>
-          <li>Any timestamped alarm sequence data</li>
-        </ul>
-        <p>No vendor-specific APIs, no live connections, no proprietary formats required.</p>
-      </VendorAgnosticNote>
+      <VendorAgnosticNote
+        items={[
+          'Generic timestamped alarm log formats',
+          'Rockwell FactoryTalk alarm exports',
+          'Siemens WinCC alarm logs',
+          'Beckhoff TwinCAT event logs',
+          'CODESYS alarm historians',
+          'Standard JSON fault pattern files'
+        ]}
+        footer='No vendor-specific APIs, no live connections, no proprietary formats required.'
+      />
 
       <!-- Tutorial Metadata -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
@@ -413,7 +409,7 @@ const currentNumber = tutorial?.number || 10;
                 <span class="text-sm font-bold text-neonPurple">Prompt Builder</span>
                 <span class="text-xs font-mono text-slate-400">Python</span>
               </div>
-              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">def build_diagnostic_prompt(alarms: list[str], fault_reference: dict) -> str:
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`def build_diagnostic_prompt(alarms: list[str], fault_reference: dict) -> str:
     """
     Constructs diagnostic prompt with embedded rules and data.
 
@@ -452,7 +448,7 @@ Known fault patterns:
 
 Alarm log:
 {alarms}
-"""</code></pre>
+"""`}</code></pre>
             </div>
           </div>
         </section>
@@ -471,7 +467,7 @@ Alarm log:
                 <span class="text-sm font-bold text-neonPurple">Agent Execution</span>
                 <span class="text-xs font-mono text-slate-400">Python</span>
               </div>
-              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">from openai import OpenAI
+              <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`from openai import OpenAI
 import json
 
 client = OpenAI()
@@ -493,13 +489,13 @@ response = client.chat.completions.create(
 )
 
 # Parse structured output
-diagnosis = json.loads(response.choices[0].message.content)</code></pre>
+diagnosis = json.loads(response.choices[0].message.content)`}</code></pre>
             </div>
 
             <div class="mt-4 p-4 bg-amber/10 border border-amber/30 rounded-lg">
               <p class="text-sm text-slate-300">
                 <strong class="text-amber">Note:</strong>
-                Using <code class="text-plcBlue">response_format={"type": "json_object"}</code> enforces JSON output from the model.
+                Using <code class="text-plcBlue">response_format={`{"type": "json_object"}`}</code> enforces JSON output from the model.
               </p>
             </div>
           </div>
@@ -673,7 +669,7 @@ else:
               <span class="text-sm font-bold text-neonCyan">conveyor_diagnostic_agent.py</span>
               <span class="text-xs font-mono text-slate-400">Complete Pipeline</span>
             </div>
-            <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed"># conveyor_diagnostic_agent.py
+            <pre class="p-4 overflow-x-auto"><code class="text-sm font-mono text-slate-300 leading-relaxed">{`# conveyor_diagnostic_agent.py
 
 from openai import OpenAI
 import json
@@ -742,7 +738,7 @@ def run_agent():
     return diagnosis
 
 if __name__ == "__main__":
-    print(json.dumps(run_agent(), indent=2))</code></pre>
+    print(json.dumps(run_agent(), indent=2))`}</code></pre>
           </div>
         </section>
 
@@ -797,8 +793,5 @@ if __name__ == "__main__":
 
       </div>
     </div>
-
-    <!-- Tutorial Navigation -->
-    <TutorialNavigation currentNumber={currentNumber} track="technician" />
   </div>
-</BaseLayout>
+</TutorialLayoutWithNav>

@@ -20,26 +20,45 @@ const description = 'Learn the fundamental difference between traditional automa
 ---
 
 <TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
-  <CoreMission
-    items={[
-      'Clearly distinguish <strong class="text-white">traditional automation</strong> from <strong class="text-white">agentic AI</strong>',
-      'Understand the difference between <strong class="text-white">execution</strong> and <strong class="text-white">reasoning</strong>',
-      'Identify where <strong class="text-white">LLMs stop</strong> and where <strong class="text-white">agents begin</strong>',
-      'Recognize why <strong class="text-white">uncertainty handling</strong> is the core limitation of PLC logic',
-      'Safely simulate both models using advisory-only Python examples'
-    ]}
-    footer='This tutorial is the <strong class="text-neonCyan">conceptual foundation of the entire Technician Track</strong>.'
-  />
 
-  <!-- Safety Boundary -->
-  <SafetyBoundary type="simulation" />
+  <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
+    <!-- Header -->
+    <div class="border-b border-neonCyan/30 bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-machineGreen font-display text-2xl">🟢</span>
+          <span class="text-slate-400 font-mono text-sm">TECHNICIAN TRACK</span>
+        </div>
+        <h1 class="text-4xl font-display text-neonCyan mb-2 tracking-wide">
+          Tutorial #1: Agentic AI vs Traditional Automation
+        </h1>
+        <p class="text-slate-300 text-lg font-mono">
+          From Execution to Reasoning
+        </p>
+      </div>
+    </div>
 
-  <VendorAgnosticNote
-    items={['Generic automation concepts', 'Generic agent concepts', 'Standard Python only']}
-    footer='No PLC runtime, vendor SDK, hardware interface, or fieldbus integration is used. The concepts apply to <strong class="text-white">all IEC 61131-3 environments</strong>.'
-  />
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <CoreMission
+        items={[
+          'Clearly distinguish <strong class="text-white">traditional automation</strong> from <strong class="text-white">agentic AI</strong>',
+          'Understand the difference between <strong class="text-white">execution</strong> and <strong class="text-white">reasoning</strong>',
+          'Identify where <strong class="text-white">LLMs stop</strong> and where <strong class="text-white">agents begin</strong>',
+          'Recognize why <strong class="text-white">uncertainty handling</strong> is the core limitation of PLC logic',
+          'Safely simulate both models using advisory-only Python examples'
+        ]}
+        footer='This tutorial is the <strong class="text-neonCyan">conceptual foundation of the entire Technician Track</strong>.'
+      />
 
-  <!-- Section 1: Traditional Automation -->
+      <!-- Safety Boundary -->
+      <SafetyBoundary type="simulation" />
+
+      <VendorAgnosticNote
+        items={['Generic automation concepts', 'Generic agent concepts', 'Standard Python only']}
+        footer='No PLC runtime, vendor SDK, hardware interface, or fieldbus integration is used. The concepts apply to <strong class="text-white">all IEC 61131-3 environments</strong>.'
+      />
+
+      <!-- Section 1: Traditional Automation -->
   <div class="mb-16">
     <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
       1️⃣ CONCEPT OVERVIEW — WHAT IS TRADITIONAL AUTOMATION?
@@ -475,11 +494,13 @@ No fault conditions prevent safe operation, and the operational goal can be sati
     'Safety before convenience'
   ]} />
 
-  <!-- Tutorial Complete -->
-  <div class="mt-16 text-center">
-    <p class="text-2xl font-display text-machineGreen tracking-wider">
-      ✅ END OF TUTORIAL #1
-    </p>
+      <!-- Tutorial Complete -->
+      <div class="mt-16 text-center">
+        <p class="text-2xl font-display text-machineGreen tracking-wider">
+          ✅ END OF TUTORIAL #1
+        </p>
+      </div>
+    </div>
   </div>
 </TutorialLayoutWithNav>
 

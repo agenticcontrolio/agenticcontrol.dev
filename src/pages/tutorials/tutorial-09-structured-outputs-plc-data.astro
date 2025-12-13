@@ -22,6 +22,24 @@ const description = 'Learn how to force AI agents to return deterministic, struc
 ---
 
 <TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
+  <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
+    <!-- Header -->
+    <div class="border-b border-neonCyan/30 bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-machineGreen font-display text-2xl">🟢</span>
+          <span class="text-slate-400 font-mono text-sm">TECHNICIAN TRACK</span>
+        </div>
+        <h1 class="text-4xl font-display text-neonCyan mb-2 tracking-wide">
+          Tutorial #9: Structured Outputs for PLC Data Extraction
+        </h1>
+        <p class="text-slate-300 text-lg font-mono">
+          Deterministic, Machine-Readable JSON
+        </p>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-12">
   <CoreMission
     items={[
       'Understand why <strong class="text-white">free-text AI outputs are unreliable</strong> for systems',
@@ -437,4 +455,6 @@ except Exception as e:
       'Systems thinking over demos'
     ]}
   />
+    </div>
+  </div>
 </TutorialLayoutWithNav>

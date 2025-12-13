@@ -22,30 +22,49 @@ const description = 'Apply ReAct reasoning to PLC code analysis. Learn transpare
 ---
 
 <TutorialLayoutWithNav tutorial={tutorial} title={title} description={description}>
-  <CoreMission
-    items={[
-      'Apply the ReAct (Reason + Act) pattern to PLC code analysis',
-      'Interpret LLM reasoning through explicit step-by-step thought processes',
-      'Maintain strict advisory-only boundaries',
-      'Use deterministic reasoning scaffolds for industrial code reviews',
-      'Prepare for safe tool-using agents (Tutorial #3)'
-    ]}
-    footer='This tutorial establishes the <strong class="text-neonCyan">foundational reasoning layer</strong> required for all future AgenticControl tutorials.'
-  />
 
-  <SafetyBoundary type="analysis" />
+  <div class="min-h-screen bg-gradient-to-b from-background via-vhs to-background">
+    <!-- Header -->
+    <div class="border-b border-neonCyan/30 bg-surface/50 backdrop-blur-sm sticky top-0 z-40">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-machineGreen font-display text-2xl">🟢</span>
+          <span class="text-slate-400 font-mono text-sm">TECHNICIAN TRACK</span>
+        </div>
+        <h1 class="text-4xl font-display text-neonCyan mb-2 tracking-wide">
+          Tutorial #2: The ReAct Pattern for PLC Code Analysis
+        </h1>
+        <p class="text-slate-300 text-lg font-mono">
+          Transparent, Auditable AI Reasoning
+        </p>
+      </div>
+    </div>
 
-  <VendorAgnosticNote
-    items={[
-      'Generic IEC 61131-3 Structured Text (ST)',
-      'TwinCAT, Siemens TIA Portal, CODESYS',
-      'Allen-Bradley ST',
-      'Any IEC-based runtime'
-    ]}
-    footer='No vendor APIs or libraries are required.'
-  />
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <CoreMission
+        items={[
+          'Apply the ReAct (Reason + Act) pattern to PLC code analysis',
+          'Interpret LLM reasoning through explicit step-by-step thought processes',
+          'Maintain strict advisory-only boundaries',
+          'Use deterministic reasoning scaffolds for industrial code reviews',
+          'Prepare for safe tool-using agents (Tutorial #3)'
+        ]}
+        footer='This tutorial establishes the <strong class="text-neonCyan">foundational reasoning layer</strong> required for all future AgenticControl tutorials.'
+      />
 
-  <!-- Section 1: What Is ReAct? -->
+      <SafetyBoundary type="analysis" />
+
+      <VendorAgnosticNote
+        items={[
+          'Generic IEC 61131-3 Structured Text (ST)',
+          'TwinCAT, Siemens TIA Portal, CODESYS',
+          'Allen-Bradley ST',
+          'Any IEC-based runtime'
+        ]}
+        footer='No vendor APIs or libraries are required.'
+      />
+
+      <!-- Section 1: What Is ReAct? -->
   <div class="mb-16">
     <h2 class="text-3xl font-display text-neonCyan mb-6 mt-16 pb-4 border-b-2 border-neonCyan/30 tracking-wider">
       1️⃣ CONCEPT OVERVIEW — WHAT IS REACT?
@@ -348,11 +367,13 @@ Reversing the order reverses priority.`}
     'Transparency over opaque reasoning'
   ]} />
 
-  <!-- Tutorial Complete -->
-  <div class="mt-16 text-center">
-    <p class="text-2xl font-display text-machineGreen tracking-wider">
-      ✅ END OF TUTORIAL #2
-    </p>
+      <!-- Tutorial Complete -->
+      <div class="mt-16 text-center">
+        <p class="text-2xl font-display text-machineGreen tracking-wider">
+          ✅ END OF TUTORIAL #2
+        </p>
+      </div>
+    </div>
   </div>
 </TutorialLayoutWithNav>
 
